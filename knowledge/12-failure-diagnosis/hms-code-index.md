@@ -8,7 +8,7 @@ Verified: 2026-10-03
 ### Where the index lives, and how to resolve a code reliably
 - Bambu's master HMS (Health Management System) error-code index is a single wiki page with a printer-model dropdown; in that dropdown H2C is option value 10 and P1S is option value 4, and the page's search calls Bambu's `GetHmsWikiList.php` endpoint. The model list grows over time. — [source](https://wiki.bambulab.com/en/hms/home)
 - The URL folder a code page lives under (`/en/x1/`, `/en/h2/`, `/en/h2c/`) does not tell you which printer the code applies to. The H2C index sends some codes to `/en/x1/` pages, and the P1S index sends some codes to `/en/h2/` and `/en/h2c/` pages. The reliable lookup is the model-filtered query `https://e.bambulab.com/wikijs/GetHmsWikiList.php?size=50&lang=en&id=<10 for H2C | 4 for P1S>&hms=<16-digit code, no dashes>`, reading the `wiki_en` field it returns. — [source](https://e.bambulab.com/wikijs/GetHmsWikiList.php?size=50&lang=en&id=4&hms=0700200000020012)
-- There is no `/en/h2c/troubleshooting` hub page (HTTP 404); the H2C hub is `/en/h2c`, which links to the clogging, unclogging and hotend-upgrade-failure guides and to individual code pages. — [source](https://wiki.bambulab.com/en/h2c/troubleshooting), [source](https://wiki.bambulab.com/en/h2c)
+- Troubleshooting hubs for the H2C: the H2C page `/en/h2c` links the H2C clogging, unclogging, hotend-blob and hotend-upgrade-failure guides and individual code pages, and the H2-series page "H2 Series Troubleshooting" (`/en/h2/troubleshooting`) lists the shared H2 guides (clogging, extruder motor overload, homing and levelling failure and others). The path `/en/h2c/troubleshooting` itself has no hub page (HTTP 404 when checked). — [H2C hub](https://wiki.bambulab.com/en/h2c), [H2 Series Troubleshooting](https://wiki.bambulab.com/en/h2/troubleshooting)
 - The "HMS" link in the wiki sidebar is site-wide navigation present on every page, not a per-printer HMS section. The code-numbering explainer (`intro-hms`) is reached from the HMS home page and is tagged for X1 in its own metadata. — [source](https://wiki.bambulab.com/en/hms/home), [source](https://wiki.bambulab.com/en/x1/troubleshooting/intro-hms)
 - P1S codes are documented across the x1, h2 and h2c namespaces, not x1 alone: the P1S index resolves 0700-2000-0002-0012 to an `/en/h2/` page and 0700-9400-0001-0001 to an `/en/h2c/` page. — [source](https://e.bambulab.com/wikijs/GetHmsWikiList.php?size=50&lang=en&id=4&hms=0700940000010001)
 
@@ -57,8 +57,8 @@ Sources:
 - https://e.bambulab.com/wikijs/GetHmsWikiList.php?size=50&lang=en&id=10&hms=0C00030000030008 - per-printer lookup endpoint (H2C example)
 - https://e.bambulab.com/wikijs/GetHmsWikiList.php?size=50&lang=en&id=4&hms=0700200000020012 - per-printer lookup endpoint (P1S example)
 - https://e.bambulab.com/wikijs/GetHmsWikiList.php?size=50&lang=en&id=4&hms=0700940000010001 - P1S code resolving to an h2c page
-- https://wiki.bambulab.com/en/h2c/troubleshooting - 404, no hub at this path
-- https://wiki.bambulab.com/en/h2c - H2C hub page
+- https://wiki.bambulab.com/en/h2c - H2C hub page, links the H2C troubleshooting guides
+- https://wiki.bambulab.com/en/h2/troubleshooting - H2 Series Troubleshooting hub
 - https://wiki.bambulab.com/en/x1/troubleshooting/intro-hms - code numbering, module IDs, alert levels
 - https://wiki.bambulab.com/en/h2/troubleshooting/hmscode/0700_2000_0002_0012 - AMS feeder overload
 - https://wiki.bambulab.com/en/h2/troubleshooting/hmscode/0700_5500_0001_0004 - AMS-extruder binding

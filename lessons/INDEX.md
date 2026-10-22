@@ -28,5 +28,5 @@ One line per lesson. Read the file for the full table. See [README.md](README.md
 - [16-windows-paths-in-shell-and-string-text.md](16-windows-paths-in-shell-and-string-text.md) - Windows paths go through Write/Edit or raw strings only; scan for control characters.
 - [17-agents-never-delete-files.md](17-agents-never-delete-files.md) - deleting is the maker's call, even for an agent's own files; rename to SUPERSEDED_ instead.
 - [18-scratch-scripts-need-unique-names.md](18-scratch-scripts-need-unique-names.md) - task-specific scratch names; appends assert their target.
-- [19-settings-backups-can-hold-secrets.md](19-settings-backups-can-hold-secrets.md) - never copy service.json or profile folders into a shared place.
+- [19-settings-backups-can-hold-secrets.md](19-settings-backups-can-hold-secrets.md) - never copy app profile or settings folders into a shared place.
 - [20-no-personal-identifiers-in-requests.md](20-no-personal-identifiers-in-requests.md) - never put a personal identifier in a User-Agent or request header.

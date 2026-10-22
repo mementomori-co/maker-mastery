@@ -21,8 +21,8 @@ which Claude Code keeps out of git (https://code.claude.com/docs/en/settings, "K
 | `Read(./.env)`, `Read(./.env.*)` | Claude reading a local secrets file (pattern from the settings docs example) |
 
 Why this syntax is valid:
-- "Deny and ask rules also accept glob patterns in the tool-name position. The pattern must match the full tool name"
-  (https://code.claude.com/docs/en/permissions, "Tool name wildcards"). The same section says glob allow rules need a
+- Deny and ask rules may use a glob where the tool name goes, and the glob has to match the whole tool name
+  (paraphrased from https://code.claude.com/docs/en/permissions, "Tool name wildcards"). The same section says glob allow rules need a
   literal `mcp__<server>__` prefix, which is why these globs are deny rules only.
 - Deny is checked first: "Rules are evaluated in order: deny, then ask, then allow" (same page), and a deny in any
   scope beats an allow in any other scope. A PreToolUse hook that returns "allow" does not bypass a deny rule (same page).
@@ -37,7 +37,7 @@ Side effects you should know about:
   If you install one, keep its print, upload and start tools denied, and add its exact tool names to the deny list as well.
 
 ## Hooks
-All three hooks use exec form: `command` is the project's Python and `args` holds the script path. Claude Code
+All four hooks use exec form: `command` is the project's Python and `args` holds the script path. Claude Code
 substitutes `${CLAUDE_PROJECT_DIR}` (the project root where the session started) into `command` and each `args`
 element itself, with no shell, so a folder path with spaces works and the same file works for everyone
 (https://code.claude.com/docs/en/hooks, "Reference scripts by path" and "Exec form and shell form"). On Windows, exec
@@ -48,6 +48,7 @@ form needs `command` to be a real `.exe`, which `.venv\Scripts\python.exe` is (s
 | `SessionStart` (`startup|resume|clear|compact`) | `tools\hooks\session_start.py` | prints the rule column of every lesson in `lessons\` so each session starts with them |
 | `PreToolUse` (`Write|Edit|MultiEdit|NotebookEdit|Bash|PowerShell`) | `tools\hooks\guard_paths.py` | blocks writes into the folders listed under `protected_roots` in `config\paths.yaml` (exit code 2 blocks the call and sends the reason to Claude) |
 | `PostToolUse` (`Write|Edit|MultiEdit`) | `tools\check_note.py` | checks the header and source format of a knowledge note right after it is written |
+| `SubagentStop` (no matcher: every subagent) | `tools\hooks\log_run.py` | appends one JSON line per finished subagent to `work\agent-runs.log` (git-ignored), so silent subagent failures are visible; never blocks (exit 0) |
 
 The guard hook also refuses a bare `python`, `py` or `pip` command (use `.venv\Scripts\python.exe`); see its docstring.
 Event names, the `SessionStart` matcher values and the exit-code-2 behaviour come from https://code.claude.com/docs/en/hooks.

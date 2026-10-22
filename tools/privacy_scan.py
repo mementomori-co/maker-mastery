@@ -7,7 +7,8 @@ Usage:
     python tools/privacy_scan.py ROOT --denylist FILE [--json OUT]
                                  [--exclude-dir NAME ...] [--no-builtin]
 
-What is scanned (every file under ROOT except the excluded folders):
+What is scanned (every file under ROOT except the excluded folders, the file passed
+as --denylist and ROOT/config/denylist.example.txt, which are skipped by default):
   (a) text file contents (UTF-8, undecodable bytes replaced; UTF-16 with BOM)
   (b) file and folder names (the repo-relative path)
   (c) PNG tEXt / zTXt / iTXt / eXIf chunks (and any other ancillary chunk)
@@ -641,7 +642,8 @@ def main(argv=None) -> int:
         return 2
     if not a.no_builtin:
         rules += builtin_rules()
-    skip = {a.denylist.resolve()}
+    # never scan the denylist itself, nor the shipped example denylist (its sample lines are placeholders by design)
+    skip = {a.denylist.resolve(), (root / "config" / "denylist.example.txt").resolve()}
     if a.json:
         skip.add(a.json.resolve())
 

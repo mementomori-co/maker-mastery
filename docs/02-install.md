@@ -115,6 +115,14 @@ from the third. If `py` is not recognized, the launcher was not installed: run t
 **Customize installation** and keep the launcher ticked. If only `python` fails, the PATH box was not ticked; the setup
 script still works through `py`, but you can run the installer again, choose to modify (label not verified) and add it.
 
+If `python --version` prints a message that starts `Python was not found; run without arguments to install from the
+Microsoft Store` (exact wording not verified), or opens the Microsoft Store, Windows ran its built-in Store shortcut
+instead of a real Python. Microsoft explains the shortcut and how to turn it off: open **Manage app execution aliases**
+from Start and switch the **App Installer** Python entries to Off
+([Microsoft Learn, Python on Windows FAQ](https://learn.microsoft.com/en-us/windows/dev-environment/python)). In
+Settings the same page is **Settings > Apps > Advanced app settings > App execution aliases** (label not verified).
+Microsoft also notes that a python.org install with the PATH option takes priority over the shortcut.
+
 Newer Python versions (3.13, 3.14) may work but were not tested with this project. Python 3.14 brings a new
 "Python install manager"; the guide above uses the classic 3.12 installer, which the docs mark as deprecated from 3.14 on.
 

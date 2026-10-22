@@ -1,8 +1,9 @@
 # Example denylist for tools/privacy_scan.py
 #
-# Copy this file OUTSIDE the repo (for example to a private folder), replace the
-# sample entries with your own details, and run:
-#   python tools/privacy_scan.py . --denylist PATH/TO/your-denylist.txt
+# Copy this file OUTSIDE the repo (for example to a private folder), replace
+# every sample line below with your own details (do not keep any of the samples),
+# and run from the repository folder (PowerShell):
+#   .venv\Scripts\python.exe -B tools\privacy_scan.py . --denylist C:\path\to\your-denylist.txt
 # Never commit your real denylist: it is a list of exactly the things you want
 # to keep private.
 #

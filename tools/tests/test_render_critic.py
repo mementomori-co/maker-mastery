@@ -26,7 +26,10 @@ TOOLS = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, TOOLS)
 TOOL = os.path.join(TOOLS, "render_critic.py")
 
-import numpy as np  # noqa: E402
+try:
+    import numpy as np  # noqa: E402
+except ImportError as _e:  # pragma: no cover - packages from requirements.txt not installed yet
+    raise unittest.SkipTest(f"numpy is missing ({_e}); run tools\\setup.ps1 and answer y")
 
 try:
     import scipy  # noqa: F401

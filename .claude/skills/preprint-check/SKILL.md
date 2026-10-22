@@ -49,7 +49,7 @@ After `bambu-studio-expert` hands over a 3MF, and before you print it. Also for 
 | Rationalization | Reality |
 |---|---|
 | "result.json says Success, skip the G-code." | The CLI does not report the prime-tower clearance warning in `result.json` (`knowledge\02-bambu-studio\cli-slicing.md`). Only the scripts prove clearance. |
-| "The maker said in chat what is loaded." | Not a dated `current-load.md` = FAIL. A file once sliced for PETG while PLA was loaded, because the load was taken from memory. |
+| "The maker said in chat what is loaded." | Not a dated `current-load.md` = FAIL. A guessed filament type gets the wrong temperatures; ask or read the load file. |
 | "Lower the gap to 7 mm, it fits." | The 8 mm rule exists because the slicer's own check ignores the brim (`knowledge\02-bambu-studio\grouping-and-purge.md`). The bar does not move inside a check. |
 | "Support coverage is 100 %, so it passes." | Maximising one metric is never the only gate. A support cage that hides the part fails the visible-ratio item. |
 

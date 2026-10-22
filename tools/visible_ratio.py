@@ -1,7 +1,7 @@
 r"""visible_ratio.py - "visible-part ratio by layer": how much of a sliced print's part can still be SEEN through its support.
 
-Why: a tree-support cage can pass every coverage, scar and grams check and still hide the whole sculpture from a viewer (one
-measured case: about 312 g of support around a 628 g part). A print's purpose is a pass criterion; for a display or stream
+Why: a tree-support cage can pass every coverage, scar and grams check and still hide the whole sculpture from a viewer (made-up
+example: 300 g of tree support wrapped around a 600 g part). A print's purpose is a pass criterion; for a display or stream
 print this ratio is that criterion.
 
 What it does (read-only on the G-code, nothing is printed or sent anywhere):

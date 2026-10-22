@@ -4,6 +4,8 @@ What it does: blocks (exit 2, reason on stderr) any file write under a protected
 protected root together with a write/move/delete/redirect token. It also blocks a bare `python` / `py` / `pip` command run
 from inside this repository: call .venv\Scripts\python.exe explicitly so the repository's own environment is used.
 Protected roots: protected_roots in config\paths.yaml, plus any in the MM_PROTECTED environment variable (semicolon-separated).
+Fails closed: if the config file exists but cannot be read (YAML error, mangled path), every file write and every shell
+command that is not purely read-only is blocked, except a file-tool edit of the config file itself, so it can be fixed.
 Canonicalisation: strips \\?\ and \\.\ prefixes, maps \\host\D$\ admin-share UNC paths to D:\, resolves 8.3 short names
 through GetLongPathNameW on the longest existing prefix, follows junctions, normalises case and separators.
 Input: the hook JSON on stdin. Output: exit 0 = no decision (normal permission flow applies), 2 = blocked (reason on stderr),
@@ -30,16 +32,26 @@ REPO_ROOT = os.path.dirname(TOOLS_DIR)
 sys.path.insert(0, TOOLS_DIR)
 
 
-def _config_roots() -> list[str]:
-    """protected_roots from config\\paths.yaml; [] when the config cannot be read (the hook must not crash)."""
+CONFIG_UNREADABLE = ("BLOCKED by tools\\hooks\\guard_paths.py: config\\paths.yaml cannot be read; fix it (see "
+                     "docs\\09-troubleshooting.md, section 6) before Claude can write files. Editing config\\paths.yaml "
+                     "itself is still allowed. Details: ")
+
+
+def _config_roots() -> tuple[list[str], str, str]:
+    """(protected_roots, error, config file). Fails closed: when the config file exists but cannot be read, error is
+    set and main() blocks every write except an edit of that config file, so protected roots never silently vanish."""
+    cfg_file = ""
     try:
         import mm_config
-        return [str(p) for p in mm_config.path_list("protected_roots")]
-    except Exception:  # noqa: BLE001
-        return []
+        cfg_file = str(mm_config.config_file())
+        return [str(p) for p in mm_config.path_list("protected_roots")], "", cfg_file
+    except Exception as exc:  # noqa: BLE001
+        if cfg_file and not os.path.isfile(cfg_file):
+            return [], "", cfg_file  # no config file at all: the built-in defaults have no protected roots
+        return [], f"{type(exc).__name__}: {exc}", cfg_file
 
 
-DEFAULT_PROTECTED = _config_roots()
+DEFAULT_PROTECTED, CONFIG_ERROR, CONFIG_FILE = _config_roots()
 # administrative share of ANY host, any case, forward or back slashes (\\host\d$\..., //HOST/D$/...).
 UNC_LOCAL = re.compile(r"^[\\/]{2}[^\\/?.][^\\/]*[\\/]([A-Za-z])\$(?:[\\/](.*))?$", re.I)
 WRITEISH = re.compile(
@@ -247,6 +259,21 @@ def check_command(cmd: str, cwd: str | None = None) -> int:
     return 0
 
 
+def _read_only_command(cmd: str) -> bool:
+    """True when every pipeline segment starts with a READ_ONLY verb and nothing is redirected."""
+    text = _normalise(cmd)
+    if REDIRECT.search(text) or "<<" in text:
+        return False
+    for sg in [x.strip() for x in SEGMENT_SPLIT.split(text) if x.strip()]:
+        words = [w for w in sg.split() if not re.match(r"^\w+=\S*$", w)]
+        if not words:
+            continue
+        verb = os.path.basename(words[0].strip('"').strip("'")).removesuffix(".exe")
+        if verb not in READ_ONLY:
+            return False
+    return True
+
+
 def main() -> int:
     raw = sys.stdin.read()
     try:
@@ -259,13 +286,30 @@ def main() -> int:
             print("BLOCKED by tools\\hooks\\guard_paths.py: hook JSON unparsable (" + str(exc) +
                   ") but the raw input names the protected root with a write token.", file=sys.stderr)
             return 2
+        if CONFIG_ERROR:
+            print(CONFIG_UNREADABLE + CONFIG_ERROR, file=sys.stderr)
+            return 2
         print("guard_paths.py: could not parse hook JSON (" + str(exc) + "); no decision", file=sys.stderr)
         return 1
     ti = payload.get("tool_input") or {}
     target = ti.get("file_path") or ti.get("notebook_path")
+    cmd = ti.get("command")
+    if CONFIG_ERROR:
+        # fail closed: protected roots are unknown. The one write allowed is a file-tool edit of the config file
+        # itself, so it can be fixed; shell commands pass only when every segment is a read-only verb with no redirect.
+        if target:
+            if CONFIG_FILE and norm(target) == norm(CONFIG_FILE):
+                return 0
+            print(CONFIG_UNREADABLE + CONFIG_ERROR, file=sys.stderr)
+            return 2
+        if cmd:
+            if _read_only_command(cmd):
+                return 0
+            print(CONFIG_UNREADABLE + CONFIG_ERROR, file=sys.stderr)
+            return 2
+        return 0
     if target:
         return check_path(target)
-    cmd = ti.get("command")
     if cmd:
         return check_command(cmd, payload.get("cwd") or None)
     return 0

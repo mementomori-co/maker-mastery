@@ -269,11 +269,11 @@ VERDICT: WARN
 
 ```text
 > .venv\Scripts\python.exe -B tools\stability_check.py cube_20mm.stl --mass cube_20mm=9.5
-# Stability check — 2026-10-22 15:32
+# Stability check
 
-Tool: <repo>\tools\stability_check.py  ·  command: `<repo>\tools\stability_check.py cube_20mm.stl --mass cube_20mm=9.5`
+Tool: stability_check.py 1.0.0
 
-Thresholds (PROPOSED, NOT VERIFIED - confirm with a physical tilt test): FAIL CoM outside the support polygon; WARN minimum tip angle < 15 deg; WARN layer-1 contact < 25 % of the hull area (example: uncut figurine soles 101.8 of 575 mm2). Formulas: tip angle = atan(margin / CoM height); knock force F = m*g*margin / H_top (moment balance about the tipping edge, g = 9.81 m/s2); top-heavy index = CoM height / smallest hull half-width. Direction convention: 0 deg = +X, 90 deg = +Y. Support polygon = convex hull of down-facing faces (normal z < -0.7) within 0.3 mm of the floor; lowest-contact area = their projected area.
+Thresholds (PROPOSED, NOT VERIFIED - confirm with a physical tilt test): FAIL CoM outside the support polygon; WARN minimum tip angle < 15 deg; WARN layer-1 contact < 25 % of the hull area (example: 100 of 500 mm2 is 20 %, which warns). Formulas: tip angle = atan(margin / CoM height); knock force F = m*g*margin / H_top (moment balance about the tipping edge, g = 9.81 m/s2); top-heavy index = CoM height / smallest hull half-width. Direction convention: 0 deg = +X, 90 deg = +Y. Support polygon = convex hull of down-facing faces (normal z < -0.7) within 0.3 mm of the floor; lowest-contact area = their projected area.
 
 ## Parts
 
@@ -342,7 +342,7 @@ bambu-studio.exe not found at '<fixture-tmp>\\no-such-dir\\bambu-studio.exe': se
 ```text
 > .venv\Scripts\python.exe -B tools\check_note.py knowledge\01-printers\plates.md
 FAIL knowledge\01-printers\plates.md
-  - line 7: fact bullet without URL / local path / 'measured'
+  - line 7: fact bullet without URL / local path / 'measured' / 'not verified' (or a 'same source' back-reference with a URL earlier in the same subsection)
 (exit code 2)
 ```
 

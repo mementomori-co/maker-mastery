@@ -41,6 +41,11 @@ powershell -ExecutionPolicy Bypass -File .\tools\setup.ps1
 Nothing about your PC's policy changes; the setting ends with that process. Do not change the machine-wide policy for
 this project.
 
+If the message says the file `is not digitally signed`, your policy is **RemoteSigned** and the script still carries
+the "downloaded from the internet" mark from the ZIP. Besides the line above, you can read `tools\setup.ps1` and then
+remove that mark once with `Unblock-File .\tools\setup.ps1`
+([Unblock-File](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/unblock-file)).
+
 ## 2. Python 3.12 or newer was not found
 
 **You see:** `Python 3.12 or newer was not found.` from the setup script.
@@ -54,14 +59,17 @@ this project.
 
 ## 3. `python` opens the Microsoft Store or is not recognized
 
-**You see:** typing `python` opens the Microsoft Store, or `python is not recognized`.
+**You see:** typing `python` opens the Microsoft Store, prints a message that starts `Python was not found; run without
+arguments to install from the Microsoft Store` (exact wording not verified), or says `python is not recognized`.
 
 **Why:** the PATH box was not ticked in the installer, and Windows offers its Store shortcut instead.
 
 **Fix:** you do not need a bare `python` for this project: the setup script uses `py -3.12`, and every command in the
 guides uses `.venv\Scripts\python.exe`. If you want it anyway, run the Python installer again, choose to modify the
-installation (label not verified) and tick the PATH option, or turn off the Store shortcut in Windows **Settings > Apps >
-Advanced app settings > App execution aliases** (label not verified).
+installation (label not verified) and tick the PATH option, or turn off the Store shortcut: open **Manage app execution
+aliases** from Start and switch the **App Installer** Python entries to Off
+([Microsoft Learn, Python on Windows FAQ](https://learn.microsoft.com/en-us/windows/dev-environment/python)); in
+Settings that page is under **Settings > Apps > Advanced app settings > App execution aliases** (label not verified).
 
 ## 4. A hook error when Claude Code starts
 
@@ -97,13 +105,32 @@ Or keep your `config\paths.yaml` in the simple one-line form the example uses.
 
 **You see:** `Bambu Studio was not found at: C:\Program Files\Bambu Studio\bambu-studio.exe` from setup, or
 `bambu-studio.exe not found at '...': set bambu_studio_exe in config\paths.yaml or pass --exe` from `slice_cli.py`.
+Or, after you pasted a path: `ERROR: config\paths.yaml cannot be read (..., line N): ...` from `tools\mm_config.py`, or
+a hook message `config\paths.yaml cannot be read; fix it (see docs\09) before Claude can write files`.
+
+**Why the paste fails:** File Explorer's **Copy as path** (label not verified) gives `"E:\Apps\Bambu Studio\bambu-studio.exe"`:
+backslashes inside double quotes. YAML treats a backslash inside double quotes as the start of an escape, so `\A` is an
+error and `\b` silently becomes a control character. The tools refuse such a value with the message above, and the
+folder guard blocks Claude's writes until the file is fixed (it still lets you or Claude edit `config\paths.yaml`).
 
 **Fix:**
 
-1. Find `bambu-studio.exe` in File Explorer.
-2. Open `config\paths.yaml` in VS Code and set `bambu_studio_exe` to its full path in double quotes with forward slashes,
-   for example `bambu_studio_exe: "E:/Apps/Bambu Studio/bambu-studio.exe"`. Save.
-3. Check: `.venv\Scripts\python.exe tools\mm_config.py`. The `bambu_studio_exe` line should no longer say `[does not exist]`.
+1. Find `bambu-studio.exe` in File Explorer and copy its path.
+2. Open `config\paths.yaml` in VS Code and set `bambu_studio_exe` to that path. Change every `\` to `/` and keep the
+   double quotes, or keep the backslashes and use single quotes instead:
+
+   ```yaml
+   # Before (Copy as path; does not work):
+   bambu_studio_exe: "E:\Apps\Bambu Studio\bambu-studio.exe"
+   # After, forward slashes:
+   bambu_studio_exe: "E:/Apps/Bambu Studio/bambu-studio.exe"
+   # After, single quotes:
+   bambu_studio_exe: 'E:\Apps\Bambu Studio\bambu-studio.exe'
+   ```
+
+   Save. The same rule applies to every path in the file (`blender_exe`, `allowed_roots`, `protected_roots` and others).
+3. Check: `.venv\Scripts\python.exe tools\mm_config.py`. It should print no `ERROR`, and the `bambu_studio_exe` line
+   should no longer say `[does not exist]`.
 
 ## 7. The audit's load check C7 fails
 
@@ -122,11 +149,13 @@ filament does not match (wrong side on a dual-nozzle printer, wrong colour, wron
 
 **You see:** after Claude writes a file under `knowledge\`, a message such as
 `FAIL knowledge\00-gear-inventory\printers.md - missing 'Verified: YYYY-MM-DD'`, or `missing 'Applies to:' line`,
-`missing 'Sources:' section`, `fact bullet without URL / local path / 'measured'`.
+`missing 'Sources:' section`, `fact bullet without URL / local path / 'measured' / 'not verified' ...`.
 
 **Why:** a hook runs `tools\check_note.py` after every write under `knowledge\`. It requires an `Applies to:` line, a
 `Verified:` line with a real date in digits (the placeholder `YYYY-MM-DD` does not count), a `Sources:` section with a
-URL, and a source on each fact bullet. The file was written; the hook tells Claude what to fix.
+URL, and a source on each fact bullet (its own URL, the word "measured", a "not verified" label, a link to another
+note, or "same source" under a bullet with a URL in the same subsection). The file was written; the hook tells Claude
+what to fix.
 
 **Fix:** ask Claude to fix the note, or add the lines yourself. For your own gear files, the source line can be
 `- my own look at the printer, measured`. Check by hand with `.venv\Scripts\python.exe tools\check_note.py <file>`.

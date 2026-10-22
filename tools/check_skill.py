@@ -119,8 +119,13 @@ def check_agent(path: str) -> list[str]:
 
 
 def main(argv: list[str]) -> int:
+    import argparse
+    ap = argparse.ArgumentParser(prog="check_skill.py", description=__doc__,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("paths", nargs="*", help="SKILL.md / agent .md files, or folders to search for *.md")
+    args = ap.parse_args(argv[1:])
     targets: list[str] = []
-    for a in argv[1:]:
+    for a in args.paths:
         if os.path.isdir(a):
             for root, _, files in os.walk(a):
                 for f in files:

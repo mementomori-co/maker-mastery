@@ -58,6 +58,9 @@ Official guide: https://docs.github.com/en/repositories/creating-and-managing-re
 2. Open Windows PowerShell (Start, type `PowerShell`).
 3. Run these two lines. The second one is `git clone`, the address you copied, and the target folder:
 
+   > **Replace `<owner>` with the GitHub account name shown in your browser's address bar** (the part right after
+   > `github.com/`), or paste the address you copied in step 1 instead of the one below.
+
    ```powershell
    New-Item -ItemType Directory -Force C:\Projects | Out-Null
    git clone https://github.com/<owner>/maker-mastery.git C:\Projects\maker-mastery
@@ -72,8 +75,13 @@ Official guide: https://docs.github.com/en/repositories/creating-and-managing-re
 
    You should see `True`.
 
-If you see "git is not recognized", go back to [02 - Install](02-install.md), part 1. If you see "repository not found",
-check the address on the project's GitHub page and copy it again.
+If something goes wrong:
+
+| You see | Do this |
+|---|---|
+| `git is not recognized` | Go back to [02 - Install](02-install.md), part 1. |
+| `fatal: unable to access 'https://github.com/<owner>/maker-mastery.git/': ... error: 400` | The `<owner>` placeholder was not replaced. Put the account name from your browser's address bar in its place, or paste the address you copied in step 1, and run the line again. |
+| `repository not found` | Check the address on the project's GitHub page and copy it again. |
 
 To update later, run `git -C C:\Projects\maker-mastery pull`. Your own files (`config\paths.yaml`, `.venv\`, `work\`)
 are ignored by git, so an update does not overwrite them. Files you edit that git does track, such as

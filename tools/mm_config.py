@@ -20,6 +20,8 @@ Outputs (API):
 
 YAML: PyYAML is used when it is installed (it is in requirements.txt). Without it a small built-in reader handles the
 flat "key: value" / "key: [a, b]" form that config\paths.example.yaml uses, so the self-test can still run.
+Windows paths: forward slashes, or single quotes. A double-quoted value with a backslash is refused with a plain message
+(PyYAML would turn \b, \t, \n into control characters), and so is any loaded value that holds a control character.
 
 Example:
   .venv\Scripts\python.exe tools\mm_config.py          prints the resolved configuration
@@ -28,6 +30,7 @@ from __future__ import annotations
 
 import os
 import pathlib
+import re
 import sys
 
 DEFAULTS: dict = {
@@ -98,13 +101,64 @@ def _mini_yaml(text: str) -> dict:
     return out
 
 
-def _parse(text: str) -> dict:
+PATH_ADVICE = ("Write Windows paths with forward slashes (\"C:/Program Files/Bambu Studio/bambu-studio.exe\") or in "
+               "single quotes ('C:\\Program Files\\Bambu Studio\\bambu-studio.exe'); never put backslashes inside double "
+               "quotes, because YAML reads \\b, \\t, \\n and similar as control characters. See docs\\09-troubleshooting.md, "
+               "section 6.")
+
+
+def _bad_config(f: pathlib.Path, line: int | None, problem: str) -> MMConfigError:
+    where = f"line {line}" if line else "a value"
+    return MMConfigError(f"config\\paths.yaml cannot be read ({f}, {where}): {problem}. {PATH_ADVICE}")
+
+
+def _parse(text: str, f: pathlib.Path | None = None) -> dict:
+    f = f or config_file()
     try:
         import yaml  # PyYAML
     except ImportError:
+        # The mini reader keeps backslashes in double quotes literally, but PyYAML does not; refuse that form here too
+        # so a file that works now does not break later when PyYAML is installed.
+        for n, raw in enumerate(text.splitlines(), 1):
+            body = raw.split(" #", 1)[0] if not raw.lstrip().startswith("#") else ""
+            for m in re.finditer(r'"([^"]*)"', body):
+                if "\\" in m.group(1):
+                    raise _bad_config(f, n, "a double-quoted value contains a backslash")
         return _mini_yaml(text)
-    data = yaml.safe_load(text)
+    try:
+        data = yaml.safe_load(text)
+    except yaml.YAMLError as exc:
+        mark = getattr(exc, "problem_mark", None) or getattr(exc, "context_mark", None)
+        line = (mark.line + 1) if mark is not None else None
+        problem = getattr(exc, "problem", None) or str(exc).splitlines()[0]
+        raise _bad_config(f, line, f"YAML error: {problem}") from None
     return data if isinstance(data, dict) else {}
+
+
+def _control_chars(value) -> bool:
+    """True when a loaded string (or a string in a list) holds a control character: the sign of a mangled path."""
+    items = value if isinstance(value, list) else [value]
+    # also the characters YAML makes of \N, \_, \L and \P inside double quotes
+    odd = {0x7f, 0x85, 0xa0, 0x2028, 0x2029}
+    return any(isinstance(s, str) and any(ord(c) < 0x20 or ord(c) in odd for c in s) for s in items)
+
+
+def _line_of(text: str, key: str) -> int | None:
+    for n, raw in enumerate(text.splitlines(), 1):
+        if raw.lstrip().startswith(key + ":"):
+            return n
+    return None
+
+
+def warnings(cfg: dict | None = None) -> list[str]:
+    """Non-fatal problems in the loaded configuration (printed by `tools\\mm_config.py`)."""
+    cfg = cfg if cfg is not None else load()
+    out = []
+    sw = cfg.get("slice_workdir")
+    if isinstance(sw, str) and " " in sw:
+        out.append(f"WARNING: slice_workdir '{sw}' contains a space; the Bambu Studio command line is more reliable "
+                   "with a path that has no spaces (the default is work/slice).")
+    return out
 
 
 def load() -> dict:
@@ -116,8 +170,10 @@ def load() -> dict:
     except OSError:
         cfg["_source"] = "built-in defaults (no config file found)"
         return cfg
-    data = _parse(text)
+    data = _parse(text, f)
     for k, v in data.items():
+        if _control_chars(v):
+            raise _bad_config(f, _line_of(text, str(k)), f"'{k}' contains a control character (a mangled Windows path)")
         if k in LIST_KEYS and v in (None, ""):
             v = []
         if k in LIST_KEYS and isinstance(v, str):
@@ -182,7 +238,13 @@ def bambu_user_presets_dir() -> pathlib.Path | None:
 
 
 def main() -> int:
-    cfg = load()
+    try:
+        cfg = load()
+    except MMConfigError as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 2
+    for w in warnings(cfg):
+        print(w, file=sys.stderr)
     print(f"config: {cfg.pop('_source')}")
     print(f"repo_root: {repo_root()}")
     for k, v in cfg.items():

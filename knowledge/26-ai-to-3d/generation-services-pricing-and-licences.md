@@ -29,7 +29,7 @@ This is a summary of public pages, not legal advice. Re-read each service's term
 ### Tencent Hunyuan3D (2.0 and 2.1)
 - Both community licences exclude the European Union, the United Kingdom and South Korea from the licensed Territory. - [Hunyuan3D-2 LICENSE](https://raw.githubusercontent.com/Tencent-Hunyuan/Hunyuan3D-2/main/LICENSE), [Hunyuan3D-2.1 LICENSE](https://raw.githubusercontent.com/Tencent-Hunyuan/Hunyuan3D-2.1/main/LICENSE)
 - Above 1 million monthly active users in the preceding month you must request a separate licence from Tencent (same in both). - [Hunyuan3D-2 LICENSE](https://raw.githubusercontent.com/Tencent-Hunyuan/Hunyuan3D-2/main/LICENSE)
-- Hunyuan3D-2.1 needs 10 GB VRAM for shape, 21 GB for texture and 29 GB for both; the often-quoted 6/16 GB figures come from the separate Hunyuan3D-2 README. A 24 GB card is below the 29 GB combined figure; the README documents a `--low_vram_mode` flag (effect not measured). - [Hunyuan3D-2.1 README](https://raw.githubusercontent.com/Tencent-Hunyuan/Hunyuan3D-2.1/main/README.md), [Hunyuan3D-2 README](https://raw.githubusercontent.com/Tencent-Hunyuan/Hunyuan3D-2/main/README.md)
+- Hunyuan3D-2.1 needs 10 GB VRAM for shape, 21 GB for texture and 29 GB for both; the often-quoted 6/16 GB figures come from the separate Hunyuan3D-2 README. A GPU with less VRAM than the stated requirement (for example less than 29 GB for shape plus texture) cannot run that step as documented; the README documents a `--low_vram_mode` flag (effect not measured). - [Hunyuan3D-2.1 README](https://raw.githubusercontent.com/Tencent-Hunyuan/Hunyuan3D-2.1/main/README.md), [Hunyuan3D-2 README](https://raw.githubusercontent.com/Tencent-Hunyuan/Hunyuan3D-2/main/README.md)
 
 ## In practice
 - Always send Rodin's `tier` explicitly.

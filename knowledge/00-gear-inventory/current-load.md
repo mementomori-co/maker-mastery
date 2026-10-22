@@ -1,6 +1,6 @@
 # Current load - what is physically in your printers (TEMPLATE)
 
-Applies to: every printer you list below - Bambu Studio 02.08
+Applies to: every printer you list below - Bambu Studio <your version>
 Verified: YYYY-MM-DD
 
 This file is your load record. `tools\audit_3mf.py` check C7 reads it before it calls a print file ready: every filament in
@@ -33,9 +33,11 @@ above is the placeholder, C7 FAILs on purpose: nothing is confirmed loaded until
 
 ## Load table
 
+The rows below are an example: an H2C + P1S setup. Replace them with your printers.
+
 | Position | Content | How known |
 |---|---|---|
-| H2C - AMS 2 Pro slot 1 (RIGHT inlet) | EMPTY | example row: replace with what you see |
+| H2C - AMS 2 Pro slot 1 (RIGHT inlet) | EMPTY | example: an H2C + P1S setup; replace with your printers |
 | H2C - AMS 2 Pro slot 2 (RIGHT inlet) | EMPTY | example row |
 | H2C - AMS 2 Pro slot 3 (RIGHT inlet) | EMPTY | example row |
 | H2C - AMS 2 Pro slot 4 (RIGHT inlet) | EMPTY | example row |

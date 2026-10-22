@@ -11,8 +11,11 @@ from contextlib import redirect_stderr, redirect_stdout
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import fixtures_3mf as fx  # noqa: E402  (sets MM_CONFIG / APPDATA before audit_3mf is imported)
-import audit_3mf  # noqa: E402
+try:
+    import fixtures_3mf as fx  # noqa: E402  (sets MM_CONFIG / APPDATA before audit_3mf is imported)
+    import audit_3mf  # noqa: E402
+except ImportError as _e:  # pragma: no cover - packages from requirements.txt not installed yet
+    raise unittest.SkipTest(f"a package from requirements.txt is missing ({_e}); run tools\\setup.ps1 and answer y")
 
 
 def c7(r, rule=None):

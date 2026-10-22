@@ -38,9 +38,31 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
+### OpenSpec `maker` schema (copied and changed, MIT)
+
+- Upstream: Fission-AI/OpenSpec, https://github.com/Fission-AI/OpenSpec (commit 2500d6da971336167548b53731a35b2127df35ac).
+- Licence: MIT License, "Copyright (c) 2024 OpenSpec Contributors" (checked in the upstream `LICENSE` file at that commit:
+  https://github.com/Fission-AI/OpenSpec/blob/2500d6da971336167548b53731a35b2127df35ac/LICENSE).
+- Files copied from OpenSpec `schemas/spec-driven/`: `templates/project/openspec/schemas/maker/schema.yaml` (changed; the
+  changes are listed in that folder's `README.md`) and the four templates in `templates/project/openspec/schemas/maker/templates/`:
+  `proposal.md`, `spec.md`, `design.md` and `tasks.md` (unchanged).
+- The full licence text is kept beside them in
+  [templates/project/openspec/schemas/maker/LICENSE-openspec.txt](templates/project/openspec/schemas/maker/LICENSE-openspec.txt).
+- `assessment.md` and `constitution-check.md` in the same folder are new files written for this project (see spec-kit below).
+
+### spec-kit concepts (MIT)
+
+- Upstream: github/spec-kit, https://github.com/github/spec-kit (commit e1fa857a7f536b22760d48c1aa9ace41df0fd1dc).
+- Licence: MIT License, "Copyright GitHub, Inc." (checked in the upstream `LICENSE` file at that commit:
+  https://github.com/github/spec-kit/blob/e1fa857a7f536b22760d48c1aa9ace41df0fd1dc/LICENSE).
+- What was reused: the assessment funnel and the Constitution Check / Complexity Tracking gate, as concepts rewritten in
+  this project's words, and the scorecard criterion names, which are spec-kit's. They appear in
+  `templates/project/openspec/schemas/maker/templates/assessment.md`, `constitution-check.md` and the schema
+  [README](templates/project/openspec/schemas/maker/README.md). No spec-kit code is included, and spec-kit is not installed.
+
 ## Python dependencies (installed by you, not vendored)
 
-No third-party Python code is copied into this repository. These packages are installed from PyPI into the project's `.venv` by `tools/setup.ps1` (`pip install -r requirements.txt`, and `requirements-optional.txt` only when you ask for it) and keep their own licences. Each licence below was read from the package's PyPI JSON record for the pinned version (`https://pypi.org/pypi/<name>/<version>/json`): the `license_expression` field where the package sets one, otherwise the `License ::` classifier and the `license` field. Packages that these depend on in turn (for example the libraries `mcp` pulls in) are installed by pip and carry their own licences; they are not listed here.
+No third-party Python code is copied into this repository. These packages are installed from PyPI into the project's `.venv` by `tools/setup.ps1` (`pip install -r requirements.txt`, and `requirements-optional.txt` only when you ask for it) and keep their own licences. Each licence below was read from the package's PyPI JSON record for the pinned version (`https://pypi.org/pypi/<name>/<version>/json`): the `license_expression` field where the package sets one, otherwise the `License ::` classifier and the `license` field. Packages that these depend on in turn are installed by pip and carry their own licences; they are not listed here, except the three below that this repository's code imports directly.
 
 ### Required (`requirements.txt`)
 
@@ -55,6 +77,22 @@ No third-party Python code is copied into this repository. These packages are in
 | networkx | 3.7 | graph support for trimesh section polygons (`tools/stability_check.py`) | BSD-3-Clause (license_expression) | https://pypi.org/project/networkx/ |
 | PyYAML | 6.0.2 | reading `config/paths.yaml` (`tools/mm_config.py`) | MIT License (classifier; `license` field "MIT") | https://pypi.org/project/PyYAML/ |
 | mcp | 2.3.0 | the optional read-only audit MCP server (`tools/mcp/mm_audit_server.py`) | MIT License (classifier; `license` field "MIT") | https://pypi.org/project/mcp/ |
+
+### Transitive, but imported directly (installed by `mcp`, not pinned by this repository)
+
+`tools/mcp/mm_audit_server.py` imports these three packages itself (`import anyio.to_thread`, `from pydantic import ...`,
+`from mcp_types import ToolAnnotations`). They are not in `requirements.txt`: pip installs them because `mcp` 2.3.0
+requires them (`anyio>=4.9`, `pydantic>=2.12.0`, `mcp-types==2.3.0` in the `mcp` 2.3.0 metadata). The versions below are
+the ones pip resolved when this file was checked; yours may be newer within those ranges.
+
+| Package | Version checked | Imported as | Licence (from PyPI) | PyPI page |
+|---|---|---|---|---|
+| anyio | 4.15.1 | `anyio` | MIT (license_expression) | https://pypi.org/project/anyio/ |
+| pydantic | 2.13.5 | `pydantic` | MIT (license_expression) | https://pypi.org/project/pydantic/ |
+| mcp-types | 2.3.0 | `mcp_types` | MIT License (classifier; `license` field "MIT") | https://pypi.org/project/mcp-types/ |
+
+`mcp_types` is not a module inside `mcp`: it is a separate PyPI distribution, `mcp-types`, from the same repository
+(https://github.com/modelcontextprotocol/python-sdk), and `mcp` 2.3.0 pins it to the exact same version.
 
 ### Optional (`requirements-optional.txt`)
 
@@ -75,6 +113,13 @@ Bambu Studio is licensed under the GNU Affero General Public License v3.0 (AGPL-
 ## Contributor Covenant
 
 [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) is the Contributor Covenant, version 2.1, from https://www.contributor-covenant.org/version/2/1/code_of_conduct/ . Only the contact method was filled in. The attribution section inside the file is kept as published.
+
+Licence: Creative Commons Attribution 4.0 International (CC BY 4.0, https://creativecommons.org/licenses/by/4.0/). That is
+the licence in the Contributor Covenant repository's `LICENSE.md` from January 2022, when version 2.1 was current
+(https://github.com/EthicalSource/contributor_covenant/blob/91532d80ea5f39b6685aff4892bc6854bf2f6d6f/LICENSE.md). The
+repository's current `LICENSE.md` names the Hippocratic License 3.0 instead, and the newer version 3.0 of the Covenant
+states CC BY-SA 4.0 on its own page; neither of those applies to the version 2.1 text used here. Changes made: the contact
+method was filled in.
 
 ## Fonts (used to make the brand images, not shipped)
 

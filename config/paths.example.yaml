@@ -3,7 +3,12 @@
 # How to use this file:
 #   1. Copy it to config\paths.yaml (tools\setup.ps1 does this for you the first time it runs).
 #   2. Edit config\paths.yaml, never this example. config\paths.yaml is ignored by git, so your own paths stay on your PC.
-#   3. Use forward slashes, or wrap a Windows path in double quotes. A relative path is read from the repository folder.
+#   3. Write Windows paths with forward slashes, or in single quotes:
+#        bambu_studio_exe: "E:/Apps/Bambu Studio/bambu-studio.exe"      forward slashes: fine
+#        bambu_studio_exe: 'E:\Apps\Bambu Studio\bambu-studio.exe'      single quotes: fine
+#      Never put backslashes inside double quotes ("E:\Apps\..."): YAML reads \b, \t, \n and similar as control
+#      characters, so the path breaks. "Copy as path" in File Explorer gives exactly that form, so change it.
+#      A relative path is read from the repository folder.
 #   4. Check the result with:  .venv\Scripts\python.exe tools\mm_config.py
 #
 # Every tool reads these values through tools\mm_config.py. No tool has a drive letter or a user folder built in.

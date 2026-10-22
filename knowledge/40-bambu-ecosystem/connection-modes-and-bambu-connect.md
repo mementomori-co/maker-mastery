@@ -34,7 +34,7 @@ Verified: 2026-10-04
 - URL scheme for file import: `bambu-connect://import-file` with `path`, `name` and `version` (fixed `1.0.0`). - [wiki: third-party integration](https://wiki.bambulab.com/en/software/third-party-integration), [wiki: Bambu Connect](https://wiki.bambulab.com/en/software/bambu-connect)
 
 ### Bambu Handy
-- `https://wiki.bambulab.com/en/software/bambu-handy` returned HTTP 404 when checked; there is no dedicated Handy page at that path. - [wiki: software/bambu-handy](https://wiki.bambulab.com/en/software/bambu-handy)
+- The wiki's Handy documentation lives on the combined page "Bambu Suite, Bambu Studio & Bambu Handy" (`/en/studio-handy`, HTTP 200 when checked), whose Bambu Handy section links a Bambu Handy Quick Start Guide, a printing tutorial and an iOS network-connection troubleshooting page. The older path `/en/software/bambu-handy` returns HTTP 404. - [wiki: Bambu Suite, Bambu Studio & Bambu Handy](https://wiki.bambulab.com/en/studio-handy), [wiki: Bambu Handy Quick Start](https://wiki.bambulab.com/en/studio-handy/handy/bambu-handy-quick-start)
 - The wiki Software index describes Handy as an all-in-one mobile app for Bambu Lab printers and links to `https://bambulab.com/download/app`. - [wiki: Software index](https://wiki.bambulab.com/en/software)
 - Store listings when checked: iOS 4.1.1, Android 4.1.2; the Android package ID is `bbl.intl.bambulab.com`; the developer of record on both stores is "Shanghai Lunkuo Technology Co., Ltd". Versions change with every release. - [Apple App Store](https://apps.apple.com/us/app/bambu-handy/id1625671285), [Google Play](https://play.google.com/store/apps/details?id=bbl.intl.bambulab.com&hl=en_US)
 
@@ -68,7 +68,8 @@ Sources:
 - https://wiki.bambulab.com/en/p1/manual/p1p-firmware-release-history - P1 firmware history, Authorization Control, Bridge Firmware
 - https://blog.bambulab.com/firmware-update-introducing-new-authorization-control-system-2/ - January 2025 announcement
 - https://blog.bambulab.com/updates-and-third-party-integration-with-bambu-connect/ - Standard vs Developer Mode, options, denial list
-- https://wiki.bambulab.com/en/software/bambu-handy - HTTP 404 when checked
+- https://wiki.bambulab.com/en/studio-handy - wiki page "Bambu Suite, Bambu Studio & Bambu Handy", with the Handy section
+- https://wiki.bambulab.com/en/studio-handy/handy/bambu-handy-quick-start - Bambu Handy Quick Start Guide (linked from that page)
 - https://wiki.bambulab.com/en/software - Handy description on the Software index
 - https://apps.apple.com/us/app/bambu-handy/id1625671285 - iOS listing
 - https://play.google.com/store/apps/details?id=bbl.intl.bambulab.com&hl=en_US - Android listing

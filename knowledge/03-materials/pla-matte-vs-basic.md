@@ -6,9 +6,9 @@ Preset values below were read from the Bambu Studio system profiles. The same fi
 
 ## Facts
 
-### Colour catalogue (example: Bone White vs Desert Tan)
-- PLA Matte Bone White is colour code 11103, short code W3, hex #CBC6B8; PLA Matte Desert Tan is 11401, short code Y3, hex #E8DBB7. The two are easy to confuse by eye. — [filaments_color_codes.json](https://github.com/bambulab/BambuStudio/blob/v02.08.02.61/resources/profiles/BBL/filament/filaments_color_codes.json), [Bambu PLA Matte hex code PDF](https://cdn.shopify.com/s/files/1/0584/7236/6216/files/Bambu_PLA_Matte_Hex_Code.pdf?v=1745547424)
-- Store variant names carry the colour code, for example "PLA Matte - Bone White (11103)" and "PLA Matte - Desert Tan (11401)". — [Bambu US store, PLA Matte](https://us.store.bambulab.com/products/pla-matte)
+### Colour catalogue
+- Each PLA Matte colour has a five-digit colour code, a short code and a hex value, listed in Bambu Studio's colour-code file and in Bambu's PLA Matte hex code PDF. Some colours are easy to confuse by eye, so identify a colour by its code, not by name or by eye. — [filaments_color_codes.json](https://github.com/bambulab/BambuStudio/blob/v02.08.02.61/resources/profiles/BBL/filament/filaments_color_codes.json), [Bambu PLA Matte hex code PDF](https://cdn.shopify.com/s/files/1/0584/7236/6216/files/Bambu_PLA_Matte_Hex_Code.pdf?v=1745547424)
+- Store variant names carry the colour code in brackets after the colour name, in the form "PLA Matte - <colour name> (<five-digit code>)". — [Bambu US store, PLA Matte](https://us.store.bambulab.com/products/pla-matte)
 - A 3MF project stores only the slot hex colour and preset name, not a colour name. When the AMS colour differs, Studio maps to the same type and closest colour, and Bambu asks you to check the mapping popup. That statement is on an X1 manual page; H2C behaviour is not verified. — [Bambu wiki, X1 multi-color printing](https://wiki.bambulab.com/en/x1/manual/multi-color-printing)
 
 ### Installed presets: `Bambu PLA Matte @BBL H2C` vs `Bambu PLA Basic @BBL H2C`
@@ -41,7 +41,7 @@ Preset values below were read from the Bambu Studio system profiles. The same fi
 - PLA Matte is in the low-temperature class, the same as PLA Basic, so the two can be fused in one print. The PLA/PETG mutual-support guide lists PLA Matte as not supported, so no Matte-to-PETG support pairing is claimed. — [H2D/H2C filament config limit](https://wiki.bambulab.com/en/filament-acc/filament/h2d-filament-config-limit), [H2D PLA and PETG mutual support](https://wiki.bambulab.com/en/filament-acc/filament/h2d-pla-and-petg-mutual-support)
 
 ## In practice
-- If you want Bone White, the slot colour is #CBC6B8. #E8DBB7 is Desert Tan.
+- Choose a colour by its colour code and hex value from the colour-code file, and check that the slot colour in your project matches that hex value.
 - Matte and Basic share temperatures and speeds on the H2C. The real preset differences are fan maximum (100 vs 80 %), flow ratio (1.00 vs 0.99), density and the circle-compensation coefficients.
 - If both are on one plate, Basic is about twice as tough in Z impact (13.8 vs 6.6 kJ/m²). Put load-bearing or snap features in Basic.
 - Check whether your 0.4 mm hotend is Standard or High Flow before trusting the 3-value array entry in a preset.

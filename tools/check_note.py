@@ -12,8 +12,15 @@ Rules checked:
   1. A line starting with "Applies to:" exists.
   2. A line containing "Verified: YYYY-MM-DD" exists.
   3. A "Sources:" line exists and at least one line after it contains a URL (http...) or a local path (C:\ or %APPDATA%).
-  4. Every bullet under "## Facts" contains a URL, a local path, or the word "measured" (a fact needs a source).
-  5. HDT values carry their load: a line with "HDT" must mention MPa.
+  4. Every bullet under "## Facts" has a source. A bullet passes when it contains
+     a. a URL, a local path, the word "measured", or a manual page reference ("manual §", "manual p."), or
+     b. the label "not verified" (any case): an unsourced statement must say so plainly, or
+     c. a back-reference such as "same source", "same sources", "same TDS", "same files", "same two TDS", "same
+        derivation", "pages above", "sources above" or "ibid." AND an earlier bullet in the same subsection (since the
+        last "##" or "###" heading) has a URL: the URL it points back to must be right above it, or
+     d. a relative link to another note (`[x](other-note.md)`): a pointer to a note that is itself checked.
+  5. HDT values carry their load: a Facts line with "HDT" must mention MPa, unless it says HDT is N/A or absent
+     ("HDT and Vicat N/A", "no HDT").
 """
 from __future__ import annotations
 
@@ -46,6 +53,11 @@ def in_hook_scope(fp: str) -> bool:
 URL = re.compile(r"https?://\S+")
 LOCAL = re.compile(r"(?:[A-Za-z]:\\|%APPDATA%|%LOCALAPPDATA%)")
 DATE = re.compile(r"Verified:\s*\d{4}-\d{2}-\d{2}")
+NOT_VERIFIED = re.compile(r"\bnot verified\b", re.I)
+BACKREF = re.compile(r"\bsame\s+(?:\w+\s+){0,2}(?:sources?|tds|files?|pages?|pdf|sheets?|derivation)\b"
+                     r"|\b(?:pages?|sources?|files?|sheets?)\s+above\b|\bibid\b", re.I)
+NOTE_LINK = re.compile(r"\]\((?!https?:)[^)\s]+\.md(?:#[^)\s]*)?\)")
+HDT_ABSENT = re.compile(r"HDT(?:\s+and\s+Vicat)?\s+(?:values?\s+)?(?:are\s+|is\s+)?N/?A\b|\bno\s+HDT\b", re.I)
 
 
 def check(path: Path) -> list[str]:
@@ -68,15 +80,26 @@ def check(path: Path) -> list[str]:
             problems.append("'Sources:' has no URL or local path")
     # Facts bullets need a source
     in_facts = False
+    url_in_subsection = False
     for n, l in enumerate(lines, 1):
         if l.startswith("## "):
             in_facts = l.strip().lower().startswith("## facts")
+            url_in_subsection = False
+            continue
+        if l.startswith("### "):
+            url_in_subsection = False
             continue
         if in_facts and l.lstrip().startswith("- "):
-            if not (URL.search(l) or LOCAL.search(l) or "measured" in l.lower() or "manual §" in l or "manual p." in l):
-                problems.append(f"line {n}: fact bullet without URL / local path / 'measured'")
-            if "HDT" in l and "MPa" not in l:
+            low = l.lower()
+            direct = URL.search(l) or LOCAL.search(l) or "measured" in low or "manual §" in l or "manual p." in l
+            ok = (direct or NOT_VERIFIED.search(l) or (BACKREF.search(l) and url_in_subsection) or NOTE_LINK.search(l))
+            if not ok:
+                problems.append(f"line {n}: fact bullet without URL / local path / 'measured' / 'not verified' "
+                                f"(or a 'same source' back-reference with a URL earlier in the same subsection)")
+            if "HDT" in l and "MPa" not in l and not HDT_ABSENT.search(l):
                 problems.append(f"line {n}: HDT without load (MPa)")
+            if URL.search(l):
+                url_in_subsection = True
     return problems
 
 

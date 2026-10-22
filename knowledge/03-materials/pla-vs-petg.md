@@ -20,7 +20,7 @@ See also: [bambu-petg-family.md](bambu-petg-family.md) (per-line PETG values), [
 ## In practice
 - Do not fuse PLA to PETG in a cosmetic or structural joint. Use the same family for fused multi-material, or print separate pieces held together mechanically.
 - A part that sits near electronics or a power supply inside a closed enclosure should not be PLA (the 50 °C guidance above). Use PETG or a higher-temperature material.
-- Always state HDT with its load; the two loads differ by about 1-7 °C for the materials above.
+- Always state HDT with its load; for the five materials in the side-by-side row above the two loads differ by 1.1-7 °C (PETG Matte 1.1, PLA Basic and PETG Basic 3, PLA Matte 6, PETG HF 7). The spread across all Bambu lines is in [hdt-vicat-table.md](hdt-vicat-table.md).
 
 ## Not verified / open questions
 - Bond strength numbers for PLA to PLA, PETG to PETG or PLA to TPU: Bambu publishes none.

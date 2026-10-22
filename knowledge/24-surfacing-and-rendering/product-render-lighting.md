@@ -27,12 +27,12 @@ Verified: 2026-10-20
 - Measure key-to-fill at the part by rendering key-only and fill-only passes, not by reading the Exposure sliders.
 
 ## Not verified / open questions
-- Overreach, not a fact: "N stops of Exposure offset equals N stops of key-to-fill at the part". It holds for emitted output only; distance, size and angle also count, and the photographic lighting ratio is (key + fill) : fill.
-- Overreach: "an Area Rectangle is a softbox". The manual's examples are a window, neon lights and a TV screen; softbox is an analogy.
-- Overreach: "Spread limits spill onto the background". The manual says only that low Spread simulates a gridded softbox.
-- Overreach: "enable MIS on every Area light". The manual ties the noise benefit to area lights and sharp glossy reflections; a satin part is not sharp-glossy.
-- Overreach: "the table's Watts are for room-scale lights only". Not in the manual; Power is total radiant output at any distance.
-- Overreach: "translucent PETG = Transmission plus Roughness". That is a shading choice; no satin roughness, PETG IOR or subsurface radius is sourced here.
+- Not verified: that N stops of Exposure offset give N stops of key-to-fill at the part. That holds for emitted output only; distance, size and angle also count, and the photographic lighting ratio is (key + fill) : fill.
+- Not verified: that an Area Rectangle light behaves like a softbox. The manual's examples are a window, neon lights and a TV screen; "softbox" is only an analogy.
+- Not verified: that Spread limits spill onto the background. The manual says only that low Spread simulates a gridded softbox.
+- Not verified: that MIS helps on every Area light. The manual ties the noise benefit to area lights and sharp glossy reflections, and a satin part is not sharp-glossy.
+- Not verified: that the Watts in the light table apply only to room-scale lights. The manual does not say so; Power is total radiant output at any distance.
+- Not verified: a translucent PETG material recipe. Transmission plus Roughness is a shading choice; no satin roughness, PETG IOR or subsurface radius is sourced here.
 - No bounce count per wall count, macro F-Stop value or gradient-card (texture on a light) recipe is sourced.
 
 Sources:

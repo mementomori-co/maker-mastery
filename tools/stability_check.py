@@ -11,7 +11,7 @@ Each STL is one printed part. The tool computes, per part standing alone and for
 Flags (thresholds are PROPOSED, NOT VERIFIED; confirm every prediction with a physical tilt test):
   FAIL  CoM outside the support polygon (or the polygon is degenerate)
   WARN  minimum tip angle < 15 deg
-  WARN  layer-1 contact (lowest-contact area) < 25 % of the hull area (example seen: 101.8 of 575 mm2 on uncut figurine soles)
+  WARN  layer-1 contact (lowest-contact area) < 25 % of the hull area (made-up example: 100 of 500 mm2 under two small feet)
   WARN  mass from uniform density (a mesh assumption: the print has walls, infill, glue, supports removed)
   WARN  mesh not watertight (volume and CoM approximate)
 
@@ -37,7 +37,6 @@ CoM marked, hull drawn as a slab under the floor); skipped with a note when blen
 from __future__ import annotations
 
 import argparse
-import datetime as _dt
 import json
 import math
 import os
@@ -60,6 +59,8 @@ for _s in (sys.stdout, sys.stderr):
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import mm_config  # noqa: E402
 
+TOOL_NAME = "stability_check.py"
+TOOL_VERSION = "1.0.0"  # written into every report instead of the tool's path and the run time
 G = 9.81  # m/s^2
 try:
     _bl = mm_config.optional_path("blender_exe")
@@ -293,8 +294,8 @@ def level_mesh(mesh: trimesh.Trimesh, fit_band: float, flat_nz: float = -0.995) 
     """Rotate a copy so its bottom plane is horizontal. Plane = area-weighted mean normal of the near-flat (normal z < flat_nz,
     i.e. within ~5.7 deg of flat) down-facing faces within a band of the lowest point; the band shrinks
     (fit_band, /2, /4, 0.08, 0.05 mm) so remnants of a higher surface (e.g. the original sole above a 0.4 mm cut) drop out
-    of the fit as the true bottom plane comes level. Measured on a cut figurine: 0.75 deg tilt removed, section at
-    +0.10 mm 444.7 mm2 (an independent check measured 447 mm2)."""
+    of the fit as the true bottom plane comes level. Made-up illustration: a part whose flat base was cut 1 deg off
+    level is rotated so that base lies on the floor before the support polygon is measured."""
     m2 = mesh.copy()
     total = np.eye(4)
     used = 0
@@ -502,11 +503,10 @@ def main(argv: list[str]) -> int:
 
     render_lines = render(parts, asm, a.render) if a.render else []
 
-    now = _dt.datetime.now().strftime("%Y-%m-%d %H:%M")
-    L = [f"# Stability check — {now}", "",
-         f"Tool: {os.path.abspath(__file__)}  ·  command: `{' '.join(sys.argv)}`", "",
+    L = ["# Stability check", "",
+         f"Tool: {TOOL_NAME} {TOOL_VERSION}", "",
          f"Thresholds (PROPOSED, NOT VERIFIED - confirm with a physical tilt test): FAIL CoM outside the support polygon; "
-         f"WARN minimum tip angle < {TIP_WARN_DEG:.0f} deg; WARN layer-1 contact < {100*CONTACT_WARN_FRAC:.0f} % of the hull area (example: uncut figurine soles 101.8 of 575 mm2). "
+         f"WARN minimum tip angle < {TIP_WARN_DEG:.0f} deg; WARN layer-1 contact < {100*CONTACT_WARN_FRAC:.0f} % of the hull area (example: 100 of 500 mm2 is 20 %, which warns). "
          f"Formulas: tip angle = atan(margin / CoM height); knock force F = m*g*margin / H_top (moment balance about the tipping edge, g = {G} m/s2); "
          f"top-heavy index = CoM height / smallest hull half-width. Direction convention: 0 deg = +X, 90 deg = +Y. "
          f"Support polygon = convex hull of down-facing faces (normal z < {DOWN_NZ}) within {a.band} mm of the floor; lowest-contact area = their projected area.",
@@ -567,7 +567,7 @@ def main(argv: list[str]) -> int:
             if isinstance(o, (np.floating, np.integer)):
                 return o.item()
             return o
-        rep = {"generated": now, "command": sys.argv, "thresholds": {"tip_warn_deg": TIP_WARN_DEG, "contact_warn_frac": CONTACT_WARN_FRAC, "status": "proposed, not verified"},
+        rep = {"tool": TOOL_NAME, "version": TOOL_VERSION, "thresholds": {"tip_warn_deg": TIP_WARN_DEG, "contact_warn_frac": CONTACT_WARN_FRAC, "status": "proposed, not verified"},
                "parts": [{k: v for k, v in p.items() if k != "mesh"} | {"volume_mm3": float(p["mesh"].volume), "com": [float(x) for x in p["mesh"].center_mass], "matrix": p["matrix"].tolist()} for p in parts],
                "gcode": gstats, "standalone": standalone, "assembly": asm, "notes": notes, "renders": render_lines, "flags": [list(x) for x in uniq],
                "result": "FAIL" if worst == 2 else ("WARN" if worst == 1 else "PASS")}

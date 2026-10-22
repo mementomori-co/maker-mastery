@@ -63,8 +63,9 @@ What you should see, in order:
 1. `Maker Mastery setup - repository: C:\Projects\maker-mastery` and the line "No AI ever starts, sends, uploads or
    queues a print."
 2. `==> Step 1 of 5: looking for Python 3.12 or newer` and `Found Python 3.12 with: py -3.12`.
-3. `==> Step 2 of 5: private Python environment (.venv in this repository)`, the list of packages, and the question
-   `Install them now? [y/N]`. Type `y` and press Enter. pip downloads and installs the packages into `.venv` only; this
+3. `==> Step 2 of 5: private Python environment (.venv in this repository)`. The script first creates the empty `.venv`
+   folder (offline: it uses only the Python you installed and its built-in pip, and downloads nothing). Then it shows the
+   list of packages and asks `Install them now? [y/N]`. Type `y` and press Enter. pip downloads and installs the packages into `.venv` only; this
    takes a while and prints many lines.
 4. `==> Step 3 of 5: your config file` and `Copied config\paths.example.yaml to config\paths.yaml.`
 5. `==> Step 4 of 5: looking for Bambu Studio (read-only check)` and `Found: C:\Program Files\Bambu Studio\bambu-studio.exe`.
@@ -84,15 +85,23 @@ What you should see, in order:
 7. `Setup finished. Open this folder in VS Code and start Claude Code there.` in green.
 
 The `render_critic.py` line needs the optional open3d package for most of its checks. Without it you should see that
-line with some checks `skipped` (or the word `SKIPPED`), which is normal. To add open3d, run the setup again with
+line with most checks skipped, which is normal:
+
+```text
+  PASS    render_critic.py - render critique (needs optional open3d)  (12 checks, 11 skipped, 0.7 s)
+```
+
+To add open3d, run the setup again with
 `powershell -ExecutionPolicy Bypass -File .\tools\setup.ps1 -Optional` and answer `y`. (The sample above was captured
-on a PC that had open3d; the skipped form was not captured.)
+on a PC that had open3d; the skipped line was captured on a Python without it.)
 
 If something else happens:
 
 | You see | Do this |
 |---|---|
 | `running scripts is disabled on this system` | You ran `.\tools\setup.ps1` on its own. Use the one-line command above. |
+| `... setup.ps1 is not digitally signed. The script will not execute on the system.` | Your policy is **RemoteSigned** (Microsoft's default for Windows computers) and the file still carries the "downloaded from the internet" mark from the ZIP. Either use the one-line command above, or read `tools\setup.ps1` and then unblock it once with `Unblock-File .\tools\setup.ps1` and run it again. `Unblock-File` removes that internet mark so a RemoteSigned policy runs the script ([Unblock-File](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/unblock-file), [about_Execution_Policies](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies)). The Process-scope form above (`Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process`) works too. |
+| I answered `N` | Nothing is wrong. `.venv` exists but has no packages yet, so the script skips the self-test and ends with `Setup paused: run tools\setup.ps1 again and answer y when ready.` Run the one-line command again and answer `y`. |
 | `Python 3.12 or newer was not found.` | Install Python 3.12 ([02 - Install](02-install.md), part 4), close the terminal (trash-can icon), open a new one and run the line again. |
 | `pip install failed (see the lines above).` | Read the last red lines. Usually the internet connection dropped or a path is too long: see [09 - Troubleshooting](09-troubleshooting.md). Then run the line again; it reuses `.venv`. |
 | `Bambu Studio was not found at: ...` | Fine for now. Fix it in step 4. |
@@ -116,9 +125,21 @@ If `bambu_studio_exe` says `[does not exist]`:
 1. In File Explorer, find `bambu-studio.exe` and copy its full path (Shift + right-click the file, **Copy as path**
    (label not verified)).
 2. In VS Code's Explorer, open `config\paths.yaml`.
-3. Replace the value after `bambu_studio_exe:` with your path in double quotes, using forward slashes, for example
-   `bambu_studio_exe: "E:/Apps/Bambu Studio/bambu-studio.exe"`.
-4. Save (**File > Save**, label not verified) and run the check command again.
+3. Replace the value after `bambu_studio_exe:` with your path, and change every `\` to `/`. **Copy as path** gives a
+   path in double quotes with backslashes, which YAML cannot read (it treats `\b`, `\t` and similar as special
+   characters). Before and after:
+
+   ```yaml
+   # Before (what Copy as path pastes; does not work):
+   bambu_studio_exe: "E:\Apps\Bambu Studio\bambu-studio.exe"
+   # After (forward slashes; works):
+   bambu_studio_exe: "E:/Apps/Bambu Studio/bambu-studio.exe"
+   # Also works (single quotes keep the backslashes as they are):
+   bambu_studio_exe: 'E:\Apps\Bambu Studio\bambu-studio.exe'
+   ```
+
+4. Save (**File > Save**, label not verified) and run the check command again. If it prints
+   `ERROR: config\paths.yaml cannot be read (... line N ...)`, fix that line the same way.
 
 If `config\paths.yaml` is missing (you skipped setup), create it with
 `Copy-Item config\paths.example.yaml config\paths.yaml`.
@@ -126,7 +147,8 @@ If `config\paths.yaml` is missing (you skipped setup), create it with
 ## Step 5. Write down your gear
 
 Claude answers for your gear only, and never assumes a filament is loaded. Two files hold that:
-`knowledge\00-gear-inventory\current-load.md` (what is on the printer today) and `printers.md` (what you own). Read
+`knowledge\00-gear-inventory\current-load.md` (what is on the printer today) and `printers.md`, which you create
+yourself in the same folder (what you own). Read
 [the folder's README](../knowledge/00-gear-inventory/README.md) once.
 
 You can fill them by hand now, or let Claude interview you in step 7. By hand:

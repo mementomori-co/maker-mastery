@@ -23,7 +23,7 @@ Verified: 2026-10-03
 
 ### Render engine in the Python API
 - `Scene.cycles` is a read-only property of type `CyclesRenderSettings`. - [bpy.types.Scene](https://docs.blender.org/api/5.2/bpy.types.Scene.html)
-- `bpy.types.CyclesPreferences` and `bpy.types.CyclesRenderSettings` had no API page in 5.2 (both URLs returned 404 at check; only these two URLs were tried). - [CyclesPreferences URL](https://docs.blender.org/api/5.2/bpy.types.CyclesPreferences.html), [CyclesRenderSettings URL](https://docs.blender.org/api/5.2/bpy.types.CyclesRenderSettings.html)
+- `bpy.types.CyclesPreferences` and `bpy.types.CyclesRenderSettings` had no API page in 5.2 (both URLs returned HTTP 404 when checked, so they are shown as plain text, not links: `docs.blender.org/api/5.2/bpy.types.CyclesPreferences.html` and `docs.blender.org/api/5.2/bpy.types.CyclesRenderSettings.html`). Not verified beyond those two URLs: a page under another path was not searched for.
 - `scene.render.engine` is a dynamic enum whose RNA item list can under-report: in one background session the list read back as only `BLENDER_EEVEE`, yet `BLENDER_WORKBENCH` and `CYCLES` both assigned, and a bogus value raised a `TypeError` naming all three accepted engines. Not verified (no public source; a single local measurement).
 
 ### STL import and camera framing
@@ -49,8 +49,8 @@ Sources:
 - https://docs.blender.org/manual/en/5.2/render/cycles/gpu_rendering.html - GPU enable steps, OptiX requirements
 - https://developer.blender.org/docs/release_notes/5.2/cycles/ - OptiX driver minimum 575
 - https://docs.blender.org/api/5.2/bpy.types.Scene.html - `Scene.cycles` read-only
-- https://docs.blender.org/api/5.2/bpy.types.CyclesPreferences.html - 404 at check
-- https://docs.blender.org/api/5.2/bpy.types.CyclesRenderSettings.html - 404 at check
+- docs.blender.org/api/5.2/bpy.types.CyclesPreferences.html - plain text, not a link: HTTP 404 when checked
+- docs.blender.org/api/5.2/bpy.types.CyclesRenderSettings.html - plain text, not a link: HTTP 404 when checked
 - https://docs.blender.org/api/5.2/bpy.ops.wm.html - `wm.stl_import` signature
 - https://docs.blender.org/api/5.2/bpy.ops.view3d.html - `camera_to_view_selected`
 - https://projects.blender.org/blender/blender/raw/branch/blender-v5.2-release/source/blender/editors/space_view3d/view3d_view.cc - operator poll and null-view fallback

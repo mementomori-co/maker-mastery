@@ -85,6 +85,29 @@ class GuardPathsTests(unittest.TestCase):
         r = hook("guard_paths.py", {"tool_input": {"file_path": os.path.join(self.prot, "a.txt")}}, {"MM_CONFIG": cfg, "MM_PROTECTED": self.prot})
         self.assertEqual(r.returncode, 2)
 
+    def test_unreadable_config_fails_closed(self):
+        cfg = os.path.join(self.td, "broken.yaml")
+        with open(cfg, "w", encoding="utf-8") as fh:  # unreadable for both readers (PyYAML and the built-in one)
+            fh.write('protected_roots: ["D:\\bad\\path"]\nthis is not yaml: [\n')
+        env = {"MM_CONFIG": cfg, "MM_PROTECTED": ""}
+        r = hook("guard_paths.py", {"tool_input": {"file_path": os.path.join(self.td, "elsewhere.txt")}}, env)
+        self.assertEqual(r.returncode, 2)
+        self.assertIn("config\\paths.yaml cannot be read", r.stderr)
+        r = hook("guard_paths.py", {"tool_input": {"file_path": cfg}}, env)  # fixing the config itself is allowed
+        self.assertEqual((r.returncode, r.stderr), (0, ""))
+        r = hook("guard_paths.py", {"tool_input": {"command": "rm -rf somewhere"}, "cwd": self.td}, env)
+        self.assertEqual(r.returncode, 2)
+        r = hook("guard_paths.py", {"tool_input": {"command": "cat a.txt | grep x"}, "cwd": self.td}, env)
+        self.assertEqual(r.returncode, 0)
+        r = hook("guard_paths.py", {"tool_input": {"command": "cat a.txt > b.txt"}, "cwd": self.td}, env)
+        self.assertEqual(r.returncode, 2)
+        self.assertEqual(hook("guard_paths.py", "{not json", env).returncode, 2)
+
+    def test_missing_config_file_is_quiet(self):
+        env = {"MM_CONFIG": os.path.join(self.td, "does-not-exist.yaml"), "MM_PROTECTED": ""}
+        r = hook("guard_paths.py", {"tool_input": {"file_path": os.path.join(self.td, "a.txt")}}, env)
+        self.assertEqual((r.returncode, r.stderr), (0, ""))
+
     def test_unparsable_json(self):
         r = hook("guard_paths.py", "{not json", self.env)
         self.assertEqual(r.returncode, 1)

@@ -1,7 +1,7 @@
 r"""interface_coverage.py - support coverage of overhanging perimeter, per region and per sector, read back from a sliced plate G-code.
 
 Why: with Support > Support critical regions only (label not verified) a visible ledge can print with only a fifth of its lip
-supported (one measured case: a 359 mm2 hem at 8 deg slope, front lip 22-25 % supported), and a review can mistake incidental
+supported (made-up example: a 300 mm2 ledge at 10 deg slope whose front lip is 20 % supported), and a review can mistake incidental
 interface for support. The slicer filter's tests are > 3 mm cantilever (TreeSupport.cpp v02.08.02.61 L1043-1045,
 https://github.com/bambulab/BambuStudio) and a floating sharp tail < 100 mm2 (L979-990), not attachment. This tool measures,
 for any plate and any object, how much of each overhanging region actually has support under it:
@@ -386,8 +386,8 @@ def main(argv: list[str]) -> int:
                  f"max {g['depth_max']} mm, supported {g['supported_pct']} %" + (f", its {ws['sector']} sector slice ({ws['mm']} mm) {ws['supported_pct']} %" if ws else ""))
         if sup_on and (g["supported_pct"] < a.cover_fail or sector_bad):
             report["findings"].append({"level": "FAIL", "msg": f"{where}: a visible overhang face{' (one side of it)' if sector_bad and g['supported_pct'] >= a.cover_fail else ''} under "
-                                                                 f"{a.cover_fail:g} % support coverage with support ON (house rule; a measured hem printed "
-                                                                 f"22-26 % supported and frayed)" + (" - the filter does not guarantee it: its tests are > 3 mm cantilever "
+                                                                 f"{a.cover_fail:g} % support coverage with support ON (house rule; a lip that "
+                                                                 f"is only about a quarter supported can fray)" + (" - the filter does not guarantee it: its tests are > 3 mm cantilever "
                                                                  f"(TreeSupport.cpp v02.08.02.61 L1043-1045) and floating sharp tail < 100 mm2 (L979-990), not attachment; verify coverage, paint "
                                                                  f"support, or turn the filter off" if (crit or rso) else " - chamfer the face, add an enforcer or paint support")})
         elif sup_on and (crit or rso):

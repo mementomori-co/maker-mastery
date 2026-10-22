@@ -45,7 +45,7 @@ Known flaws: <every defect seen or suspected, or "None" as a claim>
 | "Filament-Saving is the default, keep it." | It can place a filament on the extruder that has no AMS feed. Use Custom grouping and put every AMS filament on the AMS side. |
 | "0.16 mm High Quality looks nicer." | It can multiply print time (slower outer walls than 0.20 Standard, see `support-settings.md`). Start from 0.20 Standard and justify per part. |
 | "Supports are off in the profile, so there are none." | `max_bridge_length = 0` in the stock BBL process profiles supports every bridge (`support-settings.md`). Read `feature_type_times.Support` per plate. |
-| "I know which filament is loaded." | A translucent PLA was once sliced as PETG because nobody asked. Read `current-load.md`, dated, or NEEDS MAKER. |
+| "Filament type is easy to guess from the colour." | A guessed filament type gets the wrong temperatures. Read `current-load.md`, dated, or NEEDS MAKER. |
 | "The leaf JSON says X." | It inherits several parents up. `resolve_profile.py` or it is not a value. |
 
 ## Red flags

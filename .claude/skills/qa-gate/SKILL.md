@@ -24,7 +24,7 @@ Before any 3MF is considered for printing, and when the lead needs the gate's ve
 | Rationalization | Reality |
 |---|---|
 | "The GUI showed no warning." | The CLI does not surface every GUI warning (the prime-tower clearance warning never reaches `result.json`); only the scripts prove clearance. |
-| "Nothing is loaded yet, skip the load item." | That item exists because a plate was once sliced for the wrong material. FAIL it. |
+| "Nothing is loaded yet, skip the load item." | A plate sliced without a recorded load is sliced for a guessed material, and a guessed filament type gets the wrong temperatures. FAIL it. |
 | "Another agent already checked this." | Independence is the point. Run the scripts yourself and quote them. |
 
 ## Red flags

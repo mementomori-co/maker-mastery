@@ -35,7 +35,7 @@ The privacy scan looks for personal data before it leaves your machine: your nam
 2. From the repository folder, run (PowerShell):
 
    ```powershell
-   python tools\privacy_scan.py . --denylist C:\path\to\your-denylist.txt
+   .venv\Scripts\python.exe -B tools\privacy_scan.py . --denylist C:\path\to\your-denylist.txt
    ```
 
 3. Exit code 0 means clean. Exit code 1 lists every hit as `path:line: [rule] context`: fix each one, then run the scan again. Exit code 2 means the scan could not finish; read the error before trusting the result.

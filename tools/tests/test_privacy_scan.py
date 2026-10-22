@@ -265,6 +265,16 @@ class ScanCase(unittest.TestCase):
         code, out, _ = self.scan("--exclude-dir", "private")
         self.assertEqual(code, 0, out)
 
+    def test_denylist_files_skipped(self):
+        self.write("config/denylist.example.txt", TERM)          # the shipped example list is not scanned
+        inside = self.write("private-list.txt", TERM)            # neither is the file passed as --denylist
+        self.deny = inside
+        code, out, _ = self.scan()
+        self.assertEqual(code, 0, out)
+        self.write("config/other.txt", TERM)                     # any other file still is
+        code, out, _ = self.scan()
+        self.assertEqual(code, 1, out)
+
     def test_clean_tree_exit_zero(self):
         self.write("README.md", u("# A clean project\nUse C:\\Us~ers\\<you>\\ and you~@example.com.\n"))
         self.write("img/p.png", make_png([]))

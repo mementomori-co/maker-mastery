@@ -1800,7 +1800,7 @@ def main(argv: list[str]) -> int:
                     else:
                         add("OK", "C9", base + f"; M145 P0 and M106 P3 found in the start G-code of plate(s) {sorted(cmds)}")
             elif v is not None and tv >= v:
-                add("WARN", "C9", f"filament {i + 1} ({ftype}): bed {tv} C >= temperature_vitrification {v} C -> house rule from the key's tooltip (PrintConfig.cpp v02.08.02.61 L3005: 'when the bed temperature is equal to or greater than it, it\'s highly recommended to open the front door and/or remove the upper glass to avoid cloggings'); Bambu Studio 02.08.02.61 itself does not emit this warning (GCodeProcessor.cpp L6351-6420)")
+                add("WARN", "C9", f"filament {i + 1} ({ftype}): bed {tv} C >= temperature_vitrification {v} C -> house rule from the key's tooltip (PrintConfig.cpp v02.08.02.61 L3005, https://github.com/bambulab/BambuStudio, paraphrased: at or above this bed temperature, open the front door and/or remove the top glass to avoid clogs); Bambu Studio 02.08.02.61 itself does not emit this warning (GCodeProcessor.cpp L6351-6420)")
 
     # C6 / C7
     add("OK", "C6", f"prime tower: enable={ps.get('enable_prime_tower')} rib_wall={ps.get('prime_tower_rib_wall')} width={ps.get('prime_tower_width')} (clearance not computed here)")

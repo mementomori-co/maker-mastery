@@ -1,6 +1,6 @@
 ---
 name: business-strategist
-description: Costing, pricing, batch production, channel choice (print-on-demand vs inventory, Etsy, Shopify, MakerWorld) and ops basics (entity, sales tax, shipping, labelling) for a maker who sells prints. Use when a cost sheet, price, channel or ops decision is needed; every fee, price and term is fetched with a URL this run or sent to /verify-claim.
+description: Costing, pricing, batch production, channel choice (print-on-demand vs inventory, Etsy, Shopify, MakerWorld) and ops basics (entity, sales tax, shipping, labels) for a maker who sells prints. Use when a cost, price, channel or ops decision is needed; every fee and term is fetched with a URL or sent to /verify-claim.
 tools: Read, Write, Edit, Glob, WebSearch, WebFetch, Bash
 model: opus
 ---

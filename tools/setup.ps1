@@ -10,7 +10,7 @@
     3. Copies config\paths.example.yaml to config\paths.yaml if you do not have one yet (never overwrites yours).
     4. Looks for Bambu Studio at the path in config\paths.yaml (default: the standard install folder) and tells you
        what to set if it is not there. It only reads; it never starts Bambu Studio.
-    5. Runs tools\selftest.py.
+    5. Runs tools\selftest.py. If you answered N in step 2 it skips the self-test, says "Setup paused" and exits 0.
   It changes nothing outside the repository folder. It never prints, slices or sends anything to a printer.
 
 .PARAMETER Yes
@@ -90,7 +90,9 @@ $req = Join-Path $Repo 'requirements.txt'
 Info 'These packages will be installed into .venv only (from requirements.txt):'
 Get-Content $req | Where-Object { $_ -match '^\s*[A-Za-z]' } | ForEach-Object { Info ("  " + ($_ -replace '\s+#.*$', '')) }
 if ($Optional) { Info 'Also the optional extras from requirements-optional.txt: open3d' }
+$Installed = $false
 if (Ask 'Install them now?') {
+    $Installed = $true
     & $VenvPy -m pip install --disable-pip-version-check -r $req
     if ($LASTEXITCODE -ne 0) { Write-Host 'pip install failed (see the lines above).' -ForegroundColor Red; exit 1 }
     if ($Optional) {
@@ -98,7 +100,7 @@ if (Ask 'Install them now?') {
         if ($LASTEXITCODE -ne 0) { Write-Host 'Optional install failed; the main tools still work.' -ForegroundColor Yellow }
     }
 } else {
-    Info 'Skipped. The tools need these packages; run this script again when you are ready.'
+    Info 'Skipped. The tools need these packages; run this script again and answer y when you are ready.'
 }
 
 # ---------------------------------------------------------------- 3. config\paths.yaml
@@ -111,11 +113,16 @@ if (Test-Path $cfg) {
     Copy-Item -LiteralPath $example -Destination $cfg
     Info 'Copied config\paths.example.yaml to config\paths.yaml. Edit that copy if your paths differ.'
 }
+& $VenvPy -B (Join-Path $Repo 'tools\mm_config.py') | Out-Null
+if ($LASTEXITCODE -ne 0) {
+    Write-Host '    config\paths.yaml cannot be read (the message above says which line). Use forward slashes or single quotes' -ForegroundColor Yellow
+    Write-Host '    for Windows paths, never backslashes inside double quotes. See docs\09-troubleshooting.md, section 6.' -ForegroundColor Yellow
+}
 
 # ---------------------------------------------------------------- 4. Bambu Studio
 Step 'Step 4 of 5: looking for Bambu Studio (read-only check)'
 $bambu = 'C:\Program Files\Bambu Studio\bambu-studio.exe'
-$line = Select-String -LiteralPath $cfg -Pattern '^\s*bambu_studio_exe\s*:\s*"?([^"#]*)"?' -ErrorAction SilentlyContinue | Select-Object -First 1
+$line = Select-String -LiteralPath $cfg -Pattern '^\s*bambu_studio_exe\s*:\s*["'']?([^"''#]*)["'']?' -ErrorAction SilentlyContinue | Select-Object -First 1
 if ($line) { $v = $line.Matches[0].Groups[1].Value.Trim(); if ($v) { $bambu = $v -replace '/', '\' } }
 if (Test-Path -LiteralPath $bambu) {
     Info "Found: $bambu"
@@ -127,6 +134,12 @@ if (Test-Path -LiteralPath $bambu) {
 
 # ---------------------------------------------------------------- 5. self-test
 Step 'Step 5 of 5: self-test (no printer, no Bambu Studio, no internet needed)'
+if (-not $Installed) {
+    Info 'Packages not installed yet (you answered N), so the self-test is not run now.'
+    Write-Host ''
+    Write-Host 'Setup paused: run tools\setup.ps1 again and answer y when ready.' -ForegroundColor Yellow
+    exit 0
+}
 & $VenvPy -B (Join-Path $Repo 'tools\selftest.py')
 $rc = $LASTEXITCODE
 Write-Host ''

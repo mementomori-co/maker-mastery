@@ -56,7 +56,7 @@ The verdict header always states `sha256 <64 hex>` for the gated `_SLICED.3mf` a
 | Rationalization | Reality |
 |---|---|
 | "The slicer said Success." | Success is not safety: the CLI never writes the prime-tower clearance warning to `result.json` (`knowledge\02-bambu-studio\cli-slicing.md`). Run `tower_clearance.py`. |
-| "current-load.md is missing but the maker told the lead what is loaded." | A translucent PLA sliced as PETG came from exactly that. FAIL item 1; record the load first. |
+| "current-load.md is missing but the maker told the lead what is loaded." | A load taken from memory is a guess, and a guessed filament type gets the wrong temperatures. FAIL item 1; record the load first. |
 | "Supports are only 40 s, let it go." | `max_bridge_length = 0` once put supports everywhere on a large part. Support time the spec did not plan is a FAIL. |
 | "The tower is 7.5 mm away, close enough." | The rule is >= 8 mm from the measured tower + brim hull because the slicer's own check ignores the brim (`grouping-and-purge.md`). The bar does not move inside a check. |
 | "The expert agent already checked this." | Independence is the point. You run the scripts yourself and quote their output. |

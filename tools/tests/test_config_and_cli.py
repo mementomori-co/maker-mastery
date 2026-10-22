@@ -7,6 +7,7 @@ from __future__ import annotations
 import io
 import json
 import os
+import pathlib
 import subprocess
 import sys
 import tempfile
@@ -44,7 +45,8 @@ def run_tool(script: str, *args, env_extra: dict | None = None, stdin: str | Non
 
 class MMConfigTests(unittest.TestCase):
     def setUp(self):
-        self.td = tempfile.mkdtemp(prefix="mm_cfg_")
+        # forward slashes: a mkdtemp path has backslashes, which YAML double quotes would turn into escapes
+        self.td = pathlib.Path(tempfile.mkdtemp(prefix="mm_cfg_")).as_posix()
 
     def cfg(self, text: str) -> dict:
         p = write(os.path.join(self.td, "c.yaml"), text)
@@ -100,6 +102,46 @@ class MMConfigTests(unittest.TestCase):
     def test_bad_line_raises_in_builtin_reader(self):
         with self.assertRaises(mm_config.MMConfigError):
             mm_config._mini_yaml("just text\n")
+
+    def test_double_quoted_backslash_path_gives_plain_message(self):
+        # what File Explorer's "Copy as path" pastes; with PyYAML \A is a ScannerError and \b a control character
+        for value in ('"E:\\Apps\\Bambu Studio\\bambu-studio.exe"', '"D:\\bambu\\bambu-studio.exe"'):
+            with mock.patch.dict(os.environ, self.cfg(f"slice_workdir: work/slice\nbambu_studio_exe: {value}\n")):
+                with self.assertRaises(mm_config.MMConfigError) as cm:
+                    mm_config.load()
+                msg = str(cm.exception)
+                self.assertIn("config\\paths.yaml", msg)
+                self.assertIn("line 2", msg)
+                self.assertIn("forward slashes", msg)
+                self.assertIn("single quotes", msg)
+
+    def test_single_quotes_and_forward_slashes_work(self):
+        with mock.patch.dict(os.environ, self.cfg("bambu_studio_exe: 'E:\\Apps\\Bambu Studio\\bambu-studio.exe'\n"
+                                                  'blender_exe: "E:/Apps/Blender/blender.exe"\n')):
+            c = mm_config.load()
+            self.assertEqual(c["bambu_studio_exe"], "E:\\Apps\\Bambu Studio\\bambu-studio.exe")
+            self.assertEqual(c["blender_exe"], "E:/Apps/Blender/blender.exe")
+
+    def test_control_character_in_value_is_refused(self):
+        try:
+            import yaml  # noqa: F401
+        except ImportError:
+            self.skipTest("PyYAML not installed: only PyYAML turns an escape into a control character")
+        # "\t" inside double quotes is valid YAML and silently becomes a TAB; the loader must catch it
+        with mock.patch.dict(os.environ, self.cfg('blender_exe: "E:\\tools\\blender.exe"\n')):
+            with self.assertRaises(mm_config.MMConfigError) as cm:
+                mm_config.load()
+            self.assertIn("control character", str(cm.exception))
+
+    def test_cli_reports_bad_config_and_space_warning(self):
+        bad = self.cfg('bambu_studio_exe: "E:\\Apps\\bambu-studio.exe"\n')
+        r = run_tool("mm_config.py", env_extra=bad)
+        self.assertEqual(r.returncode, 2)
+        self.assertIn("config\\paths.yaml cannot be read", r.stderr)
+        spaced = self.cfg('slice_workdir: "work/my slices"\n')
+        r = run_tool("mm_config.py", env_extra=spaced)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertIn("contains a space", r.stderr)
 
 
 class ResolveProfileTests(unittest.TestCase):
@@ -241,6 +283,37 @@ class CheckNoteTests(unittest.TestCase):
         r = run_tool("check_note.py", stdin=json.dumps({"tool_input": {"file_path": tmpl}}))
         self.assertEqual(r.returncode, 0)          # your own load record is not a cited note
 
+    def test_label_backref_note_link_and_hdt_rules(self):
+        import check_note
+        head = "# N\nApplies to: both\nVerified: 2026-01-02\n\n## Facts\n"
+        tail = "\nSources:\n- https://example.org/a\n"
+        cases = {
+            "- Unsourced claim. Not verified (no public source).\n": True,          # labelled
+            "- Unsourced claim.\n": False,
+            "- A (https://example.org/a)\n- B - same source p. 3\n": True,          # back-reference under a URL
+            "- B - same source p. 3\n": False,                                     # back-reference with nothing above
+            "### One\n- A (https://example.org/a)\n### Two\n- B - same TDS\n": False,  # URL is in another subsection
+            "- See [other.md](other.md) for the details.\n": True,                  # pointer to another checked note
+            "- HDT and Vicat N/A (too soft) - https://example.org/t\n": True,
+            "- HDT 70 / 75 C - https://example.org/t\n": False,                    # pair without its loads
+        }
+        for body, ok in cases.items():
+            p = write(os.path.join(self.td, "case.md"), head + body + tail)
+            self.assertEqual(check_note.check(pathlib.Path(p)) == [], ok, body)
+
+
+class ShippedNotesTests(unittest.TestCase):
+    """Every shipped knowledge note passes check_note (index.md, README.md and 00-gear-inventory are records, not notes)."""
+
+    def test_every_shipped_note_passes(self):
+        import check_note
+        root = pathlib.Path(REPO) / "knowledge"
+        notes = [p for p in sorted(root.rglob("*.md"))
+                 if p.name.lower() not in ("index.md", "readme.md") and "00-gear-inventory" not in p.parts]
+        self.assertTrue(notes, "no knowledge notes found")
+        failures = {str(p.relative_to(root)): probs for p in notes if (probs := check_note.check(p))}
+        self.assertEqual(failures, {}, f"{len(failures)} of {len(notes)} notes fail check_note")
+
 
 class CheckSkillTests(unittest.TestCase):
     BODY = ("\n## Overview\nx\n## When to use\nx\n## Common rationalizations\n| Rationalization | Reality |\n|---|---|\n| a | b |\n"
@@ -268,6 +341,13 @@ class CheckSkillTests(unittest.TestCase):
         self.assertEqual(r.returncode, 2)
         self.assertIn("model: missing", r.stdout)
         self.assertIn("A3", r.stdout)
+
+    def test_help_and_shipped_agents_and_skills(self):
+        r = run_tool("check_skill.py", "--help")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertIn("usage: check_skill.py", r.stdout)
+        r = run_tool("check_skill.py", os.path.join(REPO, ".claude", "agents"), os.path.join(REPO, ".claude", "skills"))
+        self.assertEqual(r.returncode, 0, r.stdout[-2000:])
 
     def test_license_text_kept(self):
         src = read(os.path.join(TOOLS, "check_skill.py"))

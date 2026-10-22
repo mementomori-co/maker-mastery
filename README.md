@@ -65,12 +65,8 @@ audit the project and the G-code, and fill a pre-print checklist, and then the l
 
 ## Preview
 
-<p align="center">
-  <img alt="Social preview card: crest, title and subtitle" src="assets/brand/social-preview.png" width="640">
-</p>
-
-Real output from the shipped tools, run on small synthetic test files (full samples in
-[docs/tool-sample-outputs.md](docs/tool-sample-outputs.md)):
+Real output from the shipped tools, run on small synthetic test files. Long lines are cut short with `...`; the full
+samples are in [docs/tool-sample-outputs.md](docs/tool-sample-outputs.md).
 
 **`tools/audit_3mf.py`** checks a sliced 3MF against your recorded filament load (excerpt):
 
@@ -78,25 +74,25 @@ Real output from the shipped tools, run on small synthetic test files (full samp
 3MF audit: part.3mf
   printer=Bambu Lab H2C 0.4 nozzle  process=0.20mm Standard @BBL H2C  bed=Textured PEI Plate
   [OK] C7: L1: load_filled.md Verified: 2026-01-08 (2 day(s) before 2026-01-10)
-  [OK] C7: L4: filament 1 filament_colour #000000 is a catalogue colour of Bambu PLA Basic Black ['#000000']
-  [OK] C15: process preset '0.20mm Standard @BBL H2C' = the printer's default, layer_height 0.2; no process key modified
-  [WARN] C8: filament 1 profile 'Bambu PLA Basic @BBL H2C' not found in the installed profiles ... - compatibility unproven
+  [OK] C7: L4: filament 1 filament_colour #000000 is a catalogue colour of Bambu PLA Basic ...
+  [OK] C15: process preset '0.20mm Standard @BBL H2C' = the printer's default, ...
+  [WARN] C8: filament 1 profile 'Bambu PLA Basic @BBL H2C' not found in the installed ...
 VERDICT: WARN
 ```
 
 **`tools/overhang_gate.py`** finds an unsupported overhang on a T-shaped test part:
 
 ```text
-t_shape  pose (0.0, 0.0, 0.0)  watertight  24 faces  posed bbox [[-15.0, -5.0, 0.0], [15.0, 5.0, 24.0]]
-  overhang below 30 deg: 300.0 mm2 (min angle 0.0; bbox [[-15.0, -5.0, 20.0], [15.0, 5.0, 20.0]])
-  [WARN] per-layer cantilever 10.00 mm at posed z 20.10 (1 layer(s) over 0.5 mm, the --cantilever-warn acceptance value)
+t_shape  pose (0.0, 0.0, 0.0)  watertight  24 faces  posed bbox [[-15.0, -5.0, 0.0], ...]
+  overhang below 30 deg: 300.0 mm2 (min angle 0.0; bbox [[-15.0, -5.0, 20.0], ...])
+  [WARN] per-layer cantilever 10.00 mm at posed z 20.10 (1 layer(s) over 0.5 mm, ...)
 VERDICT: WARN
 ```
 
 **`tools/tower_clearance.py`** measures the prime tower's gap to every object from the G-code:
 
 ```text
-plate_1.gcode: tower all-layers [200.0, 200.0, 215.0, 215.0] first-layer [200.0, 200.0, 215.0, 215.0] (rule: gap >= 8.0 mm)
+plate_1.gcode: tower all-layers [200.0, 200.0, 215.0, 215.0] ... (rule: gap >= 8.0 mm)
   [OK] object 1: bounds [100.0, 100.0, 136.0, 120.0] gap body 113.14 mm, first-layer 113.14 mm
   VERDICT: OK
 ```
@@ -162,7 +158,7 @@ Numbers missing from the map are reserved and are not part of this project.
 ### The system
 
 ```mermaid
-flowchart LR
+flowchart TB
     you(["You, the maker"])
     subgraph vscode["VS Code"]
         cc["Claude Code panel"]
@@ -190,7 +186,7 @@ flowchart LR
 ### The knowledge pipeline
 
 ```mermaid
-flowchart LR
+flowchart TD
     q["A question"] --> r["researcher: claims with source URLs"]
     r --> fc["fact-checker: re-derives each claim on its own"]
     fc -- "VERIFIED" --> lib["librarian: files the note and updates the index"]
@@ -221,8 +217,13 @@ flowchart TD
    [docs/02-install.md](docs/02-install.md)
 2. **Get the project:** download the ZIP or clone it into a short folder path outside OneDrive.
    [docs/03-get-the-project.md](docs/03-get-the-project.md)
-3. **Run setup once, before you open Claude Code:** in the VS Code terminal run
-   `powershell -ExecutionPolicy Bypass -File .\tools\setup.ps1`. [docs/04-first-run.md](docs/04-first-run.md)
+3. **Run setup once, before you open Claude Code:** in the VS Code terminal run this command
+   ([docs/04-first-run.md](docs/04-first-run.md)):
+
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File .\tools\setup.ps1
+   ```
+
 4. **Tell it about your gear:** fill `knowledge\00-gear-inventory\` with your printers and what is loaded.
    [docs/04-first-run.md](docs/04-first-run.md)
 5. **Open the Claude Code panel and ask.** For example: "Read CLAUDE.md, then help me print the calibration cube in
