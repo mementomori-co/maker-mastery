@@ -33,7 +33,7 @@ Verified: 2026-10-03
 - Mean Well LRS-50-5 (enclosed): 5 V, 10 A, 50 W, adjustable 4.5-5.5 V, +/-2.0 % tolerance. - [Mean Well LRS-50 spec](https://www.meanwell.com/Upload/PDF/LRS-50/LRS-50-SPEC.PDF)
 
 ### USB encoder boards and HATs
-- USB button-encoder boards do not always publish a current draw: two widely sold encoder boards checked here list no current-draw figure on their product pages. - [encoder board product page 1](https://www.ultimarc.com/control-interfaces/i-pacs/i-pac4-board/), [encoder board product page 2](https://www.brookaccessory.com/detail/06960737/)
+- USB button-encoder boards do not always publish a current draw: the Ultimarc I-PAC 4 and Brook Universal Fighting Board product pages list no current-draw figure. - [Ultimarc I-PAC 4](https://www.ultimarc.com/control-interfaces/i-pacs/i-pac4-board/), [Brook Universal Fighting Board](https://www.brookaccessory.com/detail/06960737/)
 
 ## In practice
 - Know which supply feeds the Pi. The official 27 W supply (or any supply that negotiates 5 A over USB-PD) gives 1.6 A downstream USB; any other path caps USB at 600 mA and disables USB boot unless you force `usb_max_current_enable=1`.
@@ -47,7 +47,7 @@ Verified: 2026-10-03
 ## Not verified / open questions
 - A 60 C / 1.4-1.2 GHz soft limit is sometimes quoted for the Pi 5; no official source documents it for the Pi 5.
 - The exact text `vcgencmd get_config usb_max_current_enable` prints is not documented; read it on the device.
-- A display board or USB HAT that powers the Pi through GPIO pogo pins may not state which path feeds the Pi (one vendor wiki checked does not); if it is the pogo pins, the Pi sees no 5 A PD claim and USB falls back to 600 mA. - [example vendor wiki for a pogo-pin display board](https://wiki.52pi.com/index.php?title=EP-0188)
+- A display board or USB HAT that powers the Pi through GPIO pogo pins may not state which path feeds the Pi (the 52Pi EP-0188 wiki does not); if it is the pogo pins, the Pi sees no 5 A PD claim and USB falls back to 600 mA. - [52Pi EP-0188 wiki](https://wiki.52pi.com/index.php?title=EP-0188)
 
 Sources:
 - https://www.raspberrypi.com/documentation/computers/raspberry-pi.html - PSU recommendation, USB budget, GPIO/HDMI draw, `usb_max_current_enable`

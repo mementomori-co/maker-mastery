@@ -21,6 +21,7 @@ Session-start reviews, "what next", before choosing a `/research-topic`. Not for
    Next 3: 1. <category> - <question> . 2. ... . 3. ...   (rule that picked them: <priority order>)
    NEEDS MAKER: <numbered, when a priority choice is the maker's>
    ```
+   This reply goes straight to the owner: use the name, marker and closing parts from `OWNER_PROFILE.md` (CLAUDE.md, "Who you work for").
 
 ## Common rationalizations
 | Rationalization | Reality |

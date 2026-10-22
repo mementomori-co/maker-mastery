@@ -1,12 +1,14 @@
 # 04 - First run
 
-You open the project in VS Code, run the setup script once, check your config, write down your gear, and then open
+You open the project in VS Code, install the recommended extensions, run the setup script once, check your config, write down your gear, and then open
 Claude Code for your first prompt. Next: [05 - Daily workflow](05-daily-workflow.md).
 
 > [!IMPORTANT]
-> **Run the setup script (step 3) before you open the Claude Code panel (step 6).** The project's hooks run with the
-> project's own Python in `.venv\`, which the setup script creates. Before setup, every hook fails to start, and the
-> folder guard is not active.
+> **Run the setup script (step 4) before you open the Claude Code panel (step 7).** The project's hooks run with the
+> project's own Python in `.venv\`, which the setup script creates. Before setup, every hook fails to start. The folder
+> guard then blocks every file write and shell command Claude tries (it is set to fail closed; Claude Code v2.1.295 or
+> later), so Claude cannot run setup for you: run it yourself in step 4. Details:
+> [11 - Autonomous mode](11-autonomous-mode.md#what-the-guard-hook-blocks-and-what-it-does-not).
 
 This guide assumes the project is in `C:\Projects\maker-mastery` (guide 03). If yours is elsewhere, use your folder.
 
@@ -20,14 +22,53 @@ This guide assumes the project is in `C:\Projects\maker-mastery` (guide 03). If 
    Code extension "doesn't work in Restricted Mode"
    ([Claude Code VS Code docs](https://code.claude.com/docs/en/vs-code)).
 
-You should see the Explorer on the left with `.claude`, `assets`, `config`, `docs`, `examples`, `knowledge`, `lessons`,
+You should see the Explorer on the left with `.claude`, `.vscode`, `assets`, `config`, `docs`, `examples`, `knowledge`, `lessons`,
 `templates`, `tools`, `CLAUDE.md` and `README.md`. If you see only one folder such as `maker-mastery-main`, you opened
-the folder above the project: repeat step 2 and pick the inner folder.
+the folder above the project: repeat item 2 of this step and pick the inner folder.
 
 Trusting the folder lets its scripts run. If you want to know what will run, read `tools\setup.ps1` and the three hook
 scripts in `tools\hooks\` and `tools\check_note.py` first; they are short and commented.
 
-## Step 2. Open the terminal
+## Step 2. Install the recommended VS Code extensions
+
+The project ships a list of recommended extensions in `.vscode\extensions.json`. VS Code reads that file and, per
+Microsoft's docs, prompts you to install the recommended extensions the first time you open the folder
+([VS Code docs: Workspace recommended extensions](https://code.visualstudio.com/docs/configure/extensions/extension-marketplace#_workspace-recommended-extensions)).
+The prompt is a notification at the bottom right; its exact wording and button names are not quoted in the docs
+(label not verified). Clicking its install button installs the list; you can also ignore it and use the steps below.
+
+To install them all from the Extensions view:
+
+1. Press `Ctrl+Shift+X` to open the Extensions view.
+2. In the search box at the top, type `@recommended`. VS Code's docs describe this filter as "Show recommended
+   extensions. Grouped as Workspace specific or general use"
+   ([Extensions view filters](https://code.visualstudio.com/docs/configure/extensions/extension-marketplace#_extensions-view-filters)).
+   The same list opens from the Command Palette (`Ctrl+Shift+P`) with **Extensions: Show Recommended Extensions**.
+3. Under **Workspace Recommendations**, click **Install** on each extension that is not installed yet. Check that the
+   publisher shown under each name matches the table below before you click.
+
+Claude Code is already installed if you followed
+[02 - Install, section 5](02-install.md#5-claude-code-extension-for-vs-code); it shows as installed here.
+None of these extensions is required for the tools to run: setup, the audits and the hooks use the project's own
+Python in `.venv\`. They make the files easier to read and edit.
+
+| Extension | Marketplace ID | Publisher | Why this project uses it | Link |
+|---|---|---|---|---|
+| Claude Code for VS Code | `anthropic.claude-code` | Anthropic | The Claude Code panel you work in from step 7 on. | [marketplace](https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code) |
+| Python | `ms-python.python` | Microsoft | Reading and editing the scripts in `tools\` and `examples\`. | [marketplace](https://marketplace.visualstudio.com/items?itemName=ms-python.python) |
+| YAML | `redhat.vscode-yaml` | Red Hat | Editing `config\paths.yaml` (step 5) with syntax highlighting and error marks. | [marketplace](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml) |
+| Markdown Preview Mermaid Support | `bierner.markdown-mermaid` | Matt Bierner | Shows the Mermaid diagrams in `README.md` and `docs\01-what-this-is.md` in VS Code's Markdown preview. | [marketplace](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid) |
+| markdownlint | `DavidAnson.vscode-markdownlint` | David Anson | Flags Markdown formatting problems in the knowledge notes, lessons and docs you edit. | [marketplace](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint) |
+
+The Claude Code ID is also the one in the install link on the
+[Claude Code VS Code docs](https://code.claude.com/docs/en/vs-code) (`vscode:extension/anthropic.claude-code`).
+
+Optional, not in the recommended list: **GitLens** (`eamodio.gitlens`, publisher GitKraken) shows who changed each line
+and when, which helps if you got the project with git (guide 03) and want to follow updates
+([marketplace](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens)). Install it by searching for its
+ID in the Extensions view.
+
+## Step 3. Open the terminal
 
 1. Click **Terminal > New Terminal** ([VS Code terminal docs](https://code.visualstudio.com/docs/terminal/basics)).
 2. A panel opens at the bottom. You should see a prompt like `PS C:\Projects\maker-mastery>`. The `PS` means PowerShell.
@@ -36,7 +77,7 @@ If the prompt does not start with `PS` (for example it shows `C:\Projects\maker-
 shell. Click the small arrow next to the **+** in the terminal panel and choose **PowerShell** (label not verified), or
 type `powershell` and press Enter.
 
-## Step 3. Run the setup script
+## Step 4. Run the setup script
 
 Paste this line into the terminal and press Enter:
 
@@ -88,12 +129,13 @@ The `render_critic.py` line needs the optional open3d package for most of its ch
 line with most checks skipped, which is normal:
 
 ```text
-  PASS    render_critic.py - render critique (needs optional open3d)  (12 checks, 11 skipped, 0.7 s)
+  PASS    render_critic.py - render critique (needs optional open3d)  (12 checks, 11 skipped, 2.7 s)
 ```
 
 To add open3d, run the setup again with
-`powershell -ExecutionPolicy Bypass -File .\tools\setup.ps1 -Optional` and answer `y`. (The sample above was captured
-on a PC that had open3d; the skipped line was captured on a Python without it.)
+`powershell -ExecutionPolicy Bypass -File .\tools\setup.ps1 -Optional` and answer `y`. (Both samples above were
+captured from a full fresh install without `-Optional`.) `requirements-optional.txt` pins open3d itself, but
+`constraints.txt` does not cover open3d or the packages it pulls in, so their versions are whatever pip picks that day.
 
 If something else happens:
 
@@ -102,12 +144,12 @@ If something else happens:
 | `running scripts is disabled on this system` | You ran `.\tools\setup.ps1` on its own. Use the one-line command above. |
 | `... setup.ps1 is not digitally signed. The script will not execute on the system.` | Your policy is **RemoteSigned** (Microsoft's default for Windows computers) and the file still carries the "downloaded from the internet" mark from the ZIP. Either use the one-line command above, or read `tools\setup.ps1` and then unblock it once with `Unblock-File .\tools\setup.ps1` and run it again. `Unblock-File` removes that internet mark so a RemoteSigned policy runs the script ([Unblock-File](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/unblock-file), [about_Execution_Policies](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies)). The Process-scope form above (`Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process`) works too. |
 | I answered `N` | Nothing is wrong. `.venv` exists but has no packages yet, so the script skips the self-test and ends with `Setup paused: run tools\setup.ps1 again and answer y when ready.` Run the one-line command again and answer `y`. |
-| `Python 3.12 or newer was not found.` | Install Python 3.12 ([02 - Install](02-install.md), part 4), close the terminal (trash-can icon), open a new one and run the line again. |
+| `Python 3.12 or newer was not found.` | Install Python 3.12 ([02 - Install, section 3](02-install.md#3-python-312)), close the terminal (trash-can icon), open a new one and run the line again. |
 | `pip install failed (see the lines above).` | Read the last red lines. Usually the internet connection dropped or a path is too long: see [09 - Troubleshooting](09-troubleshooting.md). Then run the line again; it reuses `.venv`. |
-| `Bambu Studio was not found at: ...` | Fine for now. Fix it in step 4. |
+| `Bambu Studio was not found at: ...` | Fine for now. Fix it in step 5. |
 | `RESULT: FAIL` | Read the lines under the FAIL; they name the test. See [09 - Troubleshooting](09-troubleshooting.md). Nothing is wrong with your printer. |
 
-## Step 4. Check your config
+## Step 5. Check your config
 
 The setup copied `config\paths.example.yaml` to `config\paths.yaml`. That copy holds every machine-specific path and is
 never uploaded by git. Check it:
@@ -144,14 +186,14 @@ If `bambu_studio_exe` says `[does not exist]`:
 If `config\paths.yaml` is missing (you skipped setup), create it with
 `Copy-Item config\paths.example.yaml config\paths.yaml`.
 
-## Step 5. Write down your gear
+## Step 6. Write down your gear
 
 Claude answers for your gear only, and never assumes a filament is loaded. Two files hold that:
 `knowledge\00-gear-inventory\current-load.md` (what is on the printer today) and `printers.md`, which you create
 yourself in the same folder (what you own). Read
 [the folder's README](../knowledge/00-gear-inventory/README.md) once.
 
-You can fill them by hand now, or let Claude interview you in step 7. By hand:
+You can fill them by hand now, or let Claude interview you in step 8. By hand:
 
 1. Get today's date in the right format:
 
@@ -171,7 +213,7 @@ If you create `printers.md` yourself, start it with an `Applies to:` line, a `Ve
 and end it with a `Sources:` line followed by one line such as `- my own look at the printer, measured`. The note checker
 (a hook) reports any knowledge file without these lines.
 
-## Step 6. Open the Claude Code panel and sign in
+## Step 7. Open the Claude Code panel and sign in
 
 1. Open any file (for example click `README.md` in the Explorer). Click the **Spark icon** in the **Editor Toolbar** at
    the top right of the editor. Other ways: the Spark icon in the **Activity Bar** on the left, or **✻ Claude Code** in the
@@ -181,9 +223,9 @@ and end it with a `Sources:` line followed by one line such as `- my own look at
    dismiss it.
 
 If you see **Not logged in · Please run /login**, run **Developer: Reload Window** from the Command Palette
-(`Ctrl+Shift+P`). If the panel shows an error about a hook or `python.exe`, setup did not finish: go back to step 3.
+(`Ctrl+Shift+P`). If the panel shows an error about a hook or `python.exe`, setup did not finish: go back to step 4.
 
-## Step 7. Your first prompts
+## Step 8. Your first prompts
 
 Click in the prompt box, type or paste a prompt, and press Enter. Claude asks for permission before it edits a file or
 runs a command (depending on the permission mode shown under the prompt box); read what it wants to do, then allow it.

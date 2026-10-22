@@ -36,7 +36,8 @@
             "type": "command",
             "command": "${CLAUDE_PROJECT_DIR}/.venv/Scripts/python.exe",
             "args": ["-B", "${CLAUDE_PROJECT_DIR}/tools/hooks/guard_paths.py"],
-            "timeout": 20
+            "timeout": 20,
+            "onFailure": "block"
           }
         ]
       }

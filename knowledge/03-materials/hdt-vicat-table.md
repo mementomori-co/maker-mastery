@@ -32,7 +32,7 @@ Verified: 2026-10-07 (PETG Matte row; other rows 2026-10-03, density rows 2026-1
 - The Bambu Studio system presets for PETG Basic and PETG Translucent set `filament_density` = 1.25 (resolved through `inherits` to each `@base` profile), overriding 1.27 in the generic `fdm_filament_pet` parent - [BambuStudio BBL filament profiles](https://github.com/bambulab/BambuStudio/tree/master/resources/profiles/BBL/filament) (checked on Bambu Studio 02.08.02.61; verify on your installed version)
 
 ## In practice
-- Quote HDT with its load and anneal condition; in the Facts rows above the 0.45 MPa value is 1-8 °C higher than the 1.8 MPa value (smallest: PLA-CF 1 °C, PETG Matte 1.1 °C; largest: ASA 8 °C), except PA6-CF at 22 °C and PC, whose printed pair is inverted (5 °C apart; TPU has no values). An an annealed lab value is not what a lower-infill, unannealed part survives.
+- Quote HDT with its load and anneal condition; in the Facts rows above the 0.45 MPa value is 1-8 °C higher than the 1.8 MPa value (smallest: PLA-CF 1 °C, PETG Matte 1.1 °C; largest: ASA 8 °C), except PA6-CF at 22 °C and PC, whose printed pair is inverted (5 °C apart; TPU has no values). An annealed lab value is not what a lower-infill, unannealed part survives.
 - For a part holding its shape under light load near service temperature, design to the 1.8 MPa figure; for PC use about 112 °C until Bambu corrects the sheet.
 - On Textured PEI, follow the wiki's plate-specific bed column, not the generic TDS bed range.
 - Dry PA6-CF and other hygroscopic filaments before printing regardless of this table.

@@ -54,10 +54,44 @@ The guard hook also refuses a bare `python`, `py` or `pip` command (use `.venv\S
 Event names, the `SessionStart` matcher values and the exit-code-2 behaviour come from https://code.claude.com/docs/en/hooks.
 `timeout` is in seconds (same page; the default for a command hook is 600).
 
+### The guard fails closed: `"onFailure": "block"`
+The `PreToolUse` guard hook, and only that hook, sets `"onFailure": "block"`. The hooks reference documents the field
+for command hooks: it decides whether the triggering action goes ahead when the hook fails (`"continue"` or
+`"block"`), and it "Requires Claude Code v2.1.295 or later" (https://code.claude.com/docs/en/hooks, "Command hook fields"
+and "Block the action when a hook fails"). Its own example sets it on an exec-form hook (`command` plus `args`), the
+form used here.
+
+What it changes, per the same page:
+- Without it, a hook that fails or times out lets the call go ahead on most events: Claude Code "still carries out
+  the action."
+- With it, a failure "does what exit code 2 does on that event": on `PreToolUse` it blocks the tool call. The page
+  counts as failures a hook that "fails to start, for example because the script or executable doesn't exist", an
+  exit code other than 0 or 2, a timeout, and JSON output that cannot be parsed.
+- So when `.venv\Scripts\python.exe` is missing (setup not run yet, or the venv deleted), every Write, Edit,
+  MultiEdit, NotebookEdit, Bash and PowerShell call is **blocked** instead of passing unguarded. The error names the
+  hook and says `failed; blocking because onFailure is "block"`. Fix: run `tools\setup.ps1` yourself in the VS Code
+  terminal (Claude cannot run it for you while the guard is blocking), then start a new session.
+- A crash inside `guard_paths.py` (an uncaught error exits with code 1) or a guard that takes longer than its 20-second
+  `timeout` now blocks the call too.
+
+Version note: the field needs Claude Code v2.1.295 or later. The VS Code extension carries its own copy of Claude
+Code, so the extension's version is the one that counts for the panel; the separate command line (`claude --version`)
+can be older. What an older version does with the field (ignore it, or report the settings file as invalid) is not
+documented and not verified here. If your Claude Code is older, update it. On an older version the guard is fail-open:
+a guard that cannot start lets the call through. The other three hooks do not set the field, so they stay fail-open on
+purpose (a missing lesson list or note check must not stop your work).
+
+VS Code will flag `onFailure` as not allowed, and this is expected. The SchemaStore schema named in `$schema`
+(https://json.schemastore.org/claude-code-settings.json) sets `additionalProperties: false` on command hooks
+(`$defs/hookCommand`), and its list of allowed fields (`type`, `command`, `args`, `timeout`, `async`, `asyncRewake`,
+`shell`, `if`, `statusMessage`) has no `onFailure` (checked when this file was written). The settings docs say the
+schema "can lag behind the newest CLI releases", so a warning on a recently documented key does not mean the file is
+invalid (https://code.claude.com/docs/en/settings). Claude Code itself checks the file at start-up: if it ever shows a
+Settings Error for `.claude\settings.json`, see [09 - Troubleshooting, section 4](../docs/09-troubleshooting.md#4-a-hook-error-when-claude-code-starts).
+
 Requirements and limits:
-- The hooks need `.venv\Scripts\python.exe`, which `tools\setup.ps1` creates. Before setup runs, each hook cannot start;
-  how Claude Code reports a hook whose executable is missing is not verified here, and nothing is guarded until the
-  venv exists. Run setup first.
+- The hooks need `.venv\Scripts\python.exe`, which `tools\setup.ps1` creates. Before setup runs, the guard blocks every
+  file write and shell command (see above) and the other hooks cannot start. Run setup first, from the VS Code terminal.
 - The `args` field (exec form) is a recent hooks feature. The minimum Claude Code version that supports it is not
   verified here; if your version ignores `args`, update Claude Code.
 - Hooks run with your user rights. Read every hook script before you trust this folder.

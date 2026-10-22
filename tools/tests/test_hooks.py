@@ -64,6 +64,83 @@ class GuardPathsTests(unittest.TestCase):
         self.assertEqual(self.run_guard({"command": f'cd {q}"'}, cwd=self.td).returncode, 2)
         self.assertEqual(self.run_guard({"command": "ls -la"}, cwd=self.td).returncode, 0)
 
+    def bypasses(self) -> list[str]:
+        """Write commands an independent audit found passing the guard (all must be blocked, both modes)."""
+        p = self.prot
+        return [
+            f'find "{p}" -delete',
+            f'find "{p}" -exec rm {{}} \\;',
+            f'find "{p}" -name "*.txt" -execdir rm {{}} +',
+            f'Get-ChildItem "{p}" | ForEach-Object {{ Remove-Item $_.FullName }}',
+            f'gci "{p}" | % {{ ri $_.FullName }}',
+            f'gci "{p}" | ? {{ ri $_ }}',
+            f'sort -o "{p}\\f" a.txt',
+            f'sort a.txt --output="{p}\\f"',
+            f'uniq a.txt "{p}\\f"',
+            f'tree -o "{p}\\f"',
+            f'xxd -r a.txt "{p}\\f"',
+            f'rg --pre rm x "{p}"',
+            f'cat a.txt>"{p}\\f"',
+            f'cat a.txt>>"{p}\\f"',
+            f'echo x 1>"{p}\\f"',
+            f'echo x 2>"{p}\\f"',
+            f'Get-Content a.txt *>"{p}\\f"',
+            f'ls "{p}" | Select-Object @{{n="x";e={{ri $_}}}}',
+        ]
+
+    def test_audit_bypasses_blocked_normal_mode(self):
+        for cmd in self.bypasses():
+            with self.subTest(cmd=cmd):
+                self.assertEqual(self.run_guard({"command": cmd}, cwd=self.td).returncode, 2)
+
+    def test_audit_bypasses_blocked_fail_closed(self):
+        cfg = os.path.join(self.td, "broken_bp.yaml")
+        with open(cfg, "w", encoding="utf-8") as fh:
+            fh.write('protected_roots: [\n')   # unclosed list: a YAML error for PyYAML and the built-in reader
+        env = {"MM_CONFIG": cfg, "MM_PROTECTED": ""}
+        for cmd in self.bypasses():
+            with self.subTest(cmd=cmd):
+                r = hook("guard_paths.py", {"tool_input": {"command": cmd}, "cwd": self.td}, env)
+                self.assertEqual(r.returncode, 2)
+                self.assertIn("cannot be read", r.stderr)
+        for cmd in ("cat a.txt | grep x", "Get-Content a.txt | Select-Object -First 3", "ls -la 2>&1"):
+            with self.subTest(cmd=cmd):
+                r = hook("guard_paths.py", {"tool_input": {"command": cmd}, "cwd": self.td}, env)
+                self.assertEqual(r.returncode, 0, r.stderr)
+
+    def test_reads_and_arrows_still_allowed(self):
+        p, out = self.prot, os.path.join(self.td, "out.txt")
+        for cmd in (
+            f'ls "{p}" | sort',
+            f'cat "{p}\\x.txt" | uniq -c',
+            f'Get-ChildItem "{p}" | Where-Object Length -gt 0',
+            f'gci "{p}" | % FullName',
+            f'cat "{p}\\x.txt" > "{out}"',
+            f'cat "{p}\\x.txt">"{out}"',
+            f'cat "{p}\\x.txt" 2>&1',
+            f'cat "{p}\\x.txt" 2>/dev/null',
+            f'grep "->" "{p}\\x.txt"',
+            f'grep "=>" "{p}\\x.txt"',
+            f'grep ">=" "{p}\\x.txt"',
+            f'find "{self.td}" -name "*.txt" -delete',   # no protected root named
+        ):
+            with self.subTest(cmd=cmd):
+                r = self.run_guard({"command": cmd}, cwd=self.td)
+                self.assertEqual(r.returncode, 0, r.stderr)
+
+    def test_redirect_regex(self):
+        sys.path.insert(0, HOOKS)
+        import guard_paths
+        hits = {"a>b": "b", "a>>b": "b", "1>b": "b", "2>b": "b", "*>b": "b", 'a > "c d"': '"c d"', "x 2>>log": "log"}
+        for text, tgt in hits.items():
+            with self.subTest(text=text):
+                m = guard_paths.REDIRECT.search(text)
+                self.assertIsNotNone(m)
+                self.assertEqual(m.group(1), tgt)
+        for text in ("def f() -> int", "$h = @{a => 1}", "if a >= b", "x <> y"):
+            with self.subTest(text=text):
+                self.assertIsNone(guard_paths.REDIRECT.search(text))
+
     def test_bare_python_inside_repo_only(self):
         r = self.run_guard({"command": "python tools/x.py"}, cwd=REPO)
         self.assertEqual(r.returncode, 2)

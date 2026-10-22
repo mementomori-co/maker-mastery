@@ -11,7 +11,9 @@ Nothing is sliced, sent or printed. Slicing and printing are steps YOU take in B
 Inputs: none. Output: the STL (default: cube_20mm.stl beside this script) and the two reports on screen.
 Usage:   .venv\Scripts\python.exe -B examples\calibration-cube\make_cube.py [--size 20] [--out PATH]
 Example: .venv\Scripts\python.exe -B examples\calibration-cube\make_cube.py
-Exit code: the worst of the two gates (0 OK, 1 WARN, 2 FAIL), or 3 if the STL could not be written.
+Exit code: the worst of the two gates (0 OK, 1 WARN, 2 FAIL), or 3 if the STL could not be written. The one expected
+stability WARN (uniform-density mass) counts as OK and prints "WARN is expected for a cube (see README)"; any other
+WARN or FAIL keeps its exit code.
 """
 from __future__ import annotations
 
@@ -49,10 +51,24 @@ def write_cube(path: str, size: float) -> None:
             fh.write(np.array([*n, *v[a], *v[b], *v[c]], dtype=np.float32).tobytes() + b"\0\0")
 
 
-def run_gate(script: str, *args: str) -> int:
+def run_gate(script: str, *args: str) -> tuple[int, str]:
+    """Run one gate, show its report, and return (exit code, report text)."""
     cmd = [sys.executable, "-B", os.path.join(TOOLS, script), *args]
     print(f"\n--- {script} " + "-" * max(0, 70 - len(script)), flush=True)
-    return subprocess.run(cmd).returncode
+    r = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    sys.stdout.write(r.stdout)
+    sys.stderr.write(r.stderr)
+    sys.stdout.flush()
+    return r.returncode, r.stdout
+
+
+EXPECTED_WARN = "from uniform density"  # the mass assumption: no slicer grams exist before you slice
+
+
+def only_expected_warn(report: str) -> bool:
+    """True when every flag in a stability_check report is a WARN about the uniform-density mass assumption."""
+    flags = [ln.strip() for ln in report.splitlines() if ln.strip().startswith(("- WARN", "- FAIL"))]
+    return bool(flags) and all(f.startswith("- WARN") and EXPECTED_WARN in f for f in flags)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -67,12 +83,14 @@ def main(argv: list[str] | None = None) -> int:
         print(f"could not write the STL: {e}", file=sys.stderr)
         return 3
     print(f"wrote {a.out} ({a.size:g} mm cube)", flush=True)
-    rc1 = run_gate("overhang_gate.py", a.out)
-    rc2 = run_gate("stability_check.py", a.out)
-    worst = max(rc1, rc2)
-    print(f"\noverhang_gate exit {rc1}, stability_check exit {rc2}. Next: open the STL in Bambu Studio (README.md). "
-          "You press Print; the AI never does.")
-    return worst
+    rc1, _ = run_gate("overhang_gate.py", a.out)
+    rc2, report = run_gate("stability_check.py", a.out)
+    print(f"\noverhang_gate exit {rc1}, stability_check exit {rc2}.")
+    if rc2 == 1 and only_expected_warn(report):
+        print("WARN is expected for a cube (see README): the mass is a uniform-density estimate until you slice it.")
+        rc2 = 0
+    print("Next: open the STL in Bambu Studio (README.md). You press Print; the AI never does.")
+    return max(rc1, rc2)
 
 
 if __name__ == "__main__":

@@ -38,6 +38,11 @@ The rulebook says nothing is installed or deleted without your explicit yes, and
 commands and edits in its default modes. Folders listed under `protected_roots` in `config\paths.yaml` are blocked for
 writes by a hook. See [08 - Customize](08-customize.md#machine-paths).
 
+**Can Claude work for hours without asking me every few minutes?**
+Yes, with Auto or Edit automatically mode, your own allow rules and parallel subagents, while prints and the other
+owner-only actions stay with you. Deletions outside the project are not blocked by a shipped rule; the guide shows how
+to add one. See [11 - Autonomous mode](11-autonomous-mode.md).
+
 **Why did the audit FAIL on a perfectly good file?**
 Most often the load check (C7): your `current-load.md` still has the placeholder date or does not list the filament. That
 is on purpose. See [09 - Troubleshooting](09-troubleshooting.md#7-the-audits-load-check-c7-fails).
@@ -67,7 +72,7 @@ The hooks run with `.venv\Scripts\python.exe`, which setup creates. See [04 - Fi
 
 **Is the execution-policy bypass safe?**
 It applies to the one PowerShell process that runs `setup.ps1` and ends with it; your PC's policy is unchanged. Read the
-script first if you like. See [04 - First run](04-first-run.md#step-3-run-the-setup-script).
+script first if you like. See [04 - First run](04-first-run.md#step-4-run-the-setup-script).
 
 **Does setup install anything globally?**
 No. Packages go into `.venv` inside the project folder, after you answer `y`. Python, Git, VS Code and Bambu Studio are

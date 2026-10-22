@@ -14,13 +14,17 @@ Rules checked:
   3. A "Sources:" line exists and at least one line after it contains a URL (http...) or a local path (C:\ or %APPDATA%).
   4. Every bullet under "## Facts" has a source. A bullet passes when it contains
      a. a URL, a local path, the word "measured", or a manual page reference ("manual §", "manual p."), or
-     b. the label "not verified" (any case): an unsourced statement must say so plainly, or
+     b. the label "not verified" (any case): an unsourced statement must say so plainly. The UI-label tag
+        "(label not verified)" does not count: it marks an unchecked menu label, not an unsourced fact, or
      c. a back-reference such as "same source", "same sources", "same TDS", "same files", "same two TDS", "same
         derivation", "pages above", "sources above" or "ibid." AND an earlier bullet in the same subsection (since the
         last "##" or "###" heading) has a URL: the URL it points back to must be right above it, or
-     d. a relative link to another note (`[x](other-note.md)`): a pointer to a note that is itself checked.
+     d. a relative link to another note (`[x](other-note.md)`) whose target file exists (resolved relative to the
+        note): a pointer to a note that is itself checked.
   5. HDT values carry their load: a Facts line with "HDT" must mention MPa, unless it says HDT is N/A or absent
-     ("HDT and Vicat N/A", "no HDT").
+     ("HDT and Vicat N/A", "no HDT"); and every temperature value within 60 characters after an "HDT" (for example
+     "HDT 173 / 215 °C") must have "MPa" within 40 characters before or after it. Limit: a value written without a
+     degree sign ("HDT 55 C") is only covered by the per-line rule.
 """
 from __future__ import annotations
 
@@ -56,8 +60,30 @@ DATE = re.compile(r"Verified:\s*\d{4}-\d{2}-\d{2}")
 NOT_VERIFIED = re.compile(r"\bnot verified\b", re.I)
 BACKREF = re.compile(r"\bsame\s+(?:\w+\s+){0,2}(?:sources?|tds|files?|pages?|pdf|sheets?|derivation)\b"
                      r"|\b(?:pages?|sources?|files?|sheets?)\s+above\b|\bibid\b", re.I)
-NOTE_LINK = re.compile(r"\]\((?!https?:)[^)\s]+\.md(?:#[^)\s]*)?\)")
+LABEL_TAG = re.compile(r"\(label not verified\)", re.I)
+NOTE_LINK = re.compile(r"\]\((?!https?:)([^)\s#]+\.md)(?:#[^)\s]*)?\)")
 HDT_ABSENT = re.compile(r"HDT(?:\s+and\s+Vicat)?\s+(?:values?\s+)?(?:are\s+|is\s+)?N/?A\b|\bno\s+HDT\b", re.I)
+HDT_VALUE = re.compile(r"\d+(?:\.\d+)?(?:\s*(?:/|-|to)\s*\d+(?:\.\d+)?)?\s*°\s*C")
+HDT_AFTER, MPA_NEAR = 60, 40
+
+
+def note_link_ok(line: str, note: Path) -> bool:
+    """True when the line links another note and every such linked .md file exists next to (relative to) the note."""
+    targets = NOTE_LINK.findall(line)
+    return bool(targets) and all((note.parent / t).is_file() for t in targets)
+
+
+def hdt_values_without_load(line: str) -> list[str]:
+    """Temperature values right after an 'HDT' that have no 'MPa' within MPA_NEAR characters."""
+    out = []
+    for m in re.finditer(r"HDT", line):
+        if HDT_ABSENT.match(line, m.start()) or re.search(r"\bno\s+$", line[: m.start()], re.I):
+            continue
+        for v in HDT_VALUE.finditer(line[m.end(): m.end() + HDT_AFTER]):
+            s, e = m.end() + v.start(), m.end() + v.end()
+            if "MPa" not in line[max(0, s - MPA_NEAR): e + MPA_NEAR]:
+                out.append(line[s:e])
+    return out
 
 
 def check(path: Path) -> list[str]:
@@ -92,12 +118,17 @@ def check(path: Path) -> list[str]:
         if in_facts and l.lstrip().startswith("- "):
             low = l.lower()
             direct = URL.search(l) or LOCAL.search(l) or "measured" in low or "manual §" in l or "manual p." in l
-            ok = (direct or NOT_VERIFIED.search(l) or (BACKREF.search(l) and url_in_subsection) or NOTE_LINK.search(l))
+            ok = (direct or NOT_VERIFIED.search(LABEL_TAG.sub("", l)) or (BACKREF.search(l) and url_in_subsection)
+                  or note_link_ok(l, path))
             if not ok:
                 problems.append(f"line {n}: fact bullet without URL / local path / 'measured' / 'not verified' "
-                                f"(or a 'same source' back-reference with a URL earlier in the same subsection)")
+                                f"(or a 'same source' back-reference with a URL earlier in the same subsection, or a "
+                                f"link to a note that exists)")
             if "HDT" in l and "MPa" not in l and not HDT_ABSENT.search(l):
                 problems.append(f"line {n}: HDT without load (MPa)")
+            else:
+                for val in hdt_values_without_load(l):
+                    problems.append(f"line {n}: HDT value '{val}' has no load (MPa) within {MPA_NEAR} characters")
             if URL.search(l):
                 url_in_subsection = True
     return problems

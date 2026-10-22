@@ -58,8 +58,9 @@ Official guide: https://docs.github.com/en/repositories/creating-and-managing-re
 2. Open Windows PowerShell (Start, type `PowerShell`).
 3. Run these two lines. The second one is `git clone`, the address you copied, and the target folder:
 
-   > **Replace `<owner>` with the GitHub account name shown in your browser's address bar** (the part right after
-   > `github.com/`), or paste the address you copied in step 1 instead of the one below.
+   > **Check the address in the second line against the one you copied in step 1.** The part right after
+   > `github.com/` is the GitHub account name in the repository's address. If it differs from your browser's address
+   > bar, paste the address you copied in step 1 in its place.
 
    ```powershell
    New-Item -ItemType Directory -Force C:\Projects | Out-Null
@@ -80,7 +81,7 @@ If something goes wrong:
 | You see | Do this |
 |---|---|
 | `git is not recognized` | Go back to [02 - Install](02-install.md), part 1. |
-| `fatal: unable to access 'https://github.com/<owner>/maker-mastery.git/': ... error: 400` | The `<owner>` placeholder was not replaced. Put the account name from your browser's address bar in its place, or paste the address you copied in step 1, and run the line again. |
+| `fatal: unable to access 'https://github.com/...': ... error: 400` | The address in the `git clone` line is not the repository's address. Make the GitHub account name in the repository's address (right after `github.com/`) match your browser's address bar, or paste the address you copied in step 1, and run the line again. |
 | `repository not found` | Check the address on the project's GitHub page and copy it again. |
 
 To update later, run `git -C C:\Projects\maker-mastery pull`. Your own files (`config\paths.yaml`, `.venv\`, `work\`)

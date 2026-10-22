@@ -30,7 +30,9 @@ This writes `examples\calibration-cube\cube_20mm.stl` and runs two checks on it:
 
 - `tools\overhang_gate.py` should say `VERDICT: OK` (a cube has no overhangs and no floating islands).
 - `tools\stability_check.py` should say `Result: WARN (exit 1)`. The only flag is that the mass comes from a uniform
-  density, not from slicer grams. A 20 mm cube cannot tip: its tip angle is 45 degrees.
+  density, not from slicer grams. A 20 mm cube cannot tip: its tip angle is 45 degrees. Because that WARN is
+  expected, `make_cube.py` then prints `WARN is expected for a cube (see README)` and exits 0; any other WARN or a
+  FAIL keeps its exit code.
 
 ## 2. Open it in Bambu Studio
 

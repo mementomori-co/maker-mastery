@@ -337,12 +337,15 @@ bambu-studio.exe not found at '<fixture-tmp>\\no-such-dir\\bambu-studio.exe': se
 (exit code 2)
 ```
 
-## check_note.py: a note with an unsourced fact
+## check_note.py: a shipped note and a draft with an unsourced fact
+
+`my-draft-note.md` stands for a draft of yours (it is not shipped); its line 6 is a fact bullet with no source.
 
 ```text
-> .venv\Scripts\python.exe -B tools\check_note.py knowledge\01-printers\plates.md
-FAIL knowledge\01-printers\plates.md
-  - line 7: fact bullet without URL / local path / 'measured' / 'not verified' (or a 'same source' back-reference with a URL earlier in the same subsection)
+> .venv\Scripts\python.exe -B tools\check_note.py knowledge\01-printers\p1s-vs-h2c-specs.md knowledge\01-printers\my-draft-note.md
+PASS knowledge\01-printers\p1s-vs-h2c-specs.md
+FAIL knowledge\01-printers\my-draft-note.md
+  - line 6: fact bullet without URL / local path / 'measured' / 'not verified' (or a 'same source' back-reference with a URL earlier in the same subsection, or a link to a note that exists)
 (exit code 2)
 ```
 

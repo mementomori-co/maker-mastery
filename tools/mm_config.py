@@ -20,8 +20,12 @@ Outputs (API):
 
 YAML: PyYAML is used when it is installed (it is in requirements.txt). Without it a small built-in reader handles the
 flat "key: value" / "key: [a, b]" form that config\paths.example.yaml uses, so the self-test can still run.
-Windows paths: forward slashes, or single quotes. A double-quoted value with a backslash is refused with a plain message
-(PyYAML would turn \b, \t, \n into control characters), and so is any loaded value that holds a control character.
+Windows paths: forward slashes, or single quotes. A double-quoted value with a backslash is refused with a plain message,
+with or without PyYAML (PyYAML would turn \b, \t, \n into control characters and \x41 silently into "A"), and so is any
+loaded value that holds a control character. The file is read as UTF-8 (a BOM is allowed); another encoding is refused
+with a message. Every value must be text or a list of text (a number, true/false or a mapping is refused).
+Not detectable: a path whose backslashes were dropped before it reached the file ("C:Program FilesBambu Studio") is
+plain text; mm_config.py prints "[does not exist]" next to it, which is the hint to fix it.
 
 Example:
   .venv\Scripts\python.exe tools\mm_config.py          prints the resolved configuration
@@ -96,6 +100,8 @@ def _mini_yaml(text: str) -> dict:
         elif v.startswith("[") and v.endswith("]"):
             inner = v[1:-1].strip()
             out[k] = [_scalar(x) for x in inner.split(",")] if inner else []
+        elif v.startswith(("[", "{")):
+            raise MMConfigError(f"config line {n}: unclosed list or mapping: {raw!r}")
         else:
             out[k] = _scalar(v)
     return out
@@ -117,13 +123,9 @@ def _parse(text: str, f: pathlib.Path | None = None) -> dict:
     try:
         import yaml  # PyYAML
     except ImportError:
-        # The mini reader keeps backslashes in double quotes literally, but PyYAML does not; refuse that form here too
-        # so a file that works now does not break later when PyYAML is installed.
-        for n, raw in enumerate(text.splitlines(), 1):
-            body = raw.split(" #", 1)[0] if not raw.lstrip().startswith("#") else ""
-            for m in re.finditer(r'"([^"]*)"', body):
-                if "\\" in m.group(1):
-                    raise _bad_config(f, n, "a double-quoted value contains a backslash")
+        # load() has already refused backslashes in double quotes (the mini reader keeps them literally, PyYAML does
+        # not), so a file that works now does not break later when PyYAML is installed.
+        _refuse_backslash_in_double_quotes(text, f)
         return _mini_yaml(text)
     try:
         data = yaml.safe_load(text)
@@ -141,6 +143,28 @@ def _control_chars(value) -> bool:
     # also the characters YAML makes of \N, \_, \L and \P inside double quotes
     odd = {0x7f, 0x85, 0xa0, 0x2028, 0x2029}
     return any(isinstance(s, str) and any(ord(c) < 0x20 or ord(c) in odd for c in s) for s in items)
+
+
+def _str_or_str_list(v) -> bool:
+    """None (an empty value), a string, or a list of strings. Numbers, booleans and mappings are refused."""
+    if v is None or isinstance(v, str):
+        return True
+    return isinstance(v, list) and all(isinstance(x, str) for x in v)
+
+
+def _refuse_backslash_in_double_quotes(text: str, f: pathlib.Path) -> None:
+    """Refuse any backslash inside a double-quoted value, before either reader sees it. With PyYAML most such escapes
+    fail or become control characters (caught later), but some decode silently into a wrong path: "\\x41" -> "A",
+    "\\u00e9" -> "e-acute", "\\e" -> ESC, and a correctly doubled "\\\\" is kept here as well for one simple rule. Single
+    quotes and forward slashes are the two supported forms."""
+    for n, raw in enumerate(text.splitlines(), 1):
+        if raw.lstrip().startswith("#"):
+            continue
+        body = re.sub(r"'[^']*'", "''", raw)  # a single-quoted value may hold " and \ freely
+        body = body.split(" #", 1)[0]
+        for m in re.finditer(r'"([^"]*)"', body):
+            if "\\" in m.group(1):
+                raise _bad_config(f, n, "a double-quoted value contains a backslash")
 
 
 def _line_of(text: str, key: str) -> int | None:
@@ -166,12 +190,20 @@ def load() -> dict:
     cfg = {k: (list(v) if isinstance(v, list) else v) for k, v in DEFAULTS.items()}
     f = config_file()
     try:
-        text = f.read_text(encoding="utf-8")
+        text = f.read_text(encoding="utf-8-sig")  # -sig: Notepad's "UTF-8 with BOM" reads the same as plain UTF-8
+    except UnicodeDecodeError as exc:
+        raise MMConfigError(f"config\\paths.yaml cannot be read ({f}): it is not UTF-8 ({exc.reason} at byte "
+                            f"{exc.start}). Save config\\paths.yaml as UTF-8 (VS Code: the encoding button in the "
+                            f"status bar > Save with Encoding > UTF-8).") from None
     except OSError:
         cfg["_source"] = "built-in defaults (no config file found)"
         return cfg
+    _refuse_backslash_in_double_quotes(text, f)
     data = _parse(text, f)
     for k, v in data.items():
+        if not _str_or_str_list(v):
+            raise _bad_config(f, _line_of(text, str(k)), f"'{k}' must be text or a list of text, not "
+                                                         f"{type(v).__name__} ({v!r})")
         if _control_chars(v):
             raise _bad_config(f, _line_of(text, str(k)), f"'{k}' contains a control character (a mangled Windows path)")
         if k in LIST_KEYS and v in (None, ""):

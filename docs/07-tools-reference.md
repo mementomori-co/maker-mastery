@@ -62,16 +62,19 @@ No tool here starts, sends, uploads or queues a print.
 ### setup.ps1
 
 - **What it does:** one-time setup. Finds Python 3.12 or newer (`py -3.12`, then `py -3`, then `python`), creates
-  `.venv` in the project and installs `requirements.txt` into it after asking Y/N, copies `config\paths.example.yaml` to
+  `.venv` in the project and installs `requirements.txt` into it after asking Y/N (with `-c constraints.txt`, which
+  fixes every package, transitive ones too, to the versions of a tested fresh install), copies `config\paths.example.yaml` to
   `config\paths.yaml` if you have none, looks for Bambu Studio (read-only), and runs `selftest.py`. It changes nothing
   outside the project folder.
 - **Inputs:** `-Yes` answers the install question; `-Optional` also installs `requirements-optional.txt` (open3d).
+  `requirements-optional.txt` pins open3d itself (`open3d==0.20.0`), but `constraints.txt` does not list open3d or the
+  packages open3d pulls in, so those extra packages are not pinned: pip picks their versions on the day you install.
 - **Outputs:** `.venv\`, `config\paths.yaml`, the self-test table. Exit code: the self-test's.
-- **Example:** `powershell -ExecutionPolicy Bypass -File .\tools\setup.ps1` (why this form: [04 - First run](04-first-run.md#step-3-run-the-setup-script)).
+- **Example:** `powershell -ExecutionPolicy Bypass -File .\tools\setup.ps1` (why this form: [04 - First run](04-first-run.md#step-4-run-the-setup-script)).
 
 ### selftest.py
 
-- **What it does:** runs each `tools\tests\test_*.py` file (15 files, 221 tests) in its own process and prints one line
+- **What it does:** runs each `tools\tests\test_*.py` file (15 files, 229 checks) in its own process and prints one line
   per tool: PASS, FAIL or SKIPPED (an optional package is missing). No test needs Bambu Studio, Blender or the internet.
 - **Inputs:** none; `--verbose` prints the full test output.
 - **Outputs:** the table; exit 0 when nothing failed, 1 when a test failed.
@@ -81,31 +84,35 @@ No tool here starts, sends, uploads or queues a print.
 Self-test: 15 test files, Python 3.12.10 at <repo>\.venv\Scripts\python.exe
 Nothing here prints, slices or sends anything.
 
-  PASS    audit_3mf.py - slicer-setting checks C1-C16  (41 checks, 0.5 s)
-  PASS    audit_3mf.py - load check against your current-load.md (C7)  (25 checks, 0.3 s)
-  PASS    mm_config.py, resolve_profile.py, slice_cli.py guards, check_note.py, check_skill.py, build_indexes.py  (31 checks, 2 skipped, 1.4 s)
+  PASS    audit_3mf.py - slicer-setting checks C1-C16  (41 checks, 0.8 s)
+  PASS    audit_3mf.py - load check against your current-load.md (C7)  (25 checks, 0.4 s)
+  PASS    mm_config.py, resolve_profile.py, slice_cli.py guards, check_note.py, check_skill.py, build_indexes.py  (35 checks, 1.7 s)
   PASS    gcode_audit.py - extents, support and bridge report  (9 checks, 1.0 s)
   PASS    gcode_paths.py - G-code reader with arcs  (14 checks, 0.1 s)
-  PASS    hooks\guard_paths.py, hooks\session_start.py, hooks\log_run.py - Claude Code hooks  (13 checks, 1.6 s)
-  PASS    interface_coverage.py - support under visible overhangs  (9 checks, 5.3 s)
-  PASS    mcp\mm_audit_server.py - read-only audit MCP server  (2 checks, 2.0 s)
-  PASS    overhang_gate.py - overhangs, cantilever and islands  (10 checks, 1.6 s)
-  PASS    privacy_scan.py - personal-data scan  (24 checks, 0.2 s)
-  PASS    render_critic.py - render critique (needs optional open3d)  (12 checks, 17.5 s)
-  PASS    stability_check.py - does a display piece tip over  (9 checks, 0.8 s)
-  PASS    support_gap_readback.py - printed support Top Z gap  (6 checks, 3.1 s)
-  PASS    tower_bounds.py, tower_clearance.py, mcp\tower_clearance_3mf.py - prime tower  (7 checks, 0.8 s)
-  PASS    visible_ratio.py - how much of the part support hides  (9 checks, 1.4 s)
+  PASS    hooks\guard_paths.py, hooks\session_start.py, hooks\log_run.py - Claude Code hooks  (17 checks, 5.7 s)
+  PASS    interface_coverage.py - support under visible overhangs  (9 checks, 9.8 s)
+  PASS    mcp\mm_audit_server.py - read-only audit MCP server  (2 checks, 2.6 s)
+  PASS    overhang_gate.py - overhangs, cantilever and islands  (10 checks, 4.7 s)
+  PASS    privacy_scan.py - personal-data scan  (24 checks, 0.3 s)
+  PASS    render_critic.py - render critique (needs optional open3d)  (12 checks, 11 skipped, 2.7 s)
+  PASS    stability_check.py - does a display piece tip over  (9 checks, 1.0 s)
+  PASS    support_gap_readback.py - printed support Top Z gap  (6 checks, 3.5 s)
+  PASS    tower_bounds.py, tower_clearance.py, mcp\tower_clearance_3mf.py - prime tower  (7 checks, 0.9 s)
+  PASS    visible_ratio.py - how much of the part support hides  (9 checks, 1.7 s)
 
 RESULT: PASS - every tool that could be tested works on this PC.
 ```
 
-(Captured with the environment the project was built in, which has open3d installed but not PyYAML; the 2 skipped
-checks in the third line are the PyYAML-only config tests.) On a Python without open3d, the render_critic line reads:
+(Captured from a full fresh install by `tools\setup.ps1`, answering `y`, without `-Optional`: PyYAML is installed, so
+the third line runs all 35 checks, and open3d is not, so the render_critic line skips 11 of its 12 checks.) With
+open3d installed (`-Optional`), the render_critic line runs all its checks, for example:
 
 ```text
-  PASS    render_critic.py - render critique (needs optional open3d)  (12 checks, 11 skipped, 0.7 s)
+  PASS    render_critic.py - render critique (needs optional open3d)  (12 checks, 19.1 s)
 ```
+
+On a Python without PyYAML the third line reads `(35 checks, 2 skipped, ...)`: the 2 skipped checks are the
+PyYAML-only config tests. Times vary from PC to PC.
 
 Before the packages are installed (you answered N in setup), most lines read `SKIPPED`, for example
 `SKIPPED audit_3mf.py - slicer-setting checks C1-C16  (1 checks, 1 skipped, 0.2 s)`, and the result is still `PASS`.
@@ -394,15 +401,17 @@ PASS 100.0  render.png  (0.52 s) -> critic\render_critic.md
 
 - **What it does:** checks a knowledge note against [templates/note.md](../templates/note.md): an `Applies to:` line, a
   `Verified: YYYY-MM-DD` line with real digits, a `Sources:` section with a URL, a source on every fact bullet, and a
-  load (MPa) on every HDT value. A fact bullet's source can be its own URL, the word "measured", a "not verified" label,
-  a link to another note, or a back-reference such as "same source" when a bullet above it in the same subsection has a
+  load (MPa) on every HDT value. A fact bullet's source can be its own URL, the word "measured", a "not verified" label
+  (the UI-label tag "(label not verified)" alone does not count), a link to another note that exists, or a back-reference such as "same source" when a bullet above it in the same subsection has a
   URL. The self-test runs it over every shipped note. It also runs as a hook right after Claude writes a file under `knowledge\`.
 - **Inputs:** note files (or the hook's JSON). **Outputs:** PASS/FAIL per file; exit 0 all pass, 2 otherwise.
-- **Example:** `.venv\Scripts\python.exe -B tools\check_note.py knowledge\03-materials\drying.md`
+- **Example:** `.venv\Scripts\python.exe -B tools\check_note.py knowledge\01-printers\p1s-vs-h2c-specs.md knowledge\01-printers\my-draft-note.md`
+  (`my-draft-note.md` stands for a draft of yours whose line 6 has no source)
 
 ```text
-FAIL knowledge\01-printers\plates.md
-  - line 7: fact bullet without URL / local path / 'measured' / 'not verified' (or a 'same source' back-reference with a URL earlier in the same subsection)
+PASS knowledge\01-printers\p1s-vs-h2c-specs.md
+FAIL knowledge\01-printers\my-draft-note.md
+  - line 6: fact bullet without URL / local path / 'measured' / 'not verified' (or a 'same source' back-reference with a URL earlier in the same subsection, or a link to a note that exists)
 (exit code 2)
 ```
 

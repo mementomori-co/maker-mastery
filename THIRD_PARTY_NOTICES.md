@@ -62,7 +62,7 @@ SOFTWARE.
 
 ## Python dependencies (installed by you, not vendored)
 
-No third-party Python code is copied into this repository. These packages are installed from PyPI into the project's `.venv` by `tools/setup.ps1` (`pip install -r requirements.txt`, and `requirements-optional.txt` only when you ask for it) and keep their own licences. Each licence below was read from the package's PyPI JSON record for the pinned version (`https://pypi.org/pypi/<name>/<version>/json`): the `license_expression` field where the package sets one, otherwise the `License ::` classifier and the `license` field. Packages that these depend on in turn are installed by pip and carry their own licences; they are not listed here, except the three below that this repository's code imports directly.
+No third-party Python code is copied into this repository. These packages are installed from PyPI into the project's `.venv` by `tools/setup.ps1` (`pip install -r requirements.txt -c constraints.txt`, and `requirements-optional.txt` only when you ask for it) and keep their own licences. Each licence below was read from the package's PyPI JSON record for the pinned version (`https://pypi.org/pypi/<name>/<version>/json`): the `license_expression` field where the package sets one, otherwise the `License ::` classifier and the `license` field. Packages that these depend on in turn are installed by pip and carry their own licences; they are not listed here, except the three below that this repository's code imports directly.
 
 ### Required (`requirements.txt`)
 
@@ -78,17 +78,18 @@ No third-party Python code is copied into this repository. These packages are in
 | PyYAML | 6.0.2 | reading `config/paths.yaml` (`tools/mm_config.py`) | MIT License (classifier; `license` field "MIT") | https://pypi.org/project/PyYAML/ |
 | mcp | 2.3.0 | the optional read-only audit MCP server (`tools/mcp/mm_audit_server.py`) | MIT License (classifier; `license` field "MIT") | https://pypi.org/project/mcp/ |
 
-### Transitive, but imported directly (installed by `mcp`, not pinned by this repository)
+### Transitive, but imported directly (installed by `mcp`; pinned only in `constraints.txt`)
 
 `tools/mcp/mm_audit_server.py` imports these three packages itself (`import anyio.to_thread`, `from pydantic import ...`,
 `from mcp_types import ToolAnnotations`). They are not in `requirements.txt`: pip installs them because `mcp` 2.3.0
 requires them (`anyio>=4.9`, `pydantic>=2.12.0`, `mcp-types==2.3.0` in the `mcp` 2.3.0 metadata). The versions below are
-the ones pip resolved when this file was checked; yours may be newer within those ranges.
+the ones a full fresh install resolved; `tools/setup.ps1` installs exactly these through `constraints.txt`, which pins
+every package of that install (direct and transitive).
 
 | Package | Version checked | Imported as | Licence (from PyPI) | PyPI page |
 |---|---|---|---|---|
 | anyio | 4.15.1 | `anyio` | MIT (license_expression) | https://pypi.org/project/anyio/ |
-| pydantic | 2.13.5 | `pydantic` | MIT (license_expression) | https://pypi.org/project/pydantic/ |
+| pydantic | 2.14.1 | `pydantic` | MIT (license_expression) | https://pypi.org/project/pydantic/ |
 | mcp-types | 2.3.0 | `mcp_types` | MIT License (classifier; `license` field "MIT") | https://pypi.org/project/mcp-types/ |
 
 `mcp_types` is not a module inside `mcp`: it is a separate PyPI distribution, `mcp-types`, from the same repository

@@ -52,7 +52,7 @@ remove that mark once with `Unblock-File .\tools\setup.ps1`
 
 **Fix:**
 
-1. Run `py --list`. If 3.12 is not in the list, install it ([02 - Install](02-install.md), part 4).
+1. Run `py --list`. If 3.12 is not in the list, install it ([02 - Install, section 3](02-install.md#3-python-312)).
 2. Close the VS Code terminal (trash-can icon) and open a new one with **Terminal > New Terminal**. A terminal opened
    before the install does not see the new PATH. If that is not enough, close and reopen VS Code.
 3. Run the setup line again.
@@ -74,17 +74,34 @@ Settings that page is under **Settings > Apps > Advanced app settings > App exec
 ## 4. A hook error when Claude Code starts
 
 **You see:** in the Claude Code panel, an error mentioning a hook, `SessionStart`, `PreToolUse`, or
-`.venv/Scripts/python.exe` not found.
+`.venv/Scripts/python.exe` not found. Or every file edit and shell command Claude tries is blocked, with an error that
+contains `failed; blocking because onFailure is "block"`.
 
 **Why:** the hooks in `.claude\settings.json` run the project's own Python, `.venv\Scripts\python.exe`. Before setup, it
-does not exist. Until it does, nothing is guarded. (How Claude Code words this error is not verified.)
+does not exist. The folder guard (`PreToolUse`) is set to fail closed (`"onFailure": "block"`), so on Claude Code
+v2.1.295 or later it blocks every write and shell command until the venv exists; Claude cannot run setup for you then.
+On an older Claude Code the guard cannot start and nothing is guarded. The quoted error text is from the
+[hooks reference](https://code.claude.com/docs/en/hooks); the exact wording on your screen is not verified.
 
 **Fix:**
 
 1. Close the Claude Code panel.
-2. Run the setup ([04 - First run](04-first-run.md), step 3) and wait for `Setup finished`.
+2. Run the setup ([04 - First run](04-first-run.md), step 4) and wait for `Setup finished`.
 3. Check: `Test-Path .venv\Scripts\python.exe` should print `True`.
 4. Run **Developer: Reload Window** from the Command Palette (`Ctrl+Shift+P`) and open the panel again.
+
+> **Warning: a Settings Error that names `.claude\settings.json`.** If a Settings Error names `.claude\settings.json`,
+> choose **Exit** and update Claude Code ([check your version](02-install.md#check-your-claude-code-version); this
+> project needs v2.1.295 or later). Never "continue without the broken settings": that drops the deny rules (including
+> the no-print rules) and the guard hook for the whole session.
+>
+> Per the settings docs, a Settings Error means a file has invalid JSON or a value the schema rejects, and the dialog
+> offers to fix the file with Claude's help, exit, or "continue without the broken settings"
+> ([Settings, "Fix a broken settings file"](https://code.claude.com/docs/en/settings#fix-a-broken-settings-file)). The
+> same section says a `-p` (print, headless) run shows no dialog: Claude Code skips the broken file silently and
+> carries on with the rest. After such a run, `claude doctor` shows what it dropped, and in an interactive session
+> `/status` lists the affected files (same section). So never run `claude -p` in this folder before you have confirmed
+> that `.claude\settings.json` loads without an error.
 
 ## 5. PyYAML is missing
 
@@ -96,7 +113,7 @@ does not exist. Until it does, nothing is guarded. (How Claude Code words this e
 **Fix:** install the requirements into the project environment (this is what setup does):
 
 ```powershell
-.venv\Scripts\python.exe -m pip install -r requirements.txt
+.venv\Scripts\python.exe -m pip install -r requirements.txt -c constraints.txt
 ```
 
 Or keep your `config\paths.yaml` in the simple one-line form the example uses.
@@ -140,7 +157,7 @@ FAIL lines, `VERDICT: FAIL`.
 **Why:** this is on purpose. `knowledge\00-gear-inventory\current-load.md` ships as an empty template: every slot says
 EMPTY and the date is the placeholder. Until you record what is physically loaded, no print file can pass.
 
-**Fix:** fill the file ([04 - First run](04-first-run.md), step 5): a real date in the `Verified:` line (from
+**Fix:** fill the file ([04 - First run](04-first-run.md), step 6): a real date in the `Verified:` line (from
 `Get-Date -Format yyyy-MM-dd`), only your printers' rows, and each loaded spool in bold, for example
 `**Bambu PLA Basic, Black**`. Then run the audit again. If C7 still fails, read the C7 lines: they say which row or
 filament does not match (wrong side on a dual-nozzle printer, wrong colour, wrong plate).
@@ -229,6 +246,17 @@ appear, run **Developer: Reload Window**. You need a paid Claude plan or a Claud
   folder from `protected_roots` yourself if you really want Claude to write there.
 - `bare 'python' resolves through PATH ...` (or `py`, `pip`): the guard makes Claude use the project's environment. Tell Claude:
   "use .venv\Scripts\python.exe". It should retry with the full path.
+- `... the command names a protected root ... is not a read-only verb`: a shell command named a protected folder and
+  could write there. `find`, `sort`, `uniq`, `tree`, `xxd`, `rg`, `ForEach-Object` and `Where-Object` are only allowed
+  when they do not name the protected folder, and a `{ }` script block is never allowed next to it. Ask Claude to read
+  with `cat`, `ls`, `grep`, `Get-Content` or `Get-ChildItem`, or to copy the files into the project first.
+
+**What the guard is, and is not:** a hook that blocks Claude's file tools and common shell writes into protected
+folders. It is a safety net, not a sandbox: a command that builds the path at run time, or an MCP server's own write
+tools, can get around it. For strong isolation use Windows folder permissions, a separate Windows user or a VM.
+
+**Watch edits to `config\paths.yaml`:** emptying `protected_roots` there switches the protection off. Claude is allowed
+to edit that file (so a broken config can be fixed), so read its diff before you accept a Claude edit to it.
 
 ## 15. C8 warns that a filament profile was not found
 

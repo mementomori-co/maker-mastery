@@ -6,6 +6,23 @@ folders, and replace the brand if you publish a fork. Next: [09 - Troubleshootin
 The easiest way to make any change below is to ask Claude in the panel, for example "Add my P1S to printers.md" or
 "Protect the folder E:/Finished Prints". The steps show what it should change, so you can check it.
 
+## Make it address you your way (OWNER_PROFILE)
+
+Claude reads an owner profile at the start of every session: your name, tone, reply format, and the things only you
+decide. Until you make your own, it uses the generic example
+[templates/OWNER_PROFILE.md](../templates/OWNER_PROFILE.md) and calls you "the maker".
+
+1. In the VS Code terminal (Terminal > New Terminal), from the project folder, paste:
+   `Copy-Item templates\OWNER_PROFILE.md OWNER_PROFILE.md`
+2. Open the new `OWNER_PROFILE.md` in the project root and replace the example answers ("Sam") with yours: the name to
+   use, tone, reply format, owner-only list and preferences. Keep the headings.
+3. Start a new Claude Code session, or type "Re-read OWNER_PROFILE.md" in the panel.
+
+Your copy is git-ignored (`/OWNER_PROFILE.md` in [.gitignore](../.gitignore)), so it stays on your PC if you publish a
+fork. You can add to the owner-only list, but the no-AI-print rule applies whatever the profile says. Never put
+passwords or keys in it. For how the profile fits running with fewer approvals, see
+[11 - Autonomous mode](11-autonomous-mode.md).
+
 ## Your printers
 
 1. Open [knowledge/00-gear-inventory/README.md](../knowledge/00-gear-inventory/README.md) and use its interview prompt,

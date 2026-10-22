@@ -1,0 +1,40 @@
+# Exact versions of every package a full fresh install of requirements.txt produced (Windows 11, Python 3.12),
+# direct and transitive. tools\setup.ps1 installs with:  pip install -r requirements.txt -c constraints.txt
+# A constraints file only fixes versions; it never adds a package that requirements.txt does not pull in.
+annotated-types==0.8.0
+anyio==4.15.1
+attrs==26.1.0
+cffi==2.1.1
+click==8.5.0
+cryptography==50.0.2
+h11==0.16.0
+httpcore2==2.16.0
+httpx2==2.16.0
+idna==3.20
+jsonschema==4.26.0
+jsonschema-specifications==2025.9.1
+manifold3d==3.5.4
+mcp==2.3.0
+mcp-types==2.3.0
+networkx==3.7
+numpy==2.5.3
+opentelemetry-api==1.45.1
+pycparser==3.12
+pydantic==2.14.1
+pydantic_core==2.50.1
+PyJWT==2.15.1
+python-multipart==0.0.32
+pywin32==312; sys_platform == "win32"
+PyYAML==6.0.2
+referencing==0.37.0
+rpds-py==2026.9.1
+rtree==1.4.1
+scipy==1.18.1
+shapely==2.1.2
+sse-starlette==3.5.0
+starlette==1.9.0
+trimesh==5.1.1
+truststore==0.10.5
+typing_extensions==4.16.0
+typing-inspection==0.4.4
+uvicorn==0.54.0

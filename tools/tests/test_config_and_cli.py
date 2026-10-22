@@ -123,15 +123,52 @@ class MMConfigTests(unittest.TestCase):
             self.assertEqual(c["blender_exe"], "E:/Apps/Blender/blender.exe")
 
     def test_control_character_in_value_is_refused(self):
-        try:
-            import yaml  # noqa: F401
-        except ImportError:
-            self.skipTest("PyYAML not installed: only PyYAML turns an escape into a control character")
-        # "\t" inside double quotes is valid YAML and silently becomes a TAB; the loader must catch it
-        with mock.patch.dict(os.environ, self.cfg('blender_exe: "E:\\tools\\blender.exe"\n')):
+        # a literal TAB inside single quotes reaches the value with both readers; the loader must catch it
+        with mock.patch.dict(os.environ, self.cfg("blender_exe: 'E:\tools/blender.exe'\n")):
             with self.assertRaises(mm_config.MMConfigError) as cm:
                 mm_config.load()
             self.assertIn("control character", str(cm.exception))
+
+    def test_silent_escapes_in_double_quotes_are_refused(self):
+        # with PyYAML "\x41" decodes silently to "A" and "\\" to one backslash; both forms are refused up front
+        for value in ('"E:\\x41pps/blender.exe"', '"E:\\u00e9/blender.exe"', '"E:\\\\Apps\\\\blender.exe"'):
+            with self.subTest(value=value), mock.patch.dict(os.environ, self.cfg(f"blender_exe: {value}\n")):
+                with self.assertRaises(mm_config.MMConfigError) as cm:
+                    mm_config.load()
+                self.assertIn("double-quoted value contains a backslash", str(cm.exception))
+        # a double quote inside a single-quoted value next to a backslash is fine
+        with mock.patch.dict(os.environ, self.cfg("blender_exe: 'E:\\Apps\\\"x\"\\blender.exe'\n")):
+            self.assertEqual(mm_config.load()["blender_exe"], 'E:\\Apps\\"x"\\blender.exe')
+
+    def test_utf8_bom_is_accepted_and_other_encodings_refused(self):
+        p = os.path.join(self.td, "bom.yaml")
+        with open(p, "wb") as fh:
+            fh.write(b"\xef\xbb\xbfslice_workdir: 'work/bom'\n")
+        with mock.patch.dict(os.environ, {"MM_CONFIG": p}):
+            self.assertEqual(mm_config.load()["slice_workdir"], "work/bom")
+        with open(p, "wb") as fh:
+            fh.write("blender_exe: 'E:/Pr\u00f6gramme/blender.exe'\n".encode("cp1252"))
+        with mock.patch.dict(os.environ, {"MM_CONFIG": p}):
+            with self.assertRaises(mm_config.MMConfigError) as cm:
+                mm_config.load()
+            self.assertIn("as UTF-8", str(cm.exception))
+            self.assertIn("config\\paths.yaml", str(cm.exception))
+
+    def test_unclosed_list_refused_by_builtin_reader(self):
+        with self.assertRaises(mm_config.MMConfigError):
+            mm_config._mini_yaml("protected_roots: [\n")
+
+    def test_values_must_be_text_or_list_of_text(self):
+        try:
+            import yaml  # noqa: F401
+        except ImportError:
+            self.skipTest("PyYAML not installed: the built-in reader reads every value as text")
+        for text in ("slice_workdir: 5\n", "blender_exe: true\n", "allowed_roots: [1, 2]\n",
+                     "protected_roots: {a: b}\n"):
+            with self.subTest(text=text), mock.patch.dict(os.environ, self.cfg(text)):
+                with self.assertRaises(mm_config.MMConfigError) as cm:
+                    mm_config.load()
+                self.assertIn("must be text or a list of text", str(cm.exception))
 
     def test_cli_reports_bad_config_and_space_warning(self):
         bad = self.cfg('bambu_studio_exe: "E:\\Apps\\bambu-studio.exe"\n')
@@ -294,9 +331,17 @@ class CheckNoteTests(unittest.TestCase):
             "- B - same source p. 3\n": False,                                     # back-reference with nothing above
             "### One\n- A (https://example.org/a)\n### Two\n- B - same TDS\n": False,  # URL is in another subsection
             "- See [other.md](other.md) for the details.\n": True,                  # pointer to another checked note
+            "- See [gone.md](gone.md#x) for the details.\n": False,                 # link target does not exist
+            "- Set Quality > Seam > Position (label not verified).\n": False,      # UI-label tag is not a source label
+            "- Set Quality > Seam (label not verified); value not verified.\n": True,
             "- HDT and Vicat N/A (too soft) - https://example.org/t\n": True,
             "- HDT 70 / 75 C - https://example.org/t\n": False,                    # pair without its loads
+            "- HDT 173 / 215 °C (1.8 / 0.45 MPa) - https://example.org/t\n": True,
+            "- HDT 68 °C; tensile 50 MPa; elongation 4 % at a long distance of text; HDT 70 °C - https://example.org/t\n": False,
+            "- HDT 68 °C at both loads, see the TDS table on page two for the 0.45 and 1.80 MPa rows - https://example.org/t\n": False,
+            "- Tg 80 °C, Vicat and HDT N/A - https://example.org/t; tensile 30 MPa\n": True,
         }
+        write(os.path.join(self.td, "other.md"), "# other\n")
         for body, ok in cases.items():
             p = write(os.path.join(self.td, "case.md"), head + body + tail)
             self.assertEqual(check_note.check(pathlib.Path(p)) == [], ok, body)

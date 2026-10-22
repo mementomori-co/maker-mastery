@@ -13,6 +13,14 @@ primary source.
 > **NO AI EVER STARTS, SENDS, UPLOADS OR QUEUES A PRINT.** Claude Code, every agent and every skill may design, slice,
 > audit and prepare print-ready files. Only the maker presses Print in Bambu Studio, after reading the pre-print checklist.
 
+## Who you work for (read first)
+1. At session start, read `OWNER_PROFILE.md` in the project root if it exists, otherwise `templates\OWNER_PROFILE.md`
+   (the generic example; with it, call the owner "the maker" and use `NEEDS MAKER`).
+2. Address the owner exactly as the profile says, and follow its tone and reply format.
+3. Its owner-only list is binding, in addition to the no-AI-print rule: prepare up to that step, then stop and ask.
+4. "NEEDS MAKER" in this rulebook, the agents and the skills is the default question marker. Agents return it to you as
+   written; when you reply to the owner, write it as `NEEDS <name from the profile>` (for example `NEEDS SAM`).
+
 ## Your setup (edit these files, not this rulebook)
 - **Your printers and what is loaded:** `knowledge\00-gear-inventory\` (see its `README.md`). Answer for that gear only.
   If it is empty or undated, ask; never assume a printer model, nozzle, plate or filament.
@@ -44,7 +52,8 @@ keep the idea and research the claim.
 4. **Full file paths and full URLs, always.** No partial paths, no "...".
 5. **Exact UI labels** for any software setting, as `Tab > Section > Setting`. A label not checked against the real app or
    official docs is marked "(label not verified)".
-6. **Short answers. One next step.** Questions are numbered and marked NEEDS MAKER.
+6. **Short answers. One next step.** Questions are numbered, complete sentences, marked NEEDS MAKER (or the profile's
+   `NEEDS <name>`). Never re-ask a fact the profile, `knowledge\00-gear-inventory\` or the handoff files already hold.
 7. **Complete deliverables.** Never ask the maker to finish a prompt, file or command you wrote.
 8. **Count carefully.** Positions vs units, slots vs spools, planned vs built are separate numbers in separate sentences.
 9. **Own mistakes in one line,** fix them, and log them in `lessons\` (`/lesson-learned`).
@@ -142,10 +151,13 @@ Definitions live in `.claude\agents\`. Two pipelines:
 ## Approvals
 Nothing gets installed, deleted or bought, and no account is created, without the maker's explicit yes in this session.
 Folders listed under `protected_roots` in `config\paths.yaml` are read-only for Claude (enforced by
-`tools\hooks\guard_paths.py`). Read downloaded code before running it, and credit every reused source in
+`tools\hooks\guard_paths.py`, which fails closed on Claude Code v2.1.295 or later: if it cannot run, the write is blocked). Permission modes, allow and
+deny rules, parallel agents and the owner profile are explained for the maker in `docs\11-autonomous-mode.md`; the
+install and first-run guides are `docs\02-install.md` and `docs\04-first-run.md`. Read downloaded code before running it, and credit every reused source in
 `sources\registry.md` (and its license in `THIRD_PARTY_NOTICES.md` when code is copied).
 
-When you stop, report: what changed, files to review (full paths), Known flaws, and NEEDS MAKER questions.
+When you stop, report: what changed, files to review (full paths), Known flaws, and NEEDS MAKER questions (in the
+reply format of `OWNER_PROFILE.md`).
 
 Optional: if you pair Claude Code with a second Claude chat as a reviewer, use the handoff protocol in
 `templates\handoff\README.md`.

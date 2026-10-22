@@ -3,7 +3,7 @@ Applies to: <printer model(s), or "all"> - Bambu Studio <version> - firmware <ve
 Verified: YYYY-MM-DD
 
 ## Facts
-- <fact, with its condition: printer, nozzle, plate, material> - [source](<full public URL>)
+- <fact, with its condition: printer, nozzle, plate, material> - [source](https://example.com/your-source)
 
 ## What it means in practice
 - <rule of thumb>
@@ -12,4 +12,4 @@ Verified: YYYY-MM-DD
 - <item>
 
 Sources:
-- <full public URL> - <what it proved>
+- https://example.com/your-source - <what it proved> (replace the example.com URL with the real public source)

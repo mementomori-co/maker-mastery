@@ -60,8 +60,10 @@ audit the project and the G-code, and fill a pre-print checklist, and then the l
   "not verified", and a fact-checker that never sees the researcher's reasoning re-derives each claim.
 - **Gates that use the real slice.** Print files are judged from the sliced G-code and the 3MF itself, by tools with
   their own tests, so a clean-looking preview cannot hide a bad plate.
-- **You stay in charge.** Nothing is installed, deleted or printed without you. Folders you protect are read-only for
-  Claude, and the print rule is enforced in settings as well as in the rules.
+- **You stay in charge.** Nothing is installed, deleted or printed without you. A hook blocks Claude's file tools and
+  common shell writes into folders you protect (a safety net, not a sandbox; see
+  [troubleshooting, section 14](docs/09-troubleshooting.md#14-claudes-command-was-blocked-by-guard_paths)), and the
+  print rule is enforced in settings as well as in the rules.
 
 ## Preview
 
@@ -120,7 +122,7 @@ Track your own progress in [CURRICULUM.md](CURRICULUM.md).
 | 12 | [Failure diagnosis](knowledge/12-failure-diagnosis/index.md) | ✅ v1.0 |
 | 13 | Project ops | ⏳ v1.1 |
 
-| # | Creative, business and design | Status |
+| # | <img src="assets/brand/crest-streaming-icon.png" width="40" align="absmiddle" alt="STREAM crest"> Creative, business and design | Status |
 |---|---|---|
 | 14 | Creative mindset | ⏳ v1.1 |
 | 17 | Creative direction | ⏳ v1.1 |
@@ -133,7 +135,7 @@ Track your own progress in [CURRICULUM.md](CURRICULUM.md).
 | 26 | [AI to 3D](knowledge/26-ai-to-3d/index.md) | ✅ v1.0 |
 | 27 | Scanning and photogrammetry | ⏳ v1.1 |
 
-| # | Games, media, tech and safety | Status |
+| # | <img src="assets/brand/crest-streaming-icon.png" width="40" align="absmiddle" alt="STREAM crest"> Games, media, AI, tech and safety | Status |
 |---|---|---|
 | 28 | Game design | ⏳ v1.1 |
 | 29 | Game development | ⏳ v1.1 |
@@ -153,33 +155,43 @@ Track your own progress in [CURRICULUM.md](CURRICULUM.md).
 
 Numbers missing from the map are reserved and are not part of this project.
 
+### The Memento Mori family
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/brand/family-strip-dark.png">
+    <source media="(prefers-color-scheme: light)" srcset="assets/brand/family-strip-light.png">
+    <img alt="The four Memento Mori crests: MAKE · STREAM · CREATE · MEMENTO MORI" src="assets/brand/family-strip-light.png" width="572">
+  </picture>
+</p>
+
 ## How it works
 
 ### The system
 
 ```mermaid
 flowchart TB
-    you(["You, the maker"])
+    you(["You"])
     subgraph vscode["VS Code"]
-        cc["Claude Code panel"]
+        cc["Claude Code"]
     end
-    subgraph project["This project folder"]
-        rules["Rules: CLAUDE.md"]
-        know["Knowledge library"]
-        agents["Agents and skills"]
-        tools["Tools: audits and checks"]
-        lessons["Lessons learned"]
+    subgraph project["Project folder"]
+        rules["CLAUDE.md"]
+        know["Knowledge"]
+        agents["Agents"]
+        tools["Tools"]
+        lessons["Lessons"]
     end
-    bs["Bambu Studio on your PC"]
-    printer["Your printer"]
+    bs["Bambu Studio"]
+    printer["Printer"]
     you <--> cc
     cc <--> rules
     cc <--> know
     cc <--> agents
     cc <--> tools
     cc <--> lessons
-    tools -- "slices with the CLI, reads 3MF and G-code" --> bs
-    you == "only YOU press Print" ==> bs
+    tools -- "slice + audit" --> bs
+    you == "YOU press Print" ==> bs
     bs ==> printer
 ```
 
@@ -213,20 +225,44 @@ flowchart TD
 
 ## Quick Start
 
-1. **Install the free tools:** Git, VS Code, the Claude Code extension, Python 3.12 and Bambu Studio.
-   [docs/02-install.md](docs/02-install.md)
+**Platform:** Windows 11 is tested. The macOS and Linux install guides cover the prerequisites; running the project
+there is planned for v1.1.
+
+1. **Install the free tools:** Git, VS Code, Python 3.12, the Claude Code extension for VS Code and Bambu Studio. The
+   Claude Code command line is optional: the VS Code extension works on its own. You need **Claude Code v2.1.295 or
+   later (the VS Code extension's version counts)**, because the project's guard hook uses `"onFailure": "block"`
+   ([how to check your version](docs/02-install.md#check-your-claude-code-version)). Every app, every system and every
+   install method, click by click: [docs/02-install.md](docs/02-install.md).
+   - **Quick route on Windows:** the [install scripts](install/README.md) ask y/N for each app and install nothing
+     without your yes. They live in the project folder, so download the ZIP first (step 2). Then, in PowerShell in
+     the project folder, run `install\windows.ps1` (try `-DryRun` first) and check the result with `install\check.ps1`
+     ([the quick route](docs/02-install.md#the-quick-route-install-scripts)):
+
+     ```powershell
+     powershell -ExecutionPolicy Bypass -File install\windows.ps1 -DryRun
+     powershell -ExecutionPolicy Bypass -File install\windows.ps1
+     powershell -ExecutionPolicy Bypass -File install\check.ps1
+     ```
+
 2. **Get the project:** download the ZIP or clone it into a short folder path outside OneDrive.
    [docs/03-get-the-project.md](docs/03-get-the-project.md)
-3. **Run setup once, before you open Claude Code:** in the VS Code terminal run this command
+3. **Open it in VS Code and install the recommended extensions** (VS Code offers them from `.vscode\extensions.json`).
+   [docs/04-first-run.md, step 2](docs/04-first-run.md#step-2-install-the-recommended-vs-code-extensions)
+4. **Run setup once, before you open Claude Code:** in the VS Code terminal run this command
    ([docs/04-first-run.md](docs/04-first-run.md)):
 
    ```powershell
    powershell -ExecutionPolicy Bypass -File .\tools\setup.ps1
    ```
 
-4. **Tell it about your gear:** fill `knowledge\00-gear-inventory\` with your printers and what is loaded.
+5. **Tell it who you are:** copy `templates\OWNER_PROFILE.md` to `OWNER_PROFILE.md` in the project folder and fill it
+   in (your name, tone, reply format and owner-only list). Claude reads it first in every session.
+   [templates/OWNER_PROFILE.md](templates/OWNER_PROFILE.md)
+6. **Tell it about your gear:** fill `knowledge\00-gear-inventory\` with your printers and what is loaded.
    [docs/04-first-run.md](docs/04-first-run.md)
-5. **Open the Claude Code panel and ask.** For example: "Read CLAUDE.md, then help me print the calibration cube in
+7. **Pick how much Claude may do without asking:** permission modes, allow and deny rules, parallel agents, and what
+   always stays yours. [docs/11-autonomous-mode.md](docs/11-autonomous-mode.md)
+8. **Open the Claude Code panel and ask.** For example: "Read CLAUDE.md, then help me print the calibration cube in
    examples\calibration-cube." [docs/05-daily-workflow.md](docs/05-daily-workflow.md)
 
 ## Guides
@@ -234,15 +270,17 @@ flowchart TD
 | Guide | What it covers |
 |---|---|
 | [01 What this is](docs/01-what-this-is.md) | How the parts fit together, in plain English |
-| [02 Install](docs/02-install.md) | Git, VS Code, Claude Code, Python 3.12 and Bambu Studio, click by click |
+| [02 Install](docs/02-install.md) | Every app on Windows, macOS and Ubuntu, every install method, plus the [install and check scripts](install/README.md) |
 | [03 Get the project](docs/03-get-the-project.md) | Download ZIP or git clone, and where to put the folder |
-| [04 First run](docs/04-first-run.md) | Setup script, config, your gear, your first prompt |
+| [04 First run](docs/04-first-run.md) | Recommended VS Code extensions, setup script, config, your gear, your first prompt |
 | [05 Daily workflow](docs/05-daily-workflow.md) | Asking for a part or a print, the library, the agents, the gates |
 | [06 Print safety](docs/06-print-safety.md) | The no-AI-print rule, the checklist, how you send a print |
 | [07 Tools reference](docs/07-tools-reference.md) | Every tool: inputs, outputs, example and sample output |
 | [08 Customize](docs/08-customize.md) | Your printers, filaments, rules, knowledge, lessons and brand |
 | [09 Troubleshooting](docs/09-troubleshooting.md) | The 15 most likely problems and their fixes |
 | [10 FAQ](docs/10-faq.md) | Short answers to common questions |
+| [11 Autonomous mode](docs/11-autonomous-mode.md) | Fewer approvals, still safe: permission modes, rules, parallel agents, the two-brain workflow, your owner profile |
+| [Publishing](docs/PUBLISHING.md) (for maintainers) | Publishing the repository, the org avatar and the v1.0.0 release on GitHub |
 
 ## FAQ
 
@@ -271,8 +309,9 @@ Bambu Studio are free downloads.
 <details>
 <summary><strong>Does it work on macOS or Linux?</strong></summary>
 
-It is written and tested for Windows 11 only. The Python tools are mostly portable, but the setup script, the hooks and
-the guides assume Windows. macOS and Linux are not tested.
+Windows 11 is tested. The macOS and Linux install guides cover the prerequisites; running the project there is planned
+for v1.1. The Python tools are mostly portable, but the setup script and the hooks assume Windows, and nothing here has
+been run on macOS or Linux.
 </details>
 
 <details>
@@ -287,10 +326,12 @@ More answers: [docs/10-faq.md](docs/10-faq.md).
 ## Roadmap
 
 - **v1.0.0 "First Light"** (this release): 16 knowledge domains, 22 agents, 30 skills, 5 commands, the print-qa gate,
-  the slicing and audit tools with their self-test, 20 lessons, the calibration-cube example and the beginner guides.
+  the slicing and audit tools with their self-test, 20 lessons, the calibration-cube example, the beginner guides, the
+  install and check scripts, and the autonomy guide.
 - **v1.1: the full library.** The remaining domains of the map, including game design and game development, plus
   finishing, calibration and testing, workflows, project ops, creative direction, selling and IP, reference sheets,
-  scanning, media and data and backups, each after the same source and privacy review.
+  scanning, media and data and backups, each after the same source and privacy review. Also planned: running the
+  project itself on macOS and Linux.
 
 ## Contributing
 
@@ -300,6 +341,8 @@ a way for software to start a print. Security problems go through [SECURITY.md](
 [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Credits
+
+### <img src="assets/brand/crest-apparel-icon.png" width="40" align="absmiddle" alt="Cap crest"> About the maker
 
 Created by @OrcusMori.
 
@@ -316,6 +359,10 @@ brand assets first.
 Star history (fill <owner> when the repository is published, then uncomment):
 [![Star History Chart](https://api.star-history.com/svg?repos=<owner>/maker-mastery&type=Date)](https://star-history.com/#<owner>/maker-mastery&Date)
 -->
+
+<p align="center">
+  <img src="assets/brand/crest-parent-sign-off.png" width="160" alt="MEMENTO MORI crest">
+</p>
 
 ---
 

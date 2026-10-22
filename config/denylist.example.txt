@@ -9,14 +9,16 @@
 #
 # Lines that start with # are comments and blank lines are ignored.
 #
-# 1) Plain line = case-insensitive substring. "YOUR NAME" also matches
-#    "your name" and "Your Name". Add each spelling, nickname and handle.
-YOUR NAME
-YOUR HANDLE
-YOUR CITY
-YOUR EMPLOYER
-your-email@example.com
-YOUR PRINTER NICKNAME
+# 1) Plain line = case-insensitive substring. "Jane Example" would also match
+#    "jane example" and "JANE EXAMPLE". Add each spelling, nickname and handle.
+#    The samples below are placeholders chosen so they never match normal text:
+#    the example list, run unedited, reports CLEAN on this repository.
+REPLACE-ME-FULL-NAME
+REPLACE-ME-HANDLE
+REPLACE-ME-CITY
+REPLACE-ME-EMPLOYER
+replace-me@example.com
+REPLACE-ME-PRINTER-NICKNAME
 #
 # 2) re:<regex> = case-insensitive Python regular expression.
 #    This sample flags a street address such as "123 Example Street".
@@ -28,7 +30,7 @@ re:\b555-01\d{2}\b
 #    Allows one exact (case-sensitive) phrase in one file only; everything
 #    else in that file is still checked. Use forward slashes in the path.
 #    Typical use: your public credit line in the README.
-allow: README.md | Created by YOUR HANDLE
+allow: README.md | Created by REPLACE-ME-HANDLE
 #
 # Built-in rules (user-profile paths, e-mail addresses, private IPv4 ranges,
 # secret-looking values near key/token/secret/password/access_code, and a

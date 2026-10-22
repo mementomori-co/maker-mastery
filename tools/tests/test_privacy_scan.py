@@ -206,7 +206,8 @@ class ScanCase(unittest.TestCase):
             r"exe = C:\Us~ers\somebody\AppData\x.exe",
             "mac = /Us~ers/somebody/Desktop",
             "contact me at someone~@mailhost.net",
-            "fine: dev~@example.com and 1234+me~@users.noreply.github.com",
+            "fine: dev~@example.com and 1234+me~@users.noreply.github.com and bot~@example.invalid",
+            "not fine: someone~@invalid.net",
             "printer at 192.168~.1.50 and cgnat 100.101~.5.6 and 172.20~.0.1",
             "public 8.8.8.8 is fine and version 10.2 is fine",
             f"api_key = {SECRET}",
@@ -220,7 +221,7 @@ class ScanCase(unittest.TestCase):
             r = l.split("[", 1)[1].split("]", 1)[0]
             rules.setdefault(r, []).append(l)
         self.assertEqual(len(rules.get("userpath", [])), 2, out)
-        self.assertEqual(len(rules.get("email", [])), 1, out)
+        self.assertEqual(len(rules.get("email", [])), 2, out)
         self.assertEqual(len(rules.get("private-ip", [])), 3, out)
         self.assertEqual(len(rules.get("secret", [])), 2, out)
         self.assertEqual(len(rules.get("printer-serial", [])), 1, out)

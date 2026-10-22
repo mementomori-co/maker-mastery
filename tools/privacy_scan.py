@@ -32,7 +32,8 @@ Built-in rules (turn them all off with --no-builtin):
     userpath      Windows and macOS user-profile paths: a drive letter (any drive)
                   or a slash, then the Users folder, then a name
     email         e-mail addresses, except @users.noreply.github.com and
-                  the reserved example.com / example.org / example.net
+                  the reserved example.com / example.org / example.net and
+                  the reserved top-level names .example and .invalid (RFC 2606)
     private-ip    IPv4 in 10/8, 172.16/12, 192.168/16 and CGNAT 100.64/10
     secret        long hex / base64 values near key, token, secret,
                   password or access_code (values are always masked)
@@ -118,7 +119,7 @@ class State:
 
 
 _EMAIL_OK = re.compile(
-    r"@(?:[a-z0-9-]+\.)*(?:users\.noreply\.github\.com|example\.(?:com|org|net))$", re.I)
+    r"@(?:[a-z0-9-]+\.)*(?:users\.noreply\.github\.com|example\.(?:com|org|net)|example|invalid)$", re.I)
 
 
 _FILE_TLDS = {

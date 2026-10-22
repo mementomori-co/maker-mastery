@@ -87,16 +87,18 @@ if (Test-Path $VenvPy) {
     if ($LASTEXITCODE -ne 0 -or -not (Test-Path $VenvPy)) { Write-Host 'Could not create .venv.' -ForegroundColor Red; exit 1 }
 }
 $req = Join-Path $Repo 'requirements.txt'
-Info 'These packages will be installed into .venv only (from requirements.txt):'
+$con = Join-Path $Repo 'constraints.txt'
+Info 'These packages will be installed into .venv only (from requirements.txt, versions fixed by constraints.txt):'
 Get-Content $req | Where-Object { $_ -match '^\s*[A-Za-z]' } | ForEach-Object { Info ("  " + ($_ -replace '\s+#.*$', '')) }
 if ($Optional) { Info 'Also the optional extras from requirements-optional.txt: open3d' }
 $Installed = $false
 if (Ask 'Install them now?') {
     $Installed = $true
-    & $VenvPy -m pip install --disable-pip-version-check -r $req
+    # constraints.txt pins every package of a tested fresh install, transitive ones too, so you get the same versions
+    & $VenvPy -m pip install --disable-pip-version-check -r $req -c $con
     if ($LASTEXITCODE -ne 0) { Write-Host 'pip install failed (see the lines above).' -ForegroundColor Red; exit 1 }
     if ($Optional) {
-        & $VenvPy -m pip install --disable-pip-version-check -r (Join-Path $Repo 'requirements-optional.txt')
+        & $VenvPy -m pip install --disable-pip-version-check -r (Join-Path $Repo 'requirements-optional.txt') -c $con
         if ($LASTEXITCODE -ne 0) { Write-Host 'Optional install failed; the main tools still work.' -ForegroundColor Yellow }
     }
 } else {

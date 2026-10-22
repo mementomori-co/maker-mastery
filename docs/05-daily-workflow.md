@@ -105,7 +105,10 @@ selling.
 - **Independent check:** nothing is called ready until a second agent that did not build it has checked it.
 - **print-qa gate:** nothing prints on a FAIL, and even on a PASS, you press Print.
 - **Approvals:** installs, deletions, purchases and account sign-ups wait for your explicit yes.
-- **Protected folders:** anything listed under `protected_roots` in `config\paths.yaml` is read-only for Claude.
+- **Protected folders:** for anything listed under `protected_roots` in `config\paths.yaml`, a hook blocks Claude's file
+  tools and common shell writes. It is a safety net, not a sandbox: a determined command or an MCP server's own write
+  tools can get around it. For strong isolation use Windows folder permissions, a separate Windows user or a VM
+  ([troubleshooting, section 14](09-troubleshooting.md#14-claudes-command-was-blocked-by-guard_paths)).
 
 When Claude stops, it reports what changed, the files to review (full paths), Known flaws and numbered questions marked
 NEEDS MAKER. Answer the questions by number.

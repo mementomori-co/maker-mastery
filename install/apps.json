@@ -1,0 +1,124 @@
+{
+  "_about": "The one list of apps that install\\windows.ps1 offers and install\\check.ps1 checks. Each winget id was checked against its manifest folder in microsoft/winget-pkgs (source_url). scope = the scope passed to winget: 'user' needs no administrator, 'machine' shows a Windows administrator (UAC) prompt, null = the manifest lists no scope for that installer type. notes = lines windows.ps1 prints before it asks; winget_label = extra words in its y/N question. required = false means check.ps1 shows '--' instead of FAIL when the app is missing (the Claude Code command line is optional: the VS Code extension works on its own). See docs\\02-install.md.",
+  "apps": [
+    {
+      "key": "git",
+      "name": "Git",
+      "required": true,
+      "winget_id": "Git.Git",
+      "scope": "user",
+      "source_url": "https://github.com/microsoft/winget-pkgs/tree/master/manifests/g/Git/Git",
+      "vendor_url": "https://git-scm.com/install/windows",
+      "check": { "type": "command", "alternatives": [["git", "--version"]] }
+    },
+    {
+      "key": "vscode",
+      "name": "Visual Studio Code",
+      "required": true,
+      "winget_id": "Microsoft.VisualStudioCode",
+      "scope": "user",
+      "source_url": "https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/VisualStudioCode",
+      "vendor_url": "https://code.visualstudio.com/docs/setup/windows",
+      "check": { "type": "command", "alternatives": [["code", "--version"]] }
+    },
+    {
+      "key": "python",
+      "name": "Python 3.12",
+      "required": true,
+      "winget_id": "Python.Python.3.12",
+      "scope": "user",
+      "source_url": "https://github.com/microsoft/winget-pkgs/tree/master/manifests/p/Python/Python/3/12",
+      "vendor_url": "https://www.python.org/downloads/release/python-31210/",
+      "check": { "type": "command", "alternatives": [["py", "-3.12", "--version"], ["python", "--version"]], "expect": "^Python 3\\.(1[2-9]|[2-9][0-9])" }
+    },
+    {
+      "key": "claude-code",
+      "name": "Claude Code command line",
+      "required": false,
+      "winget_id": "Anthropic.ClaudeCode",
+      "winget_label": "with winget (does not auto-update)",
+      "notes": [
+        "Optional: the Claude Code extension for VS Code bundles its own copy of the CLI for the panel and works on its own.",
+        "Recommended route instead: Anthropic's native installer, which updates itself in the background. In a normal PowerShell window:",
+        "    irm https://claude.ai/install.ps1 | iex",
+        "  Source: https://code.claude.com/docs/en/setup (\"Native Install (Recommended)\"). This script does not run it for you.",
+        "The winget package below works, but \"WinGet installations do not auto-update\" (same page): run 'winget upgrade Anthropic.ClaudeCode' from time to time."
+      ],
+      "scope": null,
+      "source_url": "https://github.com/microsoft/winget-pkgs/tree/master/manifests/a/Anthropic/ClaudeCode",
+      "vendor_url": "https://code.claude.com/docs/en/setup",
+      "check": { "type": "command", "alternatives": [["claude", "--version"]] }
+    },
+    {
+      "key": "claude-code-vscode",
+      "name": "Claude Code extension for VS Code",
+      "required": true,
+      "winget_id": null,
+      "vscode_extension": "anthropic.claude-code",
+      "scope": null,
+      "source_url": "https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code",
+      "vendor_url": "https://code.claude.com/docs/en/vs-code",
+      "check": { "type": "vscode-extension", "id": "anthropic.claude-code" }
+    },
+    {
+      "key": "bambu-studio",
+      "name": "Bambu Studio",
+      "required": true,
+      "winget_id": "Bambulab.Bambustudio",
+      "scope": "machine",
+      "source_url": "https://github.com/microsoft/winget-pkgs/tree/master/manifests/b/Bambulab/Bambustudio",
+      "vendor_url": "https://bambulab.com/en/download/studio",
+      "check": { "type": "path", "path": "%ProgramFiles%\\Bambu Studio\\bambu-studio.exe", "config_key": "bambu_studio_exe" }
+    },
+    {
+      "key": "claude-desktop",
+      "name": "Claude Desktop",
+      "required": false,
+      "winget_id": "Anthropic.Claude",
+      "scope": null,
+      "source_url": "https://github.com/microsoft/winget-pkgs/tree/master/manifests/a/Anthropic/Claude",
+      "vendor_url": "https://claude.com/download",
+      "check": { "type": "appx", "name": "Claude" }
+    },
+    {
+      "key": "github-desktop",
+      "name": "GitHub Desktop",
+      "required": false,
+      "winget_id": "GitHub.GitHubDesktop",
+      "scope": "user",
+      "source_url": "https://github.com/microsoft/winget-pkgs/tree/master/manifests/g/GitHub/GitHubDesktop",
+      "vendor_url": "https://desktop.github.com/download/",
+      "check": { "type": "winget" }
+    },
+    {
+      "key": "github-cli",
+      "name": "GitHub CLI",
+      "required": false,
+      "winget_id": "GitHub.cli",
+      "scope": null,
+      "source_url": "https://github.com/microsoft/winget-pkgs/tree/master/manifests/g/GitHub/cli",
+      "vendor_url": "https://github.com/cli/cli/blob/trunk/docs/install_windows.md",
+      "check": { "type": "command", "alternatives": [["gh", "--version"]] }
+    },
+    {
+      "key": "orcaslicer",
+      "name": "OrcaSlicer",
+      "required": false,
+      "winget_id": "SoftFever.OrcaSlicer",
+      "scope": "machine",
+      "source_url": "https://github.com/microsoft/winget-pkgs/tree/master/manifests/s/SoftFever/OrcaSlicer",
+      "vendor_url": "https://github.com/OrcaSlicer/OrcaSlicer/releases/latest",
+      "check": { "type": "winget" }
+    },
+    {
+      "key": "blender",
+      "name": "Blender",
+      "required": false,
+      "winget_id": "BlenderFoundation.Blender",
+      "scope": "machine",
+      "source_url": "https://github.com/microsoft/winget-pkgs/tree/master/manifests/b/BlenderFoundation/Blender",
+      "vendor_url": "https://www.blender.org/download/",
+      "check": { "type": "path", "path": "", "config_key": "blender_exe", "fallback": "winget" }
+    }
+  ]
+}

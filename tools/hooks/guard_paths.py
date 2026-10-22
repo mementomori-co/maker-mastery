@@ -1,11 +1,23 @@
 r"""guard_paths.py - Claude Code PreToolUse hook (matchers: Write|Edit|MultiEdit|NotebookEdit and Bash|PowerShell).
 
-What it does: blocks (exit 2, reason on stderr) any file write under a protected root, and any shell command that names a
-protected root together with a write/move/delete/redirect token. It also blocks a bare `python` / `py` / `pip` command run
-from inside this repository: call .venv\Scripts\python.exe explicitly so the repository's own environment is used.
+What it does: blocks (exit 2, reason on stderr) any file-tool write under a protected root, and common shell writes into
+one: once a command names a protected root (literally, or as a path that resolves under it), every pipeline segment must
+be a read-only verb (cat, ls, grep, Get-Content, Get-ChildItem ...), a copy OUT of the root, or a segment that touches
+only paths outside the roots; a redirect (> >> 2> *>, with or without spaces) may not land in a root. Verbs that can write
+or run code through their arguments (find -delete/-exec, sort -o, uniq IN OUT, tree -o, xxd -r IN OUT, rg --pre,
+ForEach-Object / Where-Object) count as read-only only in a segment that names no root, and a segment holding a script
+block "{...}" is never read-only while a root is named.
+It also blocks a bare `python` / `py` / `pip` command run from inside this repository: call .venv\Scripts\python.exe
+explicitly so the repository's own environment is used.
+Limits - a safety net, not a sandbox: a command that builds the root path at run time (string joins, variables set in an
+earlier command, environment variables, encoded commands, code inside an interpreter) is not recognised, and an MCP
+server's own write tools never pass through this hook. For hard isolation use NTFS permissions, a separate Windows user
+or a VM. Emptying protected_roots in config\paths.yaml switches the protection off, so review every edit to that file.
 Protected roots: protected_roots in config\paths.yaml, plus any in the MM_PROTECTED environment variable (semicolon-separated).
-Fails closed: if the config file exists but cannot be read (YAML error, mangled path), every file write and every shell
-command that is not purely read-only is blocked, except a file-tool edit of the config file itself, so it can be fixed.
+Fails closed: if the config file exists but cannot be read (YAML error, mangled path, wrong encoding), every file-tool
+write is blocked except an edit of the config file itself, so it can be fixed, and a shell command passes only when every
+segment starts with a strictly read-only verb (the conditional verbs above are refused), holds no script block and
+nothing is redirected.
 Canonicalisation: strips \\?\ and \\.\ prefixes, maps \\host\D$\ admin-share UNC paths to D:\, resolves 8.3 short names
 through GetLongPathNameW on the longest existing prefix, follows junctions, normalises case and separators.
 Input: the hook JSON on stdin. Output: exit 0 = no decision (normal permission flow applies), 2 = blocked (reason on stderr),
@@ -57,7 +69,7 @@ UNC_LOCAL = re.compile(r"^[\\/]{2}[^\\/?.][^\\/]*[\\/]([A-Za-z])\$(?:[\\/](.*))?
 WRITEISH = re.compile(
     r"(?:^|[\s;&|(])(?:rm|mv|cp|tee|touch|mkdir|rmdir|del|erase|move|copy|ren|rename|xcopy|robocopy|"
     r"set-content|add-content|out-file|copy-item|move-item|remove-item|new-item|rename-item|clear-content)\b"
-    r"|(?<![-=<])>>?\s*\S",  # shell redirect; (?<![-=<]) ignores Python/PowerShell arrows like -> and => and <>
+    r"|(?<![-=<>])(?:\d|\*)?>>?(?![=>])\s*\S",  # shell redirect incl. a>b, 2>b, *>b; not -> => <> >=
     re.I,
 )
 
@@ -124,15 +136,19 @@ def check_path(target: str) -> int:
 # Verbs that only read. When a protected root is named anywhere in the command, every pipeline segment must start with
 # one of these (or be a copy whose destination is outside the roots), and no redirect may target a root.
 READ_ONLY = {
-    "cat", "ls", "dir", "find", "grep", "rg", "egrep", "fgrep", "head", "tail", "wc", "stat", "file", "od", "xxd",
+    "cat", "ls", "dir", "grep", "egrep", "fgrep", "head", "tail", "wc", "stat", "file", "od",
     "md5sum", "sha1sum", "sha256sum", "sha512sum", "diff", "cmp", "less", "more", "echo", "printf", "test", "[", "pwd",
-    "which", "type", "realpath", "readlink", "du", "tree", "sort", "uniq", "cut", "tr", "strings", "basename", "dirname",
-    "date", "true", "false", "exit", "return",
+    "which", "type", "realpath", "readlink", "du", "cut", "tr", "strings", "basename", "dirname",
+    "true", "false", "exit", "return",
     "get-content", "gc", "get-childitem", "gci", "get-item", "gi", "select-string", "sls", "test-path", "get-filehash",
     "measure-object", "get-itemproperty", "gp", "resolve-path", "rvpa", "write-output", "write-host", "compare-object",
-    "out-string", "format-table", "ft", "format-list", "fl", "select-object", "select", "where-object", "where", "?",
-    "foreach-object", "%", "get-date",
+    "out-string", "format-table", "ft", "format-list", "fl", "select-object", "select", "get-date",
 }
+# Verbs that usually read but can write or run code through their arguments (find -delete / -exec / -fprint, sort -o,
+# uniq IN OUT, tree -o, xxd -r IN OUT, date -f, rg --pre, ForEach-Object / Where-Object script blocks). They count as
+# read-only only in a segment that names no protected root; they are never read-only in fail-closed mode.
+CONDITIONAL_READ = {"find", "sort", "uniq", "tree", "xxd", "date", "rg", "foreach-object", "%", "foreach",
+                    "where-object", "where", "?", "sort-object", "group-object"}
 COPY_VERBS = {"cp", "copy", "copy-item", "cpi", "xcopy", "robocopy", "rsync"}
 CD_VERBS = {"cd", "pushd", "set-location", "sl", "chdir"}
 # Bare interpreter names resolve through PATH (on Windows `python.exe` / `python3.exe` in WindowsApps can be the
@@ -143,7 +159,10 @@ VENV_PY = os.path.normcase(os.path.join(REPO_ROOT, ".venv", "Scripts", "python.e
 BRAIN_ROOT = os.path.normcase(REPO_ROOT)
 SEGMENT_SPLIT = re.compile(r"\|\|?|&&|;|\n|`|\$\(|\)")
 TOKEN = re.compile(r'"([^"]*)"|\'([^\']*)\'|(\S+)')
-REDIRECT = re.compile(r"(?<![-=<\w])\d?>>?\s*(\"[^\"]*\"|'[^']*'|\S+)")
+# Shell redirect: > >> n> n>> *> with or without spaces (a>b, cat x>>"y"). Not the arrows -> and => (Python,
+# PowerShell), not <> and not the comparison >=. Group 1 is the destination.
+REDIRECT = re.compile(r"(?<![-=<>])(?:\d|\*)?>>?(?![=>])\s*(\"[^\"]*\"|'[^']*'|[^\s\"';|&<>]+)")
+QUOTED = re.compile(r'"([^"]*)"|\'([^\']*)\'')
 PATHLIKE = re.compile(r"^(?:[a-z]:\\|\\\\|\.\.?\\|\.\.?$|[^\s\\]*\\)")
 
 
@@ -178,6 +197,12 @@ def _path_tokens(segment: str) -> list[str]:
     for m in TOKEN.finditer(segment):
         tok = m.group(1) if m.group(1) is not None else (m.group(2) if m.group(2) is not None else m.group(3))
         if tok and (PATHLIKE.match(tok) or tok.startswith("..") or "\\" in tok):
+            out.append(tok)
+    # quoted strings glued to other text (--output="x", a>"x") and redirect targets glued to the verb (a>x)
+    extra = [a or b for a, b in QUOTED.findall(segment)] + [m.group(1) for m in REDIRECT.finditer(segment)]
+    for tok in extra:
+        tok = tok.strip('"').strip("'")
+        if tok and tok not in out and (PATHLIKE.match(tok) or tok.startswith("..") or "\\" in tok):
             out.append(tok)
     return out
 
@@ -242,27 +267,33 @@ def check_command(cmd: str, cwd: str | None = None) -> int:
                       "(protected_roots in config\\paths.yaml) is not allowed. Copy out of it instead.", file=sys.stderr)
                 return 2
             continue  # copy OUT of the root is a read
-        if verb in READ_ONLY:
+        seg_touches_root = any(norm(r).lower() in sg for r in roots()) or any(
+            _under_root(_resolve(p, cwd), roots_n) for p in paths)
+        script_block = "{" in sg  # a script block can run any command: never read-only while a root is named
+        if not script_block and verb in READ_ONLY:
+            continue
+        if not script_block and verb in CONDITIONAL_READ and not seg_touches_root:
             continue
         # a segment that does not itself touch a root, names at least one explicit path outside the roots and uses no
         # shell variables is allowed (mkdir/rm/mv on repository paths chained with a read of the root) - variables are
         # blocked because `x="<root>"; rm -rf "$x"` would hide the root from this segment.
-        seg_touches_root = any(norm(r).lower() in sg for r in roots()) or any(
-            _under_root(_resolve(p, cwd), roots_n) for p in paths)
-        if not seg_touches_root and paths and "$" not in sg and "%" not in sg:
+        if not seg_touches_root and paths and "$" not in sg and "%" not in sg and not script_block:
             continue
         print("BLOCKED by tools\\hooks\\guard_paths.py: the command names a protected root "
               "(protected_roots in config\\paths.yaml) and '" + verb + "' is not a read-only verb (allowed: cat ls dir find grep rg head "
-              "tail wc stat md5sum Get-Content Get-ChildItem Select-String Test-Path ..., or cp/Copy-Item OUT of the root). "
+              "tail wc stat md5sum Get-Content Get-ChildItem Select-String Test-Path ..., or cp/Copy-Item OUT of the root; "
+              "find, sort, uniq, tree, xxd, rg and ForEach-Object/Where-Object may not name a protected path, and no "
+              "script block { } is allowed). "
               "Interpreters (python, cmd, powershell, git, sed, tar) are blocked: copy the file INTO the repository first.", file=sys.stderr)
         return 2
     return 0
 
 
 def _read_only_command(cmd: str) -> bool:
-    """True when every pipeline segment starts with a READ_ONLY verb and nothing is redirected."""
+    """True when every pipeline segment starts with a READ_ONLY verb, no segment holds a script block and nothing is
+    redirected. Used only in fail-closed mode (roots unknown), so CONDITIONAL_READ verbs are refused."""
     text = _normalise(cmd)
-    if REDIRECT.search(text) or "<<" in text:
+    if REDIRECT.search(text) or "<<" in text or "{" in text:
         return False
     for sg in [x.strip() for x in SEGMENT_SPLIT.split(text) if x.strip()]:
         words = [w for w in sg.split() if not re.match(r"^\w+=\S*$", w)]
@@ -279,8 +310,9 @@ def main() -> int:
     try:
         payload = json.loads(raw)
     except Exception as exc:  # noqa: BLE001
-        # never silent. Raw scan: a protected root plus a write-ish token blocks; otherwise exit 1 so the transcript
-        # shows the parse failure as a non-blocking hook error.
+        # never silent. Raw scan: a protected root plus a write-ish token blocks; otherwise exit 1. With
+        # "onFailure": "block" on this hook in .claude\settings.json (Claude Code v2.1.295 or later), exit 1 counts as a
+        # hook failure and blocks the call; on older versions it is a non-blocking hook error shown in the transcript.
         low = raw.replace("\\\\", "\\").replace("/", "\\").lower()
         if any(norm(r).lower() in low for r in roots()) and WRITEISH.search(raw):
             print("BLOCKED by tools\\hooks\\guard_paths.py: hook JSON unparsable (" + str(exc) +

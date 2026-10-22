@@ -6,13 +6,18 @@ If you find a security problem (for example a tool that could send a print, leak
 
 Use GitHub's private vulnerability reporting:
 
-1. Open this repository on GitHub: `https://github.com/<owner>/maker-mastery`
-2. Click the **Security** tab.
-3. Click **Report a vulnerability** and fill in the form.
+1. Open the repository's **Advisories** page: `https://github.com/<owner>/maker-mastery/security/advisories`. (GitHub's
+   reporting guide also starts from the repository's **Security and quality** tab; the button is offered there too.)
+2. Click the **Report a vulnerability** button and fill in the form.
+3. Click **Submit report**.
 
-GitHub's guide: https://docs.github.com/en/code-security/security-advisories/guidance-on-reporting-and-writing-information-about-vulnerabilities/privately-reporting-a-security-vulnerability
+GitHub's guides: [Privately reporting a security vulnerability](https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/report-privately)
+and, for where the button appears, [Configuring private vulnerability reporting for a repository](https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/configure-vulnerability-reporting/configure-for-a-repository).
 
-> Maintainer setup (placeholder): private vulnerability reporting must be switched on for the repository first, under **Settings > Code security > Private vulnerability reporting > Enable** (label not verified). GitHub's guide: https://docs.github.com/en/code-security/security-advisories/working-with-repository-security-advisories/configuring-private-vulnerability-reporting-for-a-repository
+> Maintainer setup: private vulnerability reporting must be switched on for the repository first. On the repository,
+> **Settings**, then in the sidebar's "Security and quality" section **Advanced Security**, then **Enable** next to
+> "Private vulnerability reporting" (labels as written in GitHub's guide:
+> https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/configure-vulnerability-reporting/configure-for-a-repository).
 
 Please include what you ran, what happened, and what you expected. The maintainers will reply in the advisory thread.
 

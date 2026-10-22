@@ -36,8 +36,9 @@ slice_workdir: "work/slice"
 #   allowed_roots: [".", "D:/Prints"]
 allowed_roots: ["."]
 
-# Folders that Claude must never write to. The guard hook (tools\hooks\guard_paths.py) blocks every file write and
-# every write-like shell command that targets one of them; the MCP server also refuses to read from them.
+# Folders that Claude must never write to. The guard hook (tools\hooks\guard_paths.py) blocks Claude's file-tool writes
+# and common write-like shell commands that target one of them; the MCP server also refuses to read from them.
+# It is a safety net, not a sandbox (docs\09-troubleshooting.md, section 14). Emptying this list switches it off.
 # Use it for anything you want Claude to leave alone, for example a finished project or a backup drive:
 #   protected_roots: ["D:/Finished Projects"]
 protected_roots: []
