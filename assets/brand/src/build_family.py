@@ -178,6 +178,12 @@ def main(argv=None):
 
     # ---- single crests for README use, transparent, 2x ----
     for name, stem, disp in (("crest-parent-sign-off", "crest-parent", 160),
+                             ("crest-printing-icon", "crest-printing", 40),
+                             # 160 px crests embedded (base64) in the README card and header SVGs
+                             ("crest-parent-card", "crest-parent", 80),
+                             ("crest-printing-card", "crest-printing", 80),
+                             ("crest-apparel-card", "crest-apparel", 80),
+                             ("crest-streaming-card", "crest-streaming", 80),
                              ("crest-streaming-icon", "crest-streaming", 40),
                              ("crest-apparel-icon", "crest-apparel", 40)):
         w, h = png_size(os.path.join(brand, stem + "-1024.png"))

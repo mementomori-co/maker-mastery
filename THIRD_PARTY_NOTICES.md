@@ -124,7 +124,7 @@ method was filled in.
 
 ## Fonts (used to make the brand images, not shipped)
 
-The brand images in `assets/brand/` were rendered with Oswald (SIL Open Font License 1.1, https://github.com/googlefonts/OswaldFont) and IBM Plex Mono (SIL Open Font License 1.1, https://github.com/IBM/plex). The font files are **not** included in this repository. The SVG banners contain the text as vector outlines and reference no font files.
+The brand images in `assets/brand/` were rendered with Oswald (SIL Open Font License 1.1, https://github.com/googlefonts/OswaldFont), IBM Plex Mono (SIL Open Font License 1.1, https://github.com/IBM/plex) and Playfair Display Italic (SIL Open Font License 1.1, https://github.com/google/fonts/tree/main/ofl/playfairdisplay). The font files are **not** included in this repository. The SVG banners, section headers, cards and tiles contain the text as vector outlines and reference no font files.
 
 ## Brand assets
 

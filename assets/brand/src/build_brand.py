@@ -152,15 +152,23 @@ def svg_shell(W, H, theme, crest_href, crest, inner):
         'width="%d" height="%d" viewBox="0 0 %d %d" role="img" '
         'aria-label="Memento Mori · Maker Mastery. %s %s%s">\n'
         '<defs><radialGradient id="g" gradientUnits="userSpaceOnUse" cx="%.1f" cy="%.1f" r="%.1f">'
-        '<stop offset="0" stop-color="%s"/><stop offset="1" stop-color="%s"/></radialGradient></defs>\n'
+        '<stop offset="0" stop-color="%s"/><stop offset="1" stop-color="%s"/></radialGradient>'
+        '<filter id="halo" x="-5%%" y="-5%%" width="110%%" height="110%%" color-interpolation-filters="sRGB">'
+        '<feMorphology in="SourceAlpha" operator="dilate" radius="2.5" result="d"/>'
+        '<feGaussianBlur in="d" stdDeviation="1.2" result="b"/>'
+        '<feFlood flood-color="#0A0A0A" flood-opacity="0.9"/>'
+        '<feComposite in2="b" operator="in" result="h"/>'
+        '<feMerge><feMergeNode in="h"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>\n'
         '<rect width="%d" height="%d" fill="%s"/>\n'
         '<rect width="%d" height="%d" fill="url(#g)"/>\n'
-        '<image x="%.1f" y="%.1f" width="%.1f" height="%.1f" href="%s"/>\n'
+        '<image x="%.1f" y="%.1f" width="%.1f" height="%.1f" href="%s"%s/>\n'
         "%s</svg>\n"
     ) % (W, H, W, H, html.escape(TAG1), html.escape(TAG2A), html.escape(TAG2B),
          cx, cy, max(crest[2], crest[3]) * 0.75, t["glow"], t["bg"],
          W, H, t["bg"], W, H,
-         crest[0], crest[1], crest[2], crest[3], crest_href, inner)
+         crest[0], crest[1], crest[2], crest[3], crest_href,
+         # light theme: thin dark outline so the crest's white lettering reads on bone
+         ' filter="url(#halo)"' if theme == "light" else "", inner)
 
 
 def rects_svg(rects):
@@ -213,8 +221,9 @@ def main(argv=None):
     brand = os.path.abspath(args.brand_dir)
     src = os.path.join(brand, "src")
     fonts = {k: Font(os.path.join(args.fonts, v[1])) for k, v in FONT_FILES.items()}
-    crest_big = os.path.join(brand, "crest-printing-1024.png")
-    crest_small = os.path.join(brand, "crest-printing-512.png")
+    # Hero = the parent crest (the master logo with the MEMENTO MORI lettering)
+    crest_big = os.path.join(brand, "crest-parent-1024.png")
+    crest_small = os.path.join(brand, "crest-parent-512.png")
     w, h = png_size(crest_big)
     aspect = w / h
     with open(crest_small, "rb") as f:
@@ -225,7 +234,7 @@ def main(argv=None):
         W, H, crest, runs, rects = layout(kind, fonts, theme, aspect)
         inner_html = rects_svg(rects) + text_svg(runs)
         page = HTML % dict(png=name + ".png", name=name + ".html", W=W, H=H, bg=THEMES[theme]["bg"],
-                           svg=svg_shell(W, H, theme, "../crest-printing-1024.png", crest, inner_html))
+                           svg=svg_shell(W, H, theme, "../crest-parent-1024.png", crest, inner_html))
         with open(os.path.join(src, name + ".html"), "w", encoding="utf-8", newline="\n") as f:
             f.write(page)
         if kind == "banner":

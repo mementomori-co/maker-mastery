@@ -1,9 +1,5 @@
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/brand/banner-dark.png">
-    <source media="(prefers-color-scheme: light)" srcset="assets/brand/banner-light.png">
-    <img alt="Memento Mori Maker Mastery banner: crest and title" src="assets/brand/banner-light.png" width="100%">
-  </picture>
+  <img alt="Memento Mori · Maker Mastery. Build with AI. Print by hand. A Claude Code operating system for makers: research-backed, AI-checked, human-built." src="assets/brand/banner-dark.svg" width="100%">
 </p>
 
 <h1 align="center">MEMENTO MORI · MAKER MASTERY</h1>
@@ -31,6 +27,8 @@ Its flagship is 3D printing on Bambu Lab printers, where Claude Code slices, aud
 
 ## Contents
 
+<img src="assets/brand/headers/contents.svg" width="100%" alt="Contents">
+
 - [What is this](#what-is-this)
 - [Why](#why)
 - [Preview](#preview)
@@ -46,6 +44,8 @@ Its flagship is 3D printing on Bambu Lab printers, where Claude Code slices, aud
 
 ## What is this
 
+<img src="assets/brand/headers/what-is-this.svg" width="100%" alt="What is this">
+
 Maker Mastery is a ready-made project folder that you open in VS Code with the Claude Code extension. It gives Claude a
 rulebook ([CLAUDE.md](CLAUDE.md)), a cited knowledge library ([knowledge/](knowledge/INDEX.md)), a team of specialist
 agents and skills ([.claude/](.claude/)), checking tools ([tools/](tools/)) and a set of lessons learned
@@ -54,18 +54,25 @@ render or prepare a print, and it works from sourced facts, checks its own outpu
 could not verify. 3D printing is the flagship example: Claude can slice your 3MF with the Bambu Studio you installed,
 audit the project and the G-code, and fill a pre-print checklist, and then the last step, pressing Print, is always yours.
 
+<img src="assets/brand/headers/ticker.svg" width="100%" alt="">
+
 ## Why
 
-- **Facts with sources, not guesses.** Every fact in the library links its public source; anything unchecked is labelled
-  "not verified", and a fact-checker that never sees the researcher's reasoning re-derives each claim.
-- **Gates that use the real slice.** Print files are judged from the sliced G-code and the 3MF itself, by tools with
-  their own tests, so a clean-looking preview cannot hide a bad plate.
-- **You stay in charge.** Nothing is installed, deleted or printed without you. A hook blocks Claude's file tools and
-  common shell writes into folders you protect (a safety net, not a sandbox; see
-  [troubleshooting, section 14](docs/09-troubleshooting.md#14-claudes-command-was-blocked-by-guard_paths)), and the
-  print rule is enforced in settings as well as in the rules.
+<img src="assets/brand/headers/why.svg" width="100%" alt="Why">
+
+<table>
+  <tr>
+    <td width="33%" valign="top"><img src="assets/brand/headers/why-1.svg" width="260" alt="FACTS, NOT GUESSES. Every fact links its public source. A fact-checker that never sees the researcher's reasoning re-derives each claim; anything unchecked is labelled “not verified”."></td>
+    <td width="33%" valign="top"><img src="assets/brand/headers/why-2.svg" width="260" alt="GATES ON THE REAL SLICE. Print files are judged from the sliced G-code and the 3MF itself, by tools with their own tests, so a clean-looking preview cannot hide a bad plate."></td>
+    <td width="33%" valign="top"><img src="assets/brand/headers/why-3.svg" width="260" alt="YOU STAY IN CHARGE. Nothing is installed, deleted or printed without you. A hook guards the folders you protect, and the print rule is enforced in settings as well as in the rules."></td>
+  </tr>
+</table>
+
+The folder guard is a safety net, not a sandbox: see [troubleshooting, section 14](docs/09-troubleshooting.md#14-claudes-command-was-blocked-by-guard_paths).
 
 ## Preview
+
+<img src="assets/brand/headers/preview.svg" width="100%" alt="Preview">
 
 Real output from the shipped tools, run on small synthetic test files. Long lines are cut short with `...`; the full
 samples are in [docs/tool-sample-outputs.md](docs/tool-sample-outputs.md).
@@ -99,59 +106,103 @@ plate_1.gcode: tower all-layers [200.0, 200.0, 215.0, 215.0] ... (rule: gap >= 8
   VERDICT: OK
 ```
 
+<img src="assets/brand/headers/ticker.svg" width="100%" alt="">
+
 ## Domains
+
+<img src="assets/brand/headers/domains.svg" width="100%" alt="Domains">
 
 The domain map is numbered from 00 to 44. Version 1.0 ships 16 knowledge domains (✅) plus the gear template; the rest
 arrive in v1.1 (⏳).
 Track your own progress in [CURRICULUM.md](CURRICULUM.md).
 
-| # | Making | Status |
-|---|---|---|
-| 00 | [Your gear (template)](knowledge/00-gear-inventory/README.md) | ✅ v1.0 (template) |
-| 01 | [Printers](knowledge/01-printers/index.md) | ✅ v1.0 |
-| 02 | [Bambu Studio](knowledge/02-bambu-studio/index.md) | ✅ v1.0 |
-| 03 | [Materials](knowledge/03-materials/index.md) | ✅ v1.0 |
-| 04 | [Design for FDM](knowledge/04-design-for-fdm/index.md) | ✅ v1.0 |
-| 05 | [CAD, hard surface](knowledge/05-cad-hard-surface/index.md) | ✅ v1.0 |
-| 06 | [Organic modeling](knowledge/06-organic-modeling/index.md) | ✅ v1.0 |
-| 07 | [Engineering](knowledge/07-engineering/index.md) | ✅ v1.0 |
-| 08 | [Electronics and lighting](knowledge/08-electronics-lighting/index.md) | ✅ v1.0 |
-| 09 | Finishing | ⏳ v1.1 |
-| 10 | Workflows | ⏳ v1.1 |
-| 11 | Calibration and testing | ⏳ v1.1 |
-| 12 | [Failure diagnosis](knowledge/12-failure-diagnosis/index.md) | ✅ v1.0 |
-| 13 | Project ops | ⏳ v1.1 |
+<img src="assets/brand/headers/domains-making.svg" width="100%" alt="Making">
 
-| # | <img src="assets/brand/crest-streaming-icon.png" width="40" align="absmiddle" alt="STREAM crest"> Creative, business and design | Status |
-|---|---|---|
-| 14 | Creative mindset | ⏳ v1.1 |
-| 17 | Creative direction | ⏳ v1.1 |
-| 18 | Selling 3D prints | ⏳ v1.1 |
-| 20 | Woodworking | ⏳ v1.1 |
-| 21 | MakerWorld | ⏳ v1.1 |
-| 22 | IP and licensing | ⏳ v1.1 |
-| 24 | [Surfacing and rendering](knowledge/24-surfacing-and-rendering/index.md) | ✅ v1.0 |
-| 25 | Reference sheets | ⏳ v1.1 |
-| 26 | [AI to 3D](knowledge/26-ai-to-3d/index.md) | ✅ v1.0 |
-| 27 | Scanning and photogrammetry | ⏳ v1.1 |
+<table>
+  <tr>
+    <td><a href="knowledge/00-gear-inventory/README.md"><img src="assets/brand/headers/tiles/00.svg" width="260" alt="00 Your gear (template), shipped in v1.0 (template)"></a></td>
+    <td><a href="knowledge/01-printers/index.md"><img src="assets/brand/headers/tiles/01.svg" width="260" alt="01 Printers, shipped in v1.0"></a></td>
+    <td><a href="knowledge/02-bambu-studio/index.md"><img src="assets/brand/headers/tiles/02.svg" width="260" alt="02 Bambu Studio, shipped in v1.0"></a></td>
+  </tr>
+  <tr>
+    <td><a href="knowledge/03-materials/index.md"><img src="assets/brand/headers/tiles/03.svg" width="260" alt="03 Materials, shipped in v1.0"></a></td>
+    <td><a href="knowledge/04-design-for-fdm/index.md"><img src="assets/brand/headers/tiles/04.svg" width="260" alt="04 Design for FDM, shipped in v1.0"></a></td>
+    <td><a href="knowledge/05-cad-hard-surface/index.md"><img src="assets/brand/headers/tiles/05.svg" width="260" alt="05 CAD, hard surface, shipped in v1.0"></a></td>
+  </tr>
+  <tr>
+    <td><a href="knowledge/06-organic-modeling/index.md"><img src="assets/brand/headers/tiles/06.svg" width="260" alt="06 Organic modeling, shipped in v1.0"></a></td>
+    <td><a href="knowledge/07-engineering/index.md"><img src="assets/brand/headers/tiles/07.svg" width="260" alt="07 Engineering, shipped in v1.0"></a></td>
+    <td><a href="knowledge/08-electronics-lighting/index.md"><img src="assets/brand/headers/tiles/08.svg" width="260" alt="08 Electronics and lighting, shipped in v1.0"></a></td>
+  </tr>
+  <tr>
+    <td><img src="assets/brand/headers/tiles/09.svg" width="260" alt="09 Finishing, coming in v1.1"></td>
+    <td><img src="assets/brand/headers/tiles/10.svg" width="260" alt="10 Workflows, coming in v1.1"></td>
+    <td><img src="assets/brand/headers/tiles/11.svg" width="260" alt="11 Calibration and testing, coming in v1.1"></td>
+  </tr>
+  <tr>
+    <td><a href="knowledge/12-failure-diagnosis/index.md"><img src="assets/brand/headers/tiles/12.svg" width="260" alt="12 Failure diagnosis, shipped in v1.0"></a></td>
+    <td><img src="assets/brand/headers/tiles/13.svg" width="260" alt="13 Project ops, coming in v1.1"></td>
+  </tr>
+</table>
 
-| # | <img src="assets/brand/crest-streaming-icon.png" width="40" align="absmiddle" alt="STREAM crest"> Games, media, AI, tech and safety | Status |
-|---|---|---|
-| 28 | Game design | ⏳ v1.1 |
-| 29 | Game development | ⏳ v1.1 |
-| 30 | Visual pre-production | ⏳ v1.1 |
-| 31 | Retro arcade | ⏳ v1.1 |
-| 32 | Audio and sound | ⏳ v1.1 |
-| 33 | Animation and motion | ⏳ v1.1 |
-| 34 | Video editing | ⏳ v1.1 |
-| 35 | AI image and video | ⏳ v1.1 |
-| 37 | Photography | ⏳ v1.1 |
-| 39 | [Raspberry Pi and microcontrollers](knowledge/39-raspberry-pi-and-microcontrollers/index.md) | ✅ v1.0 |
-| 40 | [Bambu ecosystem](knowledge/40-bambu-ecosystem/index.md) | ✅ v1.0 |
-| 41 | [MCP](knowledge/41-mcp/index.md) | ✅ v1.0 |
-| 42 | [Agent engineering](knowledge/42-agent-engineering/index.md) | ✅ v1.0 |
-| 43 | Data and backups | ⏳ v1.1 |
-| 44 | [Safety](knowledge/44-safety/index.md) | ✅ v1.0 |
+Shipped in v1.0: [00 Your gear (template)](knowledge/00-gear-inventory/README.md), [01 Printers](knowledge/01-printers/index.md), [02 Bambu Studio](knowledge/02-bambu-studio/index.md), [03 Materials](knowledge/03-materials/index.md), [04 Design for FDM](knowledge/04-design-for-fdm/index.md), [05 CAD, hard surface](knowledge/05-cad-hard-surface/index.md), [06 Organic modeling](knowledge/06-organic-modeling/index.md), [07 Engineering](knowledge/07-engineering/index.md), [08 Electronics and lighting](knowledge/08-electronics-lighting/index.md), [12 Failure diagnosis](knowledge/12-failure-diagnosis/index.md).
+
+<img src="assets/brand/headers/domains-creative.svg" width="100%" alt="Creative, business and design">
+
+<table>
+  <tr>
+    <td><img src="assets/brand/headers/tiles/14.svg" width="260" alt="14 Creative mindset, coming in v1.1"></td>
+    <td><img src="assets/brand/headers/tiles/17.svg" width="260" alt="17 Creative direction, coming in v1.1"></td>
+    <td><img src="assets/brand/headers/tiles/18.svg" width="260" alt="18 Selling 3D prints, coming in v1.1"></td>
+  </tr>
+  <tr>
+    <td><img src="assets/brand/headers/tiles/20.svg" width="260" alt="20 Woodworking, coming in v1.1"></td>
+    <td><img src="assets/brand/headers/tiles/21.svg" width="260" alt="21 MakerWorld, coming in v1.1"></td>
+    <td><img src="assets/brand/headers/tiles/22.svg" width="260" alt="22 IP and licensing, coming in v1.1"></td>
+  </tr>
+  <tr>
+    <td><a href="knowledge/24-surfacing-and-rendering/index.md"><img src="assets/brand/headers/tiles/24.svg" width="260" alt="24 Surfacing and rendering, shipped in v1.0"></a></td>
+    <td><img src="assets/brand/headers/tiles/25.svg" width="260" alt="25 Reference sheets, coming in v1.1"></td>
+    <td><a href="knowledge/26-ai-to-3d/index.md"><img src="assets/brand/headers/tiles/26.svg" width="260" alt="26 AI to 3D, shipped in v1.0"></a></td>
+  </tr>
+  <tr>
+    <td><img src="assets/brand/headers/tiles/27.svg" width="260" alt="27 Scanning and photogrammetry, coming in v1.1"></td>
+  </tr>
+</table>
+
+Shipped in v1.0: [24 Surfacing and rendering](knowledge/24-surfacing-and-rendering/index.md), [26 AI to 3D](knowledge/26-ai-to-3d/index.md).
+
+<img src="assets/brand/headers/domains-games-tech.svg" width="100%" alt="Games, media, AI, tech and safety">
+
+<table>
+  <tr>
+    <td><img src="assets/brand/headers/tiles/28.svg" width="260" alt="28 Game design, coming in v1.1"></td>
+    <td><img src="assets/brand/headers/tiles/29.svg" width="260" alt="29 Game development, coming in v1.1"></td>
+    <td><img src="assets/brand/headers/tiles/30.svg" width="260" alt="30 Visual pre-production, coming in v1.1"></td>
+  </tr>
+  <tr>
+    <td><img src="assets/brand/headers/tiles/31.svg" width="260" alt="31 Retro arcade, coming in v1.1"></td>
+    <td><img src="assets/brand/headers/tiles/32.svg" width="260" alt="32 Audio and sound, coming in v1.1"></td>
+    <td><img src="assets/brand/headers/tiles/33.svg" width="260" alt="33 Animation and motion, coming in v1.1"></td>
+  </tr>
+  <tr>
+    <td><img src="assets/brand/headers/tiles/34.svg" width="260" alt="34 Video editing, coming in v1.1"></td>
+    <td><img src="assets/brand/headers/tiles/35.svg" width="260" alt="35 AI image and video, coming in v1.1"></td>
+    <td><img src="assets/brand/headers/tiles/37.svg" width="260" alt="37 Photography, coming in v1.1"></td>
+  </tr>
+  <tr>
+    <td><a href="knowledge/39-raspberry-pi-and-microcontrollers/index.md"><img src="assets/brand/headers/tiles/39.svg" width="260" alt="39 Raspberry Pi and microcontrollers, shipped in v1.0"></a></td>
+    <td><a href="knowledge/40-bambu-ecosystem/index.md"><img src="assets/brand/headers/tiles/40.svg" width="260" alt="40 Bambu ecosystem, shipped in v1.0"></a></td>
+    <td><a href="knowledge/41-mcp/index.md"><img src="assets/brand/headers/tiles/41.svg" width="260" alt="41 MCP, shipped in v1.0"></a></td>
+  </tr>
+  <tr>
+    <td><a href="knowledge/42-agent-engineering/index.md"><img src="assets/brand/headers/tiles/42.svg" width="260" alt="42 Agent engineering, shipped in v1.0"></a></td>
+    <td><img src="assets/brand/headers/tiles/43.svg" width="260" alt="43 Data and backups, coming in v1.1"></td>
+    <td><a href="knowledge/44-safety/index.md"><img src="assets/brand/headers/tiles/44.svg" width="260" alt="44 Safety, shipped in v1.0"></a></td>
+  </tr>
+</table>
+
+Shipped in v1.0: [39 Raspberry Pi and microcontrollers](knowledge/39-raspberry-pi-and-microcontrollers/index.md), [40 Bambu ecosystem](knowledge/40-bambu-ecosystem/index.md), [41 MCP](knowledge/41-mcp/index.md), [42 Agent engineering](knowledge/42-agent-engineering/index.md), [44 Safety](knowledge/44-safety/index.md).
 
 Numbers missing from the map are reserved and are not part of this project.
 
@@ -165,11 +216,16 @@ Numbers missing from the map are reserved and are not part of this project.
   </picture>
 </p>
 
+<img src="assets/brand/headers/ticker.svg" width="100%" alt="">
+
 ## How it works
+
+<img src="assets/brand/headers/how-it-works.svg" width="100%" alt="How it works">
 
 ### The system
 
 ```mermaid
+%%{init: {'theme':'base','themeVariables':{'background':'#0A0A0A','primaryColor':'#141414','primaryTextColor':'#ECE6DA','primaryBorderColor':'#D21F3C','lineColor':'#D21F3C','secondaryColor':'#1C1C1C','tertiaryColor':'#0A0A0A','clusterBkg':'#101010','clusterBorder':'#D21F3C','edgeLabelBackground':'#0A0A0A','textColor':'#ECE6DA','titleColor':'#ECE6DA','mainBkg':'#141414','nodeBorder':'#D21F3C'}}}%%
 flowchart TB
     you(["You"])
     subgraph vscode["VS Code"]
@@ -198,6 +254,7 @@ flowchart TB
 ### The knowledge pipeline
 
 ```mermaid
+%%{init: {'theme':'base','themeVariables':{'background':'#0A0A0A','primaryColor':'#141414','primaryTextColor':'#ECE6DA','primaryBorderColor':'#D21F3C','lineColor':'#D21F3C','secondaryColor':'#1C1C1C','tertiaryColor':'#0A0A0A','clusterBkg':'#101010','clusterBorder':'#D21F3C','edgeLabelBackground':'#0A0A0A','textColor':'#ECE6DA','titleColor':'#ECE6DA','mainBkg':'#141414','nodeBorder':'#D21F3C'}}}%%
 flowchart TD
     q["A question"] --> r["researcher: claims with source URLs"]
     r --> fc["fact-checker: re-derives each claim on its own"]
@@ -212,6 +269,7 @@ flowchart TD
 ### The print-qa gate
 
 ```mermaid
+%%{init: {'theme':'base','themeVariables':{'background':'#0A0A0A','primaryColor':'#141414','primaryTextColor':'#ECE6DA','primaryBorderColor':'#D21F3C','lineColor':'#D21F3C','secondaryColor':'#1C1C1C','tertiaryColor':'#0A0A0A','clusterBkg':'#101010','clusterBorder':'#D21F3C','edgeLabelBackground':'#0A0A0A','textColor':'#ECE6DA','titleColor':'#ECE6DA','mainBkg':'#141414','nodeBorder':'#D21F3C'}}}%%
 flowchart TD
     d["Design: CAD or sculpt, STL with its script"] --> dfm["DFM review: orientation, overhangs, islands"]
     dfm --> s["Slice with the Bambu Studio CLI"]
@@ -223,7 +281,11 @@ flowchart TD
     you --> p["YOU press Print in Bambu Studio"]
 ```
 
+<img src="assets/brand/headers/ticker.svg" width="100%" alt="">
+
 ## Quick Start
+
+<img src="assets/brand/headers/quick-start.svg" width="100%" alt="Quick Start">
 
 **Platform:** Windows 11 is tested. The macOS and Linux install guides cover the prerequisites; running the project
 there is planned for v1.1.
@@ -267,6 +329,8 @@ there is planned for v1.1.
 
 ## Guides
 
+<img src="assets/brand/headers/guides.svg" width="100%" alt="Guides">
+
 | Guide | What it covers |
 |---|---|
 | [01 What this is](docs/01-what-this-is.md) | How the parts fit together, in plain English |
@@ -282,7 +346,11 @@ there is planned for v1.1.
 | [11 Autonomous mode](docs/11-autonomous-mode.md) | Fewer approvals, still safe: permission modes, rules, parallel agents, the two-brain workflow, your owner profile |
 | [Publishing](docs/PUBLISHING.md) (for maintainers) | Publishing the repository, the org avatar and the v1.0.0 release on GitHub |
 
+<img src="assets/brand/headers/ticker.svg" width="100%" alt="">
+
 ## FAQ
+
+<img src="assets/brand/headers/faq.svg" width="100%" alt="FAQ">
 
 <details>
 <summary><strong>Do I need a Bambu Lab printer?</strong></summary>
@@ -325,6 +393,8 @@ More answers: [docs/10-faq.md](docs/10-faq.md).
 
 ## Roadmap
 
+<img src="assets/brand/headers/roadmap.svg" width="100%" alt="Roadmap">
+
 - **v1.0.0 "First Light"** (this release): 16 knowledge domains, 22 agents, 30 skills, 5 commands, the print-qa gate,
   the slicing and audit tools with their self-test, 20 lessons, the calibration-cube example, the beginner guides, the
   install and check scripts, and the autonomy guide.
@@ -335,12 +405,18 @@ More answers: [docs/10-faq.md](docs/10-faq.md).
 
 ## Contributing
 
+<img src="assets/brand/headers/contributing.svg" width="100%" alt="Contributing">
+
 Corrections, new notes, lessons and tool fixes are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) first: every fact
 needs a public source and an independent fact-check, run the privacy scan before every pull request, and nothing may add
 a way for software to start a print. Security problems go through [SECURITY.md](SECURITY.md). Everyone follows the
 [Code of Conduct](CODE_OF_CONDUCT.md).
 
+<img src="assets/brand/headers/ticker.svg" width="100%" alt="">
+
 ## Credits
+
+<img src="assets/brand/headers/credits.svg" width="100%" alt="Credits">
 
 ### <img src="assets/brand/crest-apparel-icon.png" width="40" align="absmiddle" alt="Cap crest"> About the maker
 
@@ -350,6 +426,8 @@ Built with [Claude Code](https://code.claude.com/docs/en/vs-code). Third-party p
 credited in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 ## License
+
+<img src="assets/brand/headers/license.svg" width="100%" alt="License">
 
 Code and documentation are released under the [MIT License](LICENSE). The Memento Mori name, crests, logos and every file
 in `assets/brand/` are **not** covered by the MIT License; see [NOTICE.md](NOTICE.md). If you publish a fork, replace the

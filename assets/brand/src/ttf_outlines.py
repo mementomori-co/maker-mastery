@@ -172,7 +172,8 @@ class Font:
 
 
 def _fmt(v):
-    return ("%.2f" % v).rstrip("0").rstrip(".")
+    # one decimal is below a tenth of a pixel at every export size used here
+    return ("%.1f" % v).rstrip("0").rstrip(".")
 
 
 def _contour_d(c, ox, oy, s):

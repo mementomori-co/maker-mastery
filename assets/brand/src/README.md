@@ -56,3 +56,27 @@ python assets\brand\src\strip_png_metadata.py family-strip-dark-raw.png assets\b
 ```
 
 Repeat the last two lines for each page in the table, using its pixel size as `--window-size`. Finally run `clear_transparent_rgb.py` on every transparent PNG (it sets RGB to 0 under fully transparent pixels and checks that visible pixels are unchanged).
+
+## Website-style hero and README art (`build_site.py`)
+
+`build_site.py` makes the hero banner, the social preview and every README image in the look of the Memento Mori websites: condensed bold caps (Oswald Bold), an outline second line, one word in red `#D21F3C`, a red letter-spaced eyebrow, an italic serif tagline (Playfair Display Italic, colour `#CFCAC2`), a `#0A0A0A` to `#141414` background with fine generated grain (an SVG `feTurbulence` filter, no image), and a red marquee strip. All text is converted to SVG paths, so nothing depends on installed fonts. The same art is used in GitHub light and dark mode.
+
+Fonts it reads (SIL OFL 1.1, not shipped; put them in one folder): `Oswald-Bold.ttf`, `Oswald-SemiBold.ttf` and `Oswald-Medium.ttf` from https://github.com/googlefonts/OswaldFont (`fonts/ttf`), and `PlayfairDisplay-Italic[wght].ttf` from https://github.com/google/fonts (`ofl/playfairdisplay`), saved as `PlayfairDisplay-Italic.ttf`.
+
+| Output | Size | Use |
+|---|---|---|
+| `banner-dark.svg` (= `banner-light.svg`), `banner-dark.png` (= `banner-light.png`) | 1600x420 | README hero, headline option A |
+| `banner-dark_optB.svg`, `banner-dark_optB.png` | 1600x420 | headline option B |
+| `social-preview.png`, `social-preview_optB.png` | 1280x640 | GitHub social preview (A, B) |
+| `headers/<section>.svg` | 1600x180 | one strip under each README `##` heading |
+| `headers/ticker.svg` | 1600x44 | red marquee divider |
+| `headers/why-1.svg` to `why-3.svg` | 560x520 | "Why" cards, shown at 260 px wide |
+| `headers/domains-*.svg` | 1600x140 | domain group headers |
+| `headers/tiles/NN.svg` | 520x150 | one tile per domain, shown at 260 px wide |
+| `crest-*-card.png` | 160 px wide | crests embedded (base64) in the cards and group headers |
+
+```powershell
+python assets\brand\src\build_site.py --fonts C:\path\to\fonts
+```
+
+The PNG heroes are rendered from `render-banner-dark.html`, `render-banner-dark_optB.html`, `render-social-preview.html` and `render-social-preview_optB.html` in this folder (no fonts needed: the text is already outlined) with the Chrome command above, without the transparent-background flag, then copied with `strip_png_metadata.py`.
