@@ -1,0 +1,13 @@
+# Python packages for the Maker Mastery tools (installed into .venv by tools\setup.ps1, never globally).
+# Versions are pinned to the ones tools\selftest.py was run with on Windows 11, Python 3.12 (PyYAML excepted, see the note).
+numpy==2.5.3
+scipy==1.18.1
+trimesh==5.1.1
+shapely==2.1.2
+manifold3d==3.5.4
+rtree==1.4.1          # trimesh nearest-point queries (overhang_gate.py)
+networkx==3.7         # trimesh section polygons (stability_check.py)
+PyYAML==6.0.2         # config\paths.yaml reader (tools\mm_config.py); not in the build venv, see the note below
+mcp==2.3.0            # the read-only audit MCP server (tools\mcp\mm_audit_server.py)
+# Note: PyYAML 6.0.2 was not present in the environment the tests were run in; tools\mm_config.py falls back to a
+# built-in reader for config\paths.yaml when PyYAML is missing, so that combination is what was tested.

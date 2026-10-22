@@ -1,0 +1,38 @@
+# Machine paths for the Maker Mastery tools.
+#
+# How to use this file:
+#   1. Copy it to config\paths.yaml (tools\setup.ps1 does this for you the first time it runs).
+#   2. Edit config\paths.yaml, never this example. config\paths.yaml is ignored by git, so your own paths stay on your PC.
+#   3. Use forward slashes, or wrap a Windows path in double quotes. A relative path is read from the repository folder.
+#   4. Check the result with:  .venv\Scripts\python.exe tools\mm_config.py
+#
+# Every tool reads these values through tools\mm_config.py. No tool has a drive letter or a user folder built in.
+
+# Where Bambu Studio is installed. The slicing helper (tools\slice_cli.py) runs this program, and the audit reads the
+# filament colour catalogue and the profiles that ship next to it. The value below is the default install location.
+bambu_studio_exe: "C:/Program Files/Bambu Studio/bambu-studio.exe"
+
+# Folder that holds Bambu Studio's printer, process and filament profiles (the folder that contains "BBL").
+# Leave it empty and the tools look in two places, in this order:
+#   %APPDATA%\BambuStudio\system         (the copy Bambu Studio keeps up to date for your Windows user)
+#   <install folder>\resources\profiles  (the copy that came with the installer)
+bambu_profiles_dir: ""
+
+# Optional: full path to blender.exe. Only the stability render (tools\stability_check.py --render) uses it.
+# Leave it empty and that render is skipped with a message; every other check still runs.
+blender_exe: ""
+
+# Scratch folder for slicing runs. tools\slice_cli.py copies your 3MF here and the slicer writes its output here.
+# Relative to the repository folder. Keep it free of spaces: the Bambu Studio command line is more reliable that way.
+slice_workdir: "work/slice"
+
+# Folders the read-only audit MCP server (tools\mcp\mm_audit_server.py) may open. A file outside these folders is
+# refused. "." means the repository folder. Add the folder where you keep your print projects, for example:
+#   allowed_roots: [".", "D:/Prints"]
+allowed_roots: ["."]
+
+# Folders that Claude must never write to. The guard hook (tools\hooks\guard_paths.py) blocks every file write and
+# every write-like shell command that targets one of them; the MCP server also refuses to read from them.
+# Use it for anything you want Claude to leave alone, for example a finished project or a backup drive:
+#   protected_roots: ["D:/Finished Projects"]
+protected_roots: []

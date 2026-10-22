@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "deny": [
+      "mcp__*__*print*",
+      "mcp__*__*upload_gcode*",
+      "mcp__*__*send_gcode*",
+      "mcp__*__*queue*",
+      "mcp__*bambu*__*upload*",
+      "mcp__*bambu*__*start*",
+      "mcp__*printer*__*upload*",
+      "mcp__*printer*__*start*",
+      "Read(./.env)",
+      "Read(./.env.*)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PROJECT_DIR}/.venv/Scripts/python.exe",
+            "args": ["-B", "${CLAUDE_PROJECT_DIR}/tools/hooks/session_start.py"],
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit|NotebookEdit|Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PROJECT_DIR}/.venv/Scripts/python.exe",
+            "args": ["-B", "${CLAUDE_PROJECT_DIR}/tools/hooks/guard_paths.py"],
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PROJECT_DIR}/.venv/Scripts/python.exe",
+            "args": ["-B", "${CLAUDE_PROJECT_DIR}/tools/check_note.py"],
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PROJECT_DIR}/.venv/Scripts/python.exe",
+            "args": ["-B", "${CLAUDE_PROJECT_DIR}/tools/hooks/log_run.py"],
+            "timeout": 20
+          }
+        ]
+      }
+    ]
+  }
+}

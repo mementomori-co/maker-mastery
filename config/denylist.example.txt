@@ -1,0 +1,35 @@
+# Example denylist for tools/privacy_scan.py
+#
+# Copy this file OUTSIDE the repo (for example to a private folder), replace the
+# sample entries with your own details, and run:
+#   python tools/privacy_scan.py . --denylist PATH/TO/your-denylist.txt
+# Never commit your real denylist: it is a list of exactly the things you want
+# to keep private.
+#
+# Lines that start with # are comments and blank lines are ignored.
+#
+# 1) Plain line = case-insensitive substring. "YOUR NAME" also matches
+#    "your name" and "Your Name". Add each spelling, nickname and handle.
+YOUR NAME
+YOUR HANDLE
+YOUR CITY
+YOUR EMPLOYER
+your-email@example.com
+YOUR PRINTER NICKNAME
+#
+# 2) re:<regex> = case-insensitive Python regular expression.
+#    This sample flags a street address such as "123 Example Street".
+re:\b\d{1,5}\s+example\s+(street|st|avenue|ave|road|rd)\b
+#    This sample flags a phone number in the form 555-0100 to 555-0199.
+re:\b555-01\d{2}\b
+#
+# 3) allow: <repo-relative path> | <exact phrase>
+#    Allows one exact (case-sensitive) phrase in one file only; everything
+#    else in that file is still checked. Use forward slashes in the path.
+#    Typical use: your public credit line in the README.
+allow: README.md | Created by YOUR HANDLE
+#
+# Built-in rules (user-profile paths, e-mail addresses, private IPv4 ranges,
+# secret-looking values near key/token/secret/password/access_code, and a
+# printer-serial heuristic) run on top of this list. Turn them off with
+# --no-builtin.

@@ -1,0 +1,32 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Scratch and build output
+work/
+dist/
+
+# Your machine's settings and private lists (copy from the *.example files)
+config/paths.yaml
+config/denylist.txt
+*.local.json
+.claude/settings.local.json
+.mcp.json
+
+# Optional reviewer-chat handoff folder (your own plans and notes stay private)
+plan/
+
+# Print files: your own prints stay on your machine.
+# Shipped examples under examples/ are allowed.
+*.3mf
+*.gcode
+!examples/**/*.3mf
+!examples/**/*.gcode
+
+# Font files dropped in for rendering the brand images (not shipped)
+assets/brand/src/fonts/
+
+# Operating system clutter
+.DS_Store
+Thumbs.db

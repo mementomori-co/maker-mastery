@@ -1,0 +1,69 @@
+# OpenSpec project config for a Memento Mori Maker Mastery project.
+# Keys and their meaning come from the OpenSpec 1.14.0 source (https://github.com/Fission-AI/OpenSpec, commit 2500d6da):
+#   schema / context / rules / operations  -> src/core/project-config.ts (ProjectConfigSchema: schema string, context string <= 50 KB,
+#                                             rules = map artifact-id -> list of strings, operations.apply|archive.guidance = list of strings)
+#   layout `openspec init` writes            -> src/core/config-prompts.ts; src/core/init.ts never overwrites an existing config.yaml.
+# `schema: maker` resolves to ./openspec/schemas/maker/schema.yaml first (src/core/artifact-graph/resolver.ts).
+# Fill the <...> placeholders when you start a project. <brain> = the full path of your Memento Mori Maker Mastery folder.
+# Rules and gear live in the brain; this block only repeats what an agent cannot infer from the files in this folder.
+
+schema: maker
+
+context: |
+  Project: <project name>. Brain (rules, verified knowledge, lessons, templates, tools): <brain>
+  Rules load through this project's CLAUDE.md, which imports <brain>/CLAUDE.md; the project constitution
+  is the `## Constitution` section of this project's CLAUDE.md. Every change starts with assessment.md and constitution-check.md.
+
+  Gear (answer for this gear only; copy from <brain>\knowledge\00-gear-inventory\):
+  - Printer(s): <model, nozzles, AMS or external spool, plate>
+  - Slicer: Bambu Studio <version>, the executable set in <brain>\config\paths.yaml (CLI slicing for verification).
+  - CAD/render: <your CAD and render tools, e.g. Python code-CAD in <brain>\.venv, Blender (path in config\paths.yaml)>
+  - The maker works in Claude Code inside VS Code: instructions are VS Code steps or one PowerShell line to paste.
+
+  Sources of truth: openspec/specs/ = how THIS project's parts behave; <brain>\knowledge\ = facts about hardware,
+  materials and slicer (link to a note, never copy its numbers without the note path). What is physically loaded is recorded
+  in <brain>\knowledge\00-gear-inventory\current-load.md (ask the maker, never assume).
+
+  Writing: full file paths and full URLs always; exact UI labels (Tab > Section > Setting); questions numbered and marked
+  NEEDS MAKER; no time estimates (appetite is a budget, not an estimate); positions vs units are separate numbers.
+  No AI ever starts, sends, uploads or queues a print: the maker presses Print in Bambu Studio.
+
+rules:
+  assessment:
+    - 'Every research bullet ends with a full URL, a full local path, or the tag ASSUMPTION; no bare claims'
+    - 'The section "Evidence against the idea" is mandatory even when it says "None found"'
+    - 'A go verdict needs problem validity and evidence strength rated adequate or better; otherwise needs-clarification'
+    - 'Stop after a needs-clarification or kill verdict; the maker confirms before anything else is written'
+  constitution-check:
+    - 'One row per numbered principle of CLAUDE.md > Constitution; name the constitution version checked against'
+    - 'A violation is CRITICAL and is fixed by changing the idea, option or scope, never by softening the principle'
+    - 'End with GATE: PASS or GATE: FAIL - needs the maker'
+  proposal:
+    - 'Written only after VERDICT: go and GATE: PASS; the Why and What Changes come from the assessment hand-off'
+    - 'Keep the proposal under two pages; profile and material values belong in design.md'
+  specs:
+    - 'Requirements describe observable part behaviour (fit, load, clearance, finish, assembly), not slicer settings'
+    - 'Every number carries its condition: printer, nozzle, plate, material, load; link the knowledge note it came from'
+    - 'One material per part unless multi-material is the point of the part; clear parts are separate pieces held mechanically'
+    - 'Split only at natural part boundaries (separate characters, accessories, bases); never a plane through a sculpture, face or main body'
+    - 'Scenarios use exactly four hashtags (#### Scenario:) and WHEN / THEN; one behaviour per requirement'
+  design:
+    - 'Repeat the constitution check against the decisions made; a new violation sends the change back to the proposal'
+    - 'Print plan per part: purpose (display, stream, functional, coupon), printer, nozzle, plate, profile (start from the printer''s 0.20mm Standard profile, justify every deviation with a source), material + AMS slot, orientation, supports'
+    - 'The generating script for every part lives in src/ next to its output in out/stl or out/3mf'
+  tasks:
+    - 'Every print task verifies by: slice with the installed Bambu Studio CLI, read result.json and the G-code, save the evidence under _tests/'
+    - 'Every print task includes the pre-print checklist <brain>\templates\preprint-checklist.md as its verification'
+    - 'Every part task includes a render of the real STL (renders/) before the part is called right'
+
+operations:
+  apply:
+    guidance:
+      - 'Ask what is physically loaded (AMS slots, nozzles, plate) before building any print file; record it in <brain>\knowledge\00-gear-inventory\current-load.md'
+      - 'Nothing prints on a print-qa FAIL or an incomplete pre-print checklist; no AI ever starts, sends, uploads or queues a print'
+      - 'Keep the generating script beside every STL or 3MF; save slice logs, result.json and audits under _tests/'
+  archive:
+    guidance:
+      - 'Archive only after the part was printed and measured against the spec; record the measurements in the change before archiving'
+      - 'Write any lesson to <brain>\lessons\YYYY-MM-DD-<slug>.md and add one pointer line to this project''s lessons/ folder'
+      - 'Facts learned go through /research-one -> /verify -> /file into <brain>\knowledge\, never into this repo'

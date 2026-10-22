@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "mm-audit": {
+      "command": "${CLAUDE_PROJECT_DIR:-.}/.venv/Scripts/python.exe",
+      "args": ["-B", "${CLAUDE_PROJECT_DIR:-.}/tools/mcp/mm_audit_server.py"]
+    }
+  }
+}

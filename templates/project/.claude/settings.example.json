@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "deny": [
+      "mcp__*__*print*",
+      "mcp__*__*upload_gcode*",
+      "mcp__*__*send_gcode*",
+      "mcp__*__*queue*",
+      "mcp__*bambu*__*upload*",
+      "mcp__*bambu*__*start*",
+      "mcp__*printer*__*upload*",
+      "mcp__*printer*__*start*"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit|NotebookEdit|Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "<brain>/.venv/Scripts/python.exe",
+            "args": ["-B", "<brain>/tools/hooks/guard_paths.py"],
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "<brain>/.venv/Scripts/python.exe",
+            "args": ["-B", "<brain>/tools/check_note.py"],
+            "timeout": 20
+          }
+        ]
+      }
+    ]
+  }
+}
