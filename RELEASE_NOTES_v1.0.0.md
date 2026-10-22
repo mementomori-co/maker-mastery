@@ -72,7 +72,7 @@ and you build and print.
 - Claude Code v2.1.295 or later (the VS Code extension's version counts). The guard hook in `.claude/settings.json`
   uses `"onFailure": "block"`, which needs that version ([hooks reference](https://code.claude.com/docs/en/hooks)).
   How to check:
-  [Check your Claude Code version](https://github.com/<owner>/maker-mastery/blob/main/docs/02-install.md#check-your-claude-code-version).
+  [Check your Claude Code version](https://github.com/mementomori-co/maker-mastery/blob/main/docs/02-install.md#check-your-claude-code-version).
 - Bambu Studio (for slicing and the print audits; the library, agents and most tools work without it).
 - Git is recommended, but not required: you can use the ZIP instead.
 
@@ -80,7 +80,7 @@ and you build and print.
 
 Download `maker-mastery-v1.0.0.zip` below, or clone the repository. Then follow the install guide, click by click, or
 use the install scripts in `install/` (try the dry run first):
-[docs/02-install.md](https://github.com/<owner>/maker-mastery/blob/main/docs/02-install.md).
+[docs/02-install.md](https://github.com/mementomori-co/maker-mastery/blob/main/docs/02-install.md).
 
 ## What's next
 

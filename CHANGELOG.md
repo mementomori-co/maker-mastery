@@ -39,5 +39,5 @@ Release name: **v1.0.0 — First Light**. Release asset: `maker-mastery-v1.0.0.z
 - Brand assets in `assets/brand/` (crest, dark and light banners, social preview, the four-crest Memento Mori family strip in dark and light, small crest icons, and `org-avatar-500.png` for a GitHub organization); not open-licensed, see `NOTICE.md`.
 - Legal and community files: MIT `LICENSE`, `NOTICE.md`, `THIRD_PARTY_NOTICES.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md` (Contributor Covenant 2.1), `CONTRIBUTING.md`.
 
-[Unreleased]: https://github.com/<owner>/maker-mastery/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/<owner>/maker-mastery/releases/tag/v1.0.0
+[Unreleased]: https://github.com/mementomori-co/maker-mastery/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/mementomori-co/maker-mastery/releases/tag/v1.0.0

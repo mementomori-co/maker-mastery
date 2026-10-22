@@ -38,20 +38,20 @@ Official guide: https://docs.github.com/en/repositories/creating-and-managing-re
    ([adding locally hosted code](https://docs.github.com/en/migrations/importing-source-code/using-the-command-line-to-import-source-code/adding-locally-hosted-code-to-github)).
 7. Click **Create repository**. You land on the **Quick Setup** page. Leave it open.
 
-### What "owner" means, and filling in `<owner>`
+### What "owner" means, and filling in `mementomori-co`
 
 The owner is the GitHub account the repository belongs to: your username, or the organization's name if you publish
 under an organization. It is the part of the address right after `github.com/`. If your username were `your-username`, the repository address would be
 `https://github.com/your-username/maker-mastery`.
 
-The project's files cannot know your username in advance, so they say `<owner>` instead. Replace it everywhere it
+The project's files cannot know your username in advance, so they say `mementomori-co` instead. Replace it everywhere it
 matters, before you push:
 
 1. In VS Code press **Ctrl+Shift+H** (the **Replace in Files** command,
    [VS Code default keyboard shortcuts](https://code.visualstudio.com/docs/reference/default-keybindings)). The menu route
    is **Edit > Replace in Files** (menu location not verified). The Search view opens with a Replace box
    ([VS Code: search and replace](https://code.visualstudio.com/docs/editing/codebasics)).
-2. In the search box type exactly `<owner>` (with the angle brackets).
+2. In the search box type exactly `mementomori-co` (with the angle brackets).
 3. In the Replace box type your GitHub username, with no angle brackets and no spaces.
 4. Click the ellipsis below the search box (**Toggle Search Details**) to show the **files to include** and
    **files to exclude** boxes.
@@ -66,7 +66,7 @@ matters, before you push:
    Replace box (label not verified; the VS Code guide says you "can replace across all files from the Replace text
    box"). Confirm if VS Code asks.
 7. Press **Ctrl+S** in any file that is still open with unsaved changes.
-8. Search for `<owner>` once more with **files to include** empty. The only remaining matches should be in
+8. Search for `mementomori-co` once more with **files to include** empty. The only remaining matches should be in
    `docs/PUBLISHING.md`.
 
 ## b. Push the local repository
@@ -100,7 +100,7 @@ You should see `Memento Mori`, `memento-mori@example.invalid`, then one line per
 > git config user.email "you@users.noreply.github.com"
 > ```
 
-1. Commit the `<owner>` replacement from part a first:
+1. Commit the `mementomori-co` replacement from part a first:
 
    ```powershell
    git add -A
@@ -110,10 +110,10 @@ You should see `Memento Mori`, `memento-mori@example.invalid`, then one line per
    Before you run `git add -A`, run `git status` and read the list: it should show only the 6 files from part a. If
    anything else is listed, see part g before you continue.
 
-2. Connect the folder to your new GitHub repository. Type your username in place of `<owner>`:
+2. Connect the folder to your new GitHub repository. Type your username in place of `mementomori-co`:
 
    ```powershell
-   git remote add origin https://github.com/<owner>/maker-mastery.git
+   git remote add origin https://github.com/mementomori-co/maker-mastery.git
    git remote -v
    ```
 
@@ -284,10 +284,10 @@ After publishing, the release page lists your ZIP under "Assets", next to the **
 - **Release downloads.** GitHub counts downloads of files you attach to a release (release assets). The documented way
   to read that number is the Releases API: "the number of times people download a release asset"
   ([about releases](https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases)). Open this
-  address in your browser, with your username in place of `<owner>`:
+  address in your browser, with your username in place of `mementomori-co`:
 
   ```text
-  https://api.github.com/repos/<owner>/maker-mastery/releases
+  https://api.github.com/repos/mementomori-co/maker-mastery/releases
   ```
 
   Find `"name": "maker-mastery-v1.0.0.zip"` and read the `"download_count"` next to it
@@ -296,7 +296,7 @@ After publishing, the release page lists your ZIP under "Assets", next to the **
   no sign-in is needed. Whether the Releases web page also shows a count next to each file is not verified.
 - **The README badge.** The "Release downloads" badge in `README.md` uses
   [Shields.io: downloads, all assets, all releases](https://shields.io/badges/git-hub-downloads-all-assets-all-releases).
-  It shows a number once the release with its ZIP exists and your username has replaced `<owner>`. Badge images are
+  It shows a number once the release with its ZIP exists and your username has replaced `mementomori-co`. Badge images are
   cached, so it may lag behind the API (not verified how long).
 - **Traffic.** On the repository page click **Insights**, then **Traffic** in the left sidebar. It shows views,
   unique visitors and full clones for the past 14 days, plus referring sites and popular content. Clones and visitors
@@ -324,14 +324,14 @@ Tick every line before part d.
 
       (Use the path of your own denylist.) It must end with no findings. Fix every finding, commit, and run it again.
       See [07 - Tools reference](07-tools-reference.md#privacy_scanpy).
-- [ ] **`<owner>` replaced** in the 6 files from part a, committed and pushed. Search once more for `<owner>`: only
+- [ ] **`mementomori-co` replaced** in the 6 files from part a, committed and pushed. Search once more for `mementomori-co`: only
       this page may still contain it.
 - [ ] **README in light and dark mode.** Open the repository page and read the README. Then switch GitHub's theme:
       your profile picture (upper right) > **Settings** > **Appearance** > "Theme mode", pick the other theme, and
       read it again
       ([managing your theme settings](https://docs.github.com/en/get-started/accessibility/managing-your-theme-settings)).
       Check that the banner and the "Memento Mori family" strip match the theme, the small crests in the Domains
-      tables, the credits and the footer show, the badges load, the three diagrams draw, and no link shows `<owner>`.
+      tables, the credits and the footer show, the badges load, the three diagrams draw, and no link shows `mementomori-co`.
 - [ ] **Organization profile picture** (organizations only): `assets\brand\org-avatar-500.png` is uploaded (part c).
 - [ ] **Social preview.** In **Settings**, under "Social preview", the image shows the crest and the title. Pasting the
       repository address into a chat app may still show an older cached card for a while (not verified).

@@ -4,7 +4,7 @@ Thank you for helping. This project is a Claude Code operating system for makers
 
 By contributing you agree that your contribution is released under the MIT License (see [LICENSE](LICENSE)) and that you follow the [Code of Conduct](CODE_OF_CONDUCT.md). Brand assets are not open for contributions; see [NOTICE.md](NOTICE.md).
 
-The repository lives at `https://github.com/<owner>/maker-mastery`.
+The repository lives at `https://github.com/mementomori-co/maker-mastery`.
 
 ## The one rule that never bends
 

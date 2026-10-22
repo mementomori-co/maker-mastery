@@ -13,15 +13,15 @@
 Maker Mastery turns Claude Code into a careful workshop partner for any maker: 3D printing, CAD, electronics, rendering and more.
 Its flagship is 3D printing on Bambu Lab printers, where Claude Code slices, audits and gates your files, and you press Print.
 
-<!-- Badges. <owner> is the GitHub account name, filled in when the repository is published. -->
+<!-- Badges. mementomori-co is the GitHub account name, filled in when the repository is published. -->
 <p align="center">
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-2ea44f"></a>
   <a href="docs/02-install.md"><img alt="Platform: Windows 11" src="https://img.shields.io/badge/platform-Windows%2011-0078D6"></a>
   <a href="https://code.claude.com/docs/en/vs-code"><img alt="Built for Claude Code" src="https://img.shields.io/badge/Claude%20Code-VS%20Code%20extension-D97757"></a>
   <a href="https://wiki.bambulab.com/"><img alt="Bambu Lab ready" src="https://img.shields.io/badge/Bambu%20Lab-ready-00AE42"></a>
   <a href="https://www.python.org/downloads/windows/"><img alt="Python 3.12" src="https://img.shields.io/badge/python-3.12-3776AB"></a>
-  <!-- <owner> below is filled in at publish time. -->
-  <a href="https://github.com/<owner>/maker-mastery/releases"><img alt="Release downloads" src="https://img.shields.io/github/downloads/<owner>/maker-mastery/total"></a>
+  <!-- mementomori-co below is filled in at publish time. -->
+  <a href="https://github.com/mementomori-co/maker-mastery/releases"><img alt="Release downloads" src="https://img.shields.io/github/downloads/mementomori-co/maker-mastery/total"></a>
 </p>
 
 > [!IMPORTANT]
@@ -356,8 +356,8 @@ in `assets/brand/` are **not** covered by the MIT License; see [NOTICE.md](NOTIC
 brand assets first.
 
 <!--
-Star history (fill <owner> when the repository is published, then uncomment):
-[![Star History Chart](https://api.star-history.com/svg?repos=<owner>/maker-mastery&type=Date)](https://star-history.com/#<owner>/maker-mastery&Date)
+Star history (fill mementomori-co when the repository is published, then uncomment):
+[![Star History Chart](https://api.star-history.com/svg?repos=mementomori-co/maker-mastery&type=Date)](https://star-history.com/#mementomori-co/maker-mastery&Date)
 -->
 
 <p align="center">

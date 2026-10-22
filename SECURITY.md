@@ -6,7 +6,7 @@ If you find a security problem (for example a tool that could send a print, leak
 
 Use GitHub's private vulnerability reporting:
 
-1. Open the repository's **Advisories** page: `https://github.com/<owner>/maker-mastery/security/advisories`. (GitHub's
+1. Open the repository's **Advisories** page: `https://github.com/mementomori-co/maker-mastery/security/advisories`. (GitHub's
    reporting guide also starts from the repository's **Security and quality** tab; the button is offered there too.)
 2. Click the **Report a vulnerability** button and fill in the form.
 3. Click **Submit report**.

@@ -3,7 +3,7 @@
 There are two ways to get the project folder onto your PC: **Download ZIP** (no Git needed) or **git clone** (easier to
 update later). Pick one. Next: [04 - First run](04-first-run.md).
 
-The project's GitHub address is `https://github.com/<owner>/maker-mastery`. `<owner>` is the GitHub account that
+The project's GitHub address is `https://github.com/mementomori-co/maker-mastery`. `mementomori-co` is the GitHub account that
 publishes it; on the real page the address is already complete.
 
 ## Where to put the folder
@@ -64,7 +64,7 @@ Official guide: https://docs.github.com/en/repositories/creating-and-managing-re
 
    ```powershell
    New-Item -ItemType Directory -Force C:\Projects | Out-Null
-   git clone https://github.com/<owner>/maker-mastery.git C:\Projects\maker-mastery
+   git clone https://github.com/mementomori-co/maker-mastery.git C:\Projects\maker-mastery
    ```
 
 4. You should see `Cloning into 'C:\Projects\maker-mastery'...` and a few progress lines ending without an error.
