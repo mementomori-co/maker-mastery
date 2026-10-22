@@ -77,8 +77,8 @@ What it changes, per the same page:
 Version note: the field needs Claude Code v2.1.295 or later. The VS Code extension carries its own copy of Claude
 Code, so the extension's version is the one that counts for the panel; the separate command line (`claude --version`)
 can be older. What an older version does with the field (ignore it, or report the settings file as invalid) is not
-documented and not verified here. If your Claude Code is older, update it. On an older version the guard is fail-open:
-a guard that cannot start lets the call through. The other three hooks do not set the field, so they stay fail-open on
+documented and not verified here. If your Claude Code is older, update it. If an older version ignores the field, the guard is fail-open
+(a guard that cannot start lets the call through); if it rejects the file, choose Exit, never "continue without". The other three hooks do not set the field, so they stay fail-open on
 purpose (a missing lesson list or note check must not stop your work).
 
 VS Code will flag `onFailure` as not allowed, and this is expected. The SchemaStore schema named in `$schema`

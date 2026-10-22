@@ -53,7 +53,8 @@ class MMConfigTests(unittest.TestCase):
         return {"MM_CONFIG": p}
 
     def test_repo_root_is_parent_of_tools(self):
-        self.assertEqual(str(mm_config.repo_root()), REPO)
+        # Compare resolved paths: an 8.3 short path (e.g. a %TEMP% under a user name with a space) must still match.
+        self.assertEqual(pathlib.Path(mm_config.repo_root()).resolve(), pathlib.Path(REPO).resolve())
 
     def test_example_file_parses_with_both_readers(self):
         text = read(os.path.join(REPO, "config", "paths.example.yaml"))

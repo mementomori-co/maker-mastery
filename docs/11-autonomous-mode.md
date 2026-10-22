@@ -162,7 +162,7 @@ It does **not** block:
   start", crashes (exit code other than 0 or 2) or times out blocks a `PreToolUse` call, and that the field "Requires
   Claude Code v2.1.295 or later" ([hooks, "Block the action when a hook fails"](https://code.claude.com/docs/en/hooks)).
   So on v2.1.295 or later, a missing venv means every file write and shell command is **blocked** until you run
-  `tools\setup.ps1` yourself in the VS Code terminal. On an older version the guard stays fail-open (a hook that cannot
+  `tools\setup.ps1` yourself in the VS Code terminal. If an older version ignores the field, the guard stays fail-open (a hook that cannot
   start is a "non-blocking error" and the call goes ahead), and what an older version does with the unknown field is
   (not verified). The panel uses the copy of Claude Code inside the VS Code extension, so update the extension. Details:
   [.claude/settings.notes.md](../.claude/settings.notes.md).

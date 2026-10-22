@@ -4,7 +4,7 @@
 
 .DESCRIPTION
   What it does, in order (it prints each step before doing it):
-    1. Finds Python 3.12 or newer ("py -3.12", then "python"). If there is none, it prints the download link and stops.
+    1. Finds Python 3.12 or newer ("py -3.12", then "py -3", then "python"). If there is none, it prints the download link and stops.
     2. Creates .venv inside this repository and installs requirements.txt into it. Nothing is installed globally.
        It asks Y/N before installing unless you pass -Yes.
     3. Copies config\paths.example.yaml to config\paths.yaml if you do not have one yet (never overwrites yours).

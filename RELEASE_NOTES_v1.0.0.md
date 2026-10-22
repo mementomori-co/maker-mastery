@@ -97,7 +97,7 @@ scanning, media, and data and backups. Each domain goes through the same source 
   already had the apps), `install/check.ps1` was run for real (it only reads), and no script has installed an app yet.
 - **The guard hook is a safety net, not a sandbox.** It only sees paths written in the command text; a path built
   inside a script, or a deletion outside your protected folders, gets past it. Its fail-closed setting needs Claude
-  Code v2.1.295 or later; on older versions a guard that cannot start lets the call through. See
+  Code v2.1.295 or later; an older version that ignores the setting lets the call through when the guard cannot start (what older versions do is not documented). See
   `docs/11-autonomous-mode.md`.
 - **The small crest icons are clearest on high-density screens.** The 40-pixel icons in the README are exported at
   twice that size and shown at 40 px, so on a standard-density screen their fine detail is soft.
