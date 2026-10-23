@@ -178,7 +178,6 @@ Official guide: https://docs.github.com/en/repositories/managing-your-repository
    electronics
    raspberry-pi
    arduino
-   game-development
    knowledge-base
    claude-skills
    prompt-engineering

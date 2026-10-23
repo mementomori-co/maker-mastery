@@ -205,7 +205,7 @@ def hero(kind, opt, crest_href):
     y2 = y1 + size * 0.98
     t1 = y2 + 30 + tg_size * 1.0
     t2 = t1 + tg_size * 1.4
-    label = "Memento Mori · Maker Mastery. %s %s. %s %s" % (
+    label = "Memento Mori · Maker Mastery. %s %s %s %s" % (
         "".join(s for s, _ in l1), "".join(s for s, _ in l2), TAGLINE[0], TAGLINE[1])
     out = svg_open(W, H, label) + defs(W, H, glow)
     out += '<image x="%.1f" y="%.1f" width="%.1f" height="%.1f" href="%s"/>\n' % (cx, cy, cw, ch, crest_href)
