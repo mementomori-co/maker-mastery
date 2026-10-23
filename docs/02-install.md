@@ -164,7 +164,7 @@ API key is required" ([setup](https://code.claude.com/docs/en/setup#authenticate
 
 | Account | Who it is for | How you pay | Where you sign up |
 |---|---|---|---|
-| Claude **Pro** or **Max** subscription | one person (the usual choice) | a monthly plan on your Claude account | [claude.ai](https://claude.ai), then choose a plan at [claude.com/pricing](https://claude.com/pricing) |
+| Claude **Pro** or **Max** subscription | one person | a monthly plan on your Claude account | [claude.ai](https://claude.ai), then choose a plan at [claude.com/pricing](https://claude.com/pricing) |
 | Claude for **Teams** or **Enterprise** | a team or company | your organization's plan | your team admin invites you; you log in with that claude.ai account |
 | Claude **Console** | API (pay-as-you-go) billing | usage billed by the API | [platform.claude.com](https://platform.claude.com); a separate account from claude.ai |
 
@@ -184,10 +184,11 @@ covered here ([Authentication](https://code.claude.com/docs/en/authentication)).
      link gives you a verification code to type on the device where you asked for the email.
    ([Log in to your Claude account](https://support.claude.com/en/articles/13189465-log-in-to-your-claude-account))
 3. Verify your phone number when asked. Anthropic requires "phone verification for all new users". The number must be
-   able to receive a text message, and VoIP numbers, Google Voice, app-made numbers and landlines are not accepted.
+   able to receive a text message, and "you cannot use VoIP numbers, Google Voice, phone numbers created using apps,
+   landlines".
    You must be physically in a supported location
    ([Verify your phone number](https://support.claude.com/en/articles/8287232-verify-your-phone-number),
-   [supported countries](https://www.anthropic.com/supported-countries)).
+   [supported countries](https://www.anthropic.com/legal/supported-regions)).
 4. Subscribe to Pro or Max from [claude.com/pricing](https://claude.com/pricing). The free plan does not include
    Claude Code. (The exact upgrade button wording on claude.ai: label not verified.)
 
@@ -208,8 +209,9 @@ In a company Console organization, an admin invites you and gives you the **Clau
 You do this after installing the extension ([section 5](#5-claude-code-extension-for-vs-code)); guide
 [04 - First run](04-first-run.md) walks you through it in the project folder.
 
-1. Open the Claude Code panel: click the Spark icon in the **Activity Bar** (the narrow bar on the far left), or in the
-   **Editor Toolbar** at the top right of an open file.
+1. Open the Claude Code panel. The quickest way is to open any file and click the Spark icon in the **Editor Toolbar**
+   at the top right of the editor. The Spark icon in the **Activity Bar** (the narrow bar on the far left) opens the
+   sessions list instead, where you start a new session.
 2. "The first time you open the panel, a sign-in screen appears. Click **Sign in** and complete authorization in your
    browser." Log in there with the account you created above.
 3. Back in VS Code, a **Learn Claude Code** checklist appears. Work through it with **Show me**, or close it with the X.
@@ -218,10 +220,10 @@ You do this after installing the extension ([section 5](#5-claude-code-extension
 
 - **To switch account or log out**, type `/logout` in the Claude Code prompt, then sign in again
   ([Authentication](https://code.claude.com/docs/en/authentication)).
-- **If you have an `ANTHROPIC_API_KEY` environment variable set**, Claude Code uses that key instead of your
-  subscription and you pay API rates
-  ([Use Claude Code with your Pro or Max plan](https://support.claude.com/en/articles/11145838-use-claude-code-with-your-pro-or-max-plan)).
-  Remove it if you meant to use your plan.
+- **If you have an `ANTHROPIC_API_KEY` environment variable set**, Claude Code asks once whether to use it. Once you
+  approve it, it uses that key instead of your subscription and you pay API rates
+  ([Use Claude Code with your Pro or Max plan](https://support.claude.com/en/articles/11145838-use-claude-code-with-your-pro-or-max-plan),
+  [Authentication](https://code.claude.com/docs/en/authentication)). Remove the variable if you meant to use your plan.
 
 ## 1. Git
 
@@ -736,7 +738,7 @@ Every id and command above was read from these official pages for this release:
   [Verify your phone number](https://support.claude.com/en/articles/8287232-verify-your-phone-number),
   [Use Claude Code with your Pro or Max plan](https://support.claude.com/en/articles/11145838-use-claude-code-with-your-pro-or-max-plan),
   [change email](https://support.claude.com/en/articles/8452276-how-do-i-change-the-email-address-associated-with-my-account),
-  [supported countries](https://www.anthropic.com/supported-countries)
+  [supported countries](https://www.anthropic.com/legal/supported-regions)
   (all read on 2026-10-22)
 - Claude Code: [setup](https://code.claude.com/docs/en/setup), [VS Code](https://code.claude.com/docs/en/vs-code),
   [Marketplace: anthropic.claude-code](https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code)
