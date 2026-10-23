@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for helping. This project is a Claude Code operating system for makers: 3D printing, CAD, electronics, rendering, game dev and more. 3D printing on Bambu Lab printers is the flagship example, with rules, a verified knowledge library, agents and skills, a print-quality gate and slicing and audit helpers. Contributions of every size are welcome: a corrected fact, a new knowledge note, a lesson, a tool fix.
+Thank you for helping. This project is a Claude Code operating system for makers: 3D printing, CAD, electronics, rendering, AI agents and more. 3D printing on Bambu Lab printers is the flagship example, with rules, a verified knowledge library, agents and skills, a print-quality gate and slicing and audit helpers. Contributions of every size are welcome: a corrected fact, a new knowledge note, a lesson, a tool fix.
 
 By contributing you agree that your contribution is released under the MIT License (see [LICENSE](LICENSE)) and that you follow the [Code of Conduct](CODE_OF_CONDUCT.md). Brand assets are not open for contributions; see [NOTICE.md](NOTICE.md).
 

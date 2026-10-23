@@ -9,10 +9,10 @@ Every piece of text is converted to SVG paths with ttf_outlines.py, so the SVGs
 render the same everywhere and no font file is referenced or shipped.
 
 Writes
-  ../banner-dark.svg, ../banner-light.svg      hero banner, option A (1600x420)
-  ../banner-dark_optB.svg                      hero banner, option B
+  ../banner-dark.svg, ../banner-light.svg      hero banner, option B, live (1600x420)
+  ../banner-dark_optA.svg                      hero banner, option A, alternate
   src/render-*.html                            pages Chrome turns into the PNGs
-                                               (banner A/B, social preview A/B)
+                                               (banner B/A, social preview B/A)
   ../headers/<slug>.svg                        one header strip per README section
   ../headers/ticker.svg                        red marquee divider
   ../headers/why-*.svg                         the three "Why" cards
@@ -168,6 +168,7 @@ HEADLINES = {
     "A": ([("BUILD WITH", "fill")], [("AI. ", "red"), ("PRINT BY HAND.", "out")]),
     "B": ([("TIME IS ", "fill"), ("SHORT.", "red")], [("MAKE IT COUNT.", "out")]),
 }
+LIVE, ALT = "B", "A"  # B is the live hero; A is kept as the _optA alternate
 EYEBROW = "MEMENTO MORI · MAKER MASTERY"
 TAGLINE = ("A Claude Code operating system for makers —",
            "research-backed, AI-checked, human-built.")
@@ -455,11 +456,11 @@ def main(argv=None):
     hd = os.path.join(BRAND, "headers")
     sizes = {}
     small = data_uri(os.path.join(BRAND, "crest-parent-512.png"))
-    for opt in ("A", "B"):
-        suffix = "" if opt == "A" else "_optB"
+    for opt in (LIVE, ALT):
+        suffix = "" if opt == LIVE else "_opt" + opt
         W, H, svg = hero("banner", opt, small)
         sizes["banner-dark%s.svg" % suffix] = write(os.path.join(BRAND, "banner-dark%s.svg" % suffix), svg)
-        if opt == "A":
+        if opt == LIVE:
             sizes["banner-light.svg"] = write(os.path.join(BRAND, "banner-light.svg"), svg)
         for kind, name in (("banner", "banner-dark%s" % suffix), ("social", "social-preview%s" % suffix)):
             W, H, svg = hero(kind, opt, "../crest-parent-1024.png")

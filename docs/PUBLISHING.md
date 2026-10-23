@@ -155,7 +155,7 @@ Official guide: https://docs.github.com/en/repositories/managing-your-repository
 2. In the description field (label not verified) paste this text exactly:
 
    ```text
-   Claude Code AI agents and a cited knowledge library for makers: 3D printing (Bambu Lab), CAD and organic modeling, electronics and LEDs, Raspberry Pi, Blender rendering, game dev, MCP and agent engineering. Quality gates and tools built in. The AI researches, prepares and checks; you build.
+   Claude Code AI agents and a cited knowledge library for makers: 3D printing (Bambu Lab), CAD and organic modeling, electronics and LEDs, Raspberry Pi, Blender rendering, MCP and agent engineering. Quality gates and tools built in. The AI researches, prepares and checks; you build.
    ```
 
 3. Under "Topics", add these 20 topics one at a time (type one, then click it in the dropdown or keep typing to create

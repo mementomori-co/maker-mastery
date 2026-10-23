@@ -65,9 +65,9 @@ Fonts it reads (SIL OFL 1.1, not shipped; put them in one folder): `Oswald-Bold.
 
 | Output | Size | Use |
 |---|---|---|
-| `banner-dark.svg` (= `banner-light.svg`), `banner-dark.png` (= `banner-light.png`) | 1600x420 | README hero, headline option A |
-| `banner-dark_optB.svg`, `banner-dark_optB.png` | 1600x420 | headline option B |
-| `social-preview.png`, `social-preview_optB.png` | 1280x640 | GitHub social preview (A, B) |
+| `banner-dark.svg` (= `banner-light.svg`), `banner-dark.png` (= `banner-light.png`) | 1600x420 | README hero, headline option B "TIME IS SHORT. MAKE IT COUNT." (live) |
+| `banner-dark_optA.svg`, `banner-dark_optA.png` | 1600x420 | headline option A "BUILD WITH AI. PRINT BY HAND." (alternate, not used) |
+| `social-preview.png`, `social-preview_optA.png` | 1280x640 | GitHub social preview (B live, A alternate) |
 | `headers/<section>.svg` | 1600x180 | one strip under each README `##` heading |
 | `headers/ticker.svg` | 1600x44 | red marquee divider |
 | `headers/why-1.svg` to `why-3.svg` | 560x520 | "Why" cards, shown at 260 px wide |
@@ -79,4 +79,4 @@ Fonts it reads (SIL OFL 1.1, not shipped; put them in one folder): `Oswald-Bold.
 python assets\brand\src\build_site.py --fonts C:\path\to\fonts
 ```
 
-The PNG heroes are rendered from `render-banner-dark.html`, `render-banner-dark_optB.html`, `render-social-preview.html` and `render-social-preview_optB.html` in this folder (no fonts needed: the text is already outlined) with the Chrome command above, without the transparent-background flag, then copied with `strip_png_metadata.py`.
+The PNG heroes are rendered from `render-banner-dark.html`, `render-banner-dark_optA.html`, `render-social-preview.html` and `render-social-preview_optA.html` in this folder (no fonts needed: the text is already outlined) with the Chrome command above, without the transparent-background flag, then copied with `strip_png_metadata.py`.

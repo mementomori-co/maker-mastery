@@ -37,9 +37,9 @@ TITLE_SEP = "·"
 TITLE_B = "MAKER MASTERY"
 # Subtitle (one sentence, set on two lines):
 # "A Claude Code operating system for makers — 3D printing, CAD, electronics, rendering,
-#  game dev and more. Research-backed, AI-checked, human-built."
+#  AI agents and more. Research-backed, AI-checked, human-built."
 TAG1 = "A Claude Code operating system for makers — 3D printing, CAD, electronics,"
-TAG2A = "rendering, game dev and more. Research-backed, AI-checked, "
+TAG2A = "rendering, AI agents and more. Research-backed, AI-checked, "
 TAG2B = "human-built."
 
 FONT_FILES = {

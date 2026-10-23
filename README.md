@@ -1,10 +1,10 @@
 <p align="center">
-  <img alt="Memento Mori · Maker Mastery. Build with AI. Print by hand. A Claude Code operating system for makers: research-backed, AI-checked, human-built." src="assets/brand/banner-dark.svg" width="100%">
+  <img alt="Memento Mori · Maker Mastery. Time is short. Make it count. A Claude Code operating system for makers: research-backed, AI-checked, human-built." src="assets/brand/banner-dark.svg" width="100%">
 </p>
 
 <h1 align="center">MEMENTO MORI · MAKER MASTERY</h1>
 
-<p align="center"><strong>A Claude Code operating system for makers — 3D printing, CAD, electronics, rendering, game dev and more. Research-backed, AI-checked, human-built.</strong></p>
+<p align="center"><strong>A Claude Code operating system for makers — 3D printing, CAD, electronics, rendering, AI agents and more. Research-backed, AI-checked, human-built.</strong></p>
 
 Maker Mastery turns Claude Code into a careful workshop partner for any maker: 3D printing, CAD, electronics, rendering and more.
 Its flagship is 3D printing on Bambu Lab printers, where Claude Code slices, audits and gates your files, and you press Print.
