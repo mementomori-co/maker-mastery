@@ -20,6 +20,7 @@ on, ids normally do not.
 - [Before you start](#before-you-start)
 - [Windows: normal or administrator?](#windows-normal-or-administrator)
 - [The quick route: install scripts](#the-quick-route-install-scripts)
+- First: [0. Create your Anthropic account](#0-create-your-anthropic-account)
 - Required: [1. Git](#1-git) - [2. VS Code](#2-vs-code) - [3. Python 3.12](#3-python-312) -
   [5. Claude Code extension for VS Code](#5-claude-code-extension-for-vs-code) - [6. Bambu Studio](#6-bambu-studio)
 - Optional: [4. Claude Code command line](#4-claude-code-command-line-optional) -
@@ -39,6 +40,7 @@ Why these apps: the tools in `tools\` run on Python (`requirements.txt`), slice 
 
 | App | Need | Windows 11 | macOS Apple silicon | macOS Intel | Ubuntu |
 |---|---|---|---|---|---|
+| Anthropic account (Pro, Max, Team, Enterprise or Console; [section 0](#0-create-your-anthropic-account)) | required | claude.ai ✅ · platform.claude.com ✅ | same | same | same |
 | Git | required | Download ✅ · winget ✅ `Git.Git` | Homebrew ✅ `git` · Xcode tools ✅ | Xcode tools ✅ · Homebrew Tier 3 (see note) | apt ✅ `git` |
 | VS Code | required | Download ✅ · winget ✅ `Microsoft.VisualStudioCode` | Download ✅ · Homebrew ✅ cask `visual-studio-code` | Download ✅ · Homebrew Tier 3 | .deb ✅ · apt (Microsoft repo) ✅ `code` |
 | Python 3.12 | required | Download ✅ 3.12.10 · winget ✅ `Python.Python.3.12` | Download ✅ 3.12.10 universal2 · Homebrew ✅ `python@3.12` | Download ✅ 3.12.10 universal2 · Homebrew Tier 3 | apt ✅ `python3.12` + `python3.12-venv` (24.04) |
@@ -147,6 +149,79 @@ then offers the winget package and the macOS script the Homebrew cask, and both 
 The Linux script runs the native installer itself, after your y.
 
 If you prefer to do it by hand, follow the sections below in order.
+
+## 0. Create your Anthropic account
+
+Claude Code needs an Anthropic account with Claude Code access. Do this first: no app on this page can sign you in
+without it. Every fact below is from Anthropic's own pages, listed under [Sources](#sources).
+
+### Which account works
+
+Anthropic's setup guide says: "Claude Code requires a Pro, Max, Team, Enterprise, or Console account. The free
+claude.ai plan does not include Claude Code access." The VS Code extension guide adds that any of these works "and no
+API key is required" ([setup](https://code.claude.com/docs/en/setup#authenticate),
+[VS Code](https://code.claude.com/docs/en/vs-code)).
+
+| Account | Who it is for | How you pay | Where you sign up |
+|---|---|---|---|
+| Claude **Pro** or **Max** subscription | one person (the usual choice) | a monthly plan on your Claude account | [claude.ai](https://claude.ai), then choose a plan at [claude.com/pricing](https://claude.com/pricing) |
+| Claude for **Teams** or **Enterprise** | a team or company | your organization's plan | your team admin invites you; you log in with that claude.ai account |
+| Claude **Console** | API (pay-as-you-go) billing | usage billed by the API | [platform.claude.com](https://platform.claude.com); a separate account from claude.ai |
+
+This page does not list prices: check [claude.com/pricing](https://claude.com/pricing) on the day you subscribe.
+A Pro or Max plan's limits "are shared across Claude and Claude Code, meaning all activity in both tools counts
+against the same limits" ([Use Claude Code with your Pro or Max plan](https://support.claude.com/en/articles/11145838-use-claude-code-with-your-pro-or-max-plan)).
+Amazon Bedrock, Google Cloud's Agent Platform and Microsoft Foundry also work; they are for organizations and are not
+covered here ([Authentication](https://code.claude.com/docs/en/authentication)).
+
+### Create a Claude account (Pro or Max)
+
+1. Open [claude.ai](https://claude.ai) in your browser.
+2. Choose one:
+   - **Continue with Google**: enter your Google email and password in the window that opens, then click **Next**.
+   - Enter your email address and click **Continue with email**. Open the email titled "Secure link to log in to
+     Claude.ai" and click its link on the same device. On a different device, the email's **Sign in with Claude.ai**
+     link gives you a verification code to type on the device where you asked for the email.
+   ([Log in to your Claude account](https://support.claude.com/en/articles/13189465-log-in-to-your-claude-account))
+3. Verify your phone number when asked. Anthropic requires "phone verification for all new users". The number must be
+   able to receive a text message, and VoIP numbers, Google Voice, app-made numbers and landlines are not accepted.
+   You must be physically in a supported location
+   ([Verify your phone number](https://support.claude.com/en/articles/8287232-verify-your-phone-number),
+   [supported countries](https://www.anthropic.com/supported-countries)).
+4. Subscribe to Pro or Max from [claude.com/pricing](https://claude.com/pricing). The free plan does not include
+   Claude Code. (The exact upgrade button wording on claude.ai: label not verified.)
+
+Pick an email address you will keep: Anthropic's help centre says the email on a Claude account cannot be changed at
+the moment ([change email](https://support.claude.com/en/articles/8452276-how-do-i-change-the-email-address-associated-with-my-account)).
+
+### Or: a Claude Console account (API billing)
+
+Go to [platform.claude.com](https://platform.claude.com) and use **Continue with Google** or **Continue with email**
+(the email is titled "Secure link to log in to Claude Console"). Anthropic says the Console and claude.ai "are separate
+accounts, though you can use the same email address for both"
+([Log in to your Console account](https://support.claude.com/en/articles/13371040-log-in-to-your-console-account)).
+In a company Console organization, an admin invites you and gives you the **Claude Code** or **Developer** role
+([Authentication](https://code.claude.com/docs/en/authentication#claude-console-authentication)).
+
+### Sign in from the VS Code extension the first time
+
+You do this after installing the extension ([section 5](#5-claude-code-extension-for-vs-code)); guide
+[04 - First run](04-first-run.md) walks you through it in the project folder.
+
+1. Open the Claude Code panel: click the Spark icon in the **Activity Bar** (the narrow bar on the far left), or in the
+   **Editor Toolbar** at the top right of an open file.
+2. "The first time you open the panel, a sign-in screen appears. Click **Sign in** and complete authorization in your
+   browser." Log in there with the account you created above.
+3. Back in VS Code, a **Learn Claude Code** checklist appears. Work through it with **Show me**, or close it with the X.
+
+([VS Code guide, Get started](https://code.claude.com/docs/en/vs-code))
+
+- **To switch account or log out**, type `/logout` in the Claude Code prompt, then sign in again
+  ([Authentication](https://code.claude.com/docs/en/authentication)).
+- **If you have an `ANTHROPIC_API_KEY` environment variable set**, Claude Code uses that key instead of your
+  subscription and you pay API rates
+  ([Use Claude Code with your Pro or Max plan](https://support.claude.com/en/articles/11145838-use-claude-code-with-your-pro-or-max-plan)).
+  Remove it if you meant to use your plan.
 
 ## 1. Git
 
@@ -653,6 +728,16 @@ Every id and command above was read from these official pages for this release:
 - Homebrew: [brew.sh](https://brew.sh/), [Installation](https://docs.brew.sh/Installation),
   [Support Tiers](https://docs.brew.sh/Support-Tiers), [formulae.brew.sh](https://formulae.brew.sh/)
 - Ubuntu packages: [Launchpad, Ubuntu 24.04 "noble"](https://launchpad.net/ubuntu/noble)
+- Anthropic account: [Claude Code setup, Authenticate](https://code.claude.com/docs/en/setup#authenticate),
+  [Authentication](https://code.claude.com/docs/en/authentication), [claude.ai](https://claude.ai),
+  [claude.com/pricing](https://claude.com/pricing), [platform.claude.com](https://platform.claude.com),
+  [Log in to your Claude account](https://support.claude.com/en/articles/13189465-log-in-to-your-claude-account),
+  [Log in to your Console account](https://support.claude.com/en/articles/13371040-log-in-to-your-console-account),
+  [Verify your phone number](https://support.claude.com/en/articles/8287232-verify-your-phone-number),
+  [Use Claude Code with your Pro or Max plan](https://support.claude.com/en/articles/11145838-use-claude-code-with-your-pro-or-max-plan),
+  [change email](https://support.claude.com/en/articles/8452276-how-do-i-change-the-email-address-associated-with-my-account),
+  [supported countries](https://www.anthropic.com/supported-countries)
+  (all read on 2026-10-22)
 - Claude Code: [setup](https://code.claude.com/docs/en/setup), [VS Code](https://code.claude.com/docs/en/vs-code),
   [Marketplace: anthropic.claude-code](https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code)
 - Claude Desktop: [download](https://claude.com/download),

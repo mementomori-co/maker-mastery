@@ -290,6 +290,8 @@ flowchart TD
 **Platform:** Windows 11 is tested. The macOS and Linux install guides cover the prerequisites; running the project
 there is planned for v1.1.
 
+0. **Create your Anthropic account:** Claude Code needs a Pro, Max, Team, Enterprise or Console account (the free
+   plan does not include it). Click by click: [docs/02-install.md, section 0](docs/02-install.md#0-create-your-anthropic-account).
 1. **Install the free tools:** Git, VS Code, Python 3.12, the Claude Code extension for VS Code and Bambu Studio. The
    Claude Code command line is optional: the VS Code extension works on its own. You need **Claude Code v2.1.295 or
    later (the VS Code extension's version counts)**, because the project's guard hook uses `"onFailure": "block"`

@@ -4,6 +4,27 @@ All notable changes to this project are recorded here. The format follows [Keep 
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-10-22
+
+Documentation only. No code, tool, test or brand image changed, and the v1.0.0 release asset `maker-mastery-v1.0.0.zip` is unchanged.
+
+### Added
+
+- `docs/02-install.md`: new section **0. Create your Anthropic account**. It covers:
+  - which accounts can use Claude Code (Pro, Max, Team, Enterprise or Console; not the free plan);
+  - creating a Claude or Console account, click by click;
+  - phone verification;
+  - the first sign-in from the VS Code extension.
+
+  Every fact comes from Anthropic's own pages, listed in the guide's Sources. The section is also added to the Contents and the Summary table.
+- One-line pointers to that section in the README Quick Start (new step 0) and in `docs/04-first-run.md` step 7.
+
+### Fixed
+
+- `RELEASE_NOTES_v1.0.0.md`:
+  - the Checksums line now carries the SHA-256 of `maker-mastery-v1.0.0.zip`;
+  - the crest line names the master (parent) crest as the main logo, as the README shows it.
+
 ## [1.0.0] - 2026-10-22 - First Light
 
 Release name: **v1.0.0 — First Light**. Release asset: `maker-mastery-v1.0.0.zip`.
@@ -39,5 +60,6 @@ Release name: **v1.0.0 — First Light**. Release asset: `maker-mastery-v1.0.0.z
 - Brand assets in `assets/brand/` (crest, dark and light banners, social preview, the four-crest Memento Mori family strip in dark and light, small crest icons, and `org-avatar-500.png` for a GitHub organization); not open-licensed, see `NOTICE.md`.
 - Legal and community files: MIT `LICENSE`, `NOTICE.md`, `THIRD_PARTY_NOTICES.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md` (Contributor Covenant 2.1), `CONTRIBUTING.md`.
 
-[Unreleased]: https://github.com/mementomori-co/maker-mastery/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/mementomori-co/maker-mastery/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/mementomori-co/maker-mastery/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/mementomori-co/maker-mastery/releases/tag/v1.0.0

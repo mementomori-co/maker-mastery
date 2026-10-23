@@ -218,7 +218,9 @@ and end it with a `Sources:` line followed by one line such as `- my own look at
 1. Open any file (for example click `README.md` in the Explorer). Click the **Spark icon** in the **Editor Toolbar** at
    the top right of the editor. Other ways: the Spark icon in the **Activity Bar** on the left, or **✻ Claude Code** in the
    **Status Bar** at the bottom right ([Claude Code VS Code docs](https://code.claude.com/docs/en/vs-code)).
-2. The first time, a sign-in screen appears. Click **Sign in** and finish in your browser.
+2. The first time, a sign-in screen appears. Click **Sign in** and finish in your browser. You need a Pro, Max, Team,
+   Enterprise or Console account; the free plan does not include Claude Code. No account yet? See
+   [02 - Install, section 0](02-install.md#0-create-your-anthropic-account).
 3. You should see the chat panel with a prompt box at the bottom. A **Learn Claude Code** checklist may appear; you can
    dismiss it.
 

@@ -53,8 +53,8 @@ and you build and print.
 - **Owner profile** (`templates/OWNER_PROFILE.md`): a generic example of how Claude addresses you, its reply format
   and the owner-only list (prints, purchases, installs, sign-ins, secrets, deletions, publishing, messages). Copy it to
   `OWNER_PROFILE.md`; `CLAUDE.md` reads it first.
-- **The Memento Mori crest family** in `assets/brand/`: the printing crest as the main logo, the parent, streaming and
-  apparel crests in the README (dark and light versions), and `org-avatar-500.png` for a GitHub organization's
+- **The Memento Mori crest family** in `assets/brand/`: the master (parent) crest as the main logo, the printing,
+  streaming and apparel crests in the README (dark and light versions), and `org-avatar-500.png` for a GitHub organization's
   profile picture (steps in `docs/PUBLISHING.md`).
 - **`constraints.txt`**: the exact version of every package a fresh install of `requirements.txt` produced; setup
   installs with it, so a new install gets the tested versions.
@@ -112,7 +112,7 @@ scanning, media, and data and backups. Each domain goes through the same source 
 
 ## Checksums
 
-SHA-256 of maker-mastery-v1.0.0.zip: <filled at packaging>
+SHA-256 of maker-mastery-v1.0.0.zip: 6c1f1876c6dc82271ab9d6f25391baeb097a46d2ff13ff8a739dc69783eed423
 
 ---
 
