@@ -47,6 +47,7 @@ No tool here starts, sends, uploads or queues a print.
 | [check_note.py](#check_notepy) | knowledge | Validates a knowledge note's format (also a hook) |
 | [check_skill.py](#check_skillpy) | agents | Lints skill and agent files |
 | [build_indexes.py](#build_indexespy) | knowledge | Regenerates `knowledge\INDEX.md` and `lessons\INDEX.md` |
+| [ollama_check.py](#ollama_checkpy) | Ollama mode | Checks the Ollama server on this PC and prints the settings for Ollama mode |
 | [privacy_scan.py](#privacy_scanpy) | sharing | Finds personal data before you publish |
 | [strip_metadata.py](#strip_metadatapy) | sharing | Removes personal metadata from images and 3MF files |
 | [hooks\session_start.py](#hookssession_startpy) | hook | Loads the lessons at session start |
@@ -445,6 +446,35 @@ knowledge/INDEX.md: 1 categories; lessons/INDEX.md: 1 lessons
 ```
 
 (The sample ran in a small temporary copy.)
+
+## Ollama mode
+
+### ollama_check.py
+
+- **What it does:** checks that the Ollama server on this PC is ready for [Ollama mode](12-ollama-mode.md): O1 the server
+  answers, O2 the model is installed, O3 it supports tool calling, O5 the Anthropic-compatible `/v1/messages` endpoint
+  answers a one-token request (this loads the model), then O4 the loaded context window is at least 64000 tokens. Then it
+  prints the two VS Code user-settings keys and the PowerShell lines with your model and the loaded context window filled
+  in. It only talks to `localhost`: other hosts are refused, proxy settings are ignored and redirects are not followed.
+  Standard library only; it changes nothing.
+- **Inputs:** `--model NAME`; optional `--context` (minimum, default 64000), `--url` (default `http://localhost:11434`),
+  `--skip-messages`, `--timeout` (seconds per request, default 30; the `/v1/messages` test allows 600), `--json`.
+- **Outputs:** one line per check, `VERDICT OK / WARN / FAIL`, then the settings; exit 0 on OK or WARN, 2 on FAIL, 1 on
+  bad arguments such as a non-local `--url`.
+- **Example:** `.venv\Scripts\python.exe -B tools\ollama_check.py --model qwen3.5:0.8b`
+
+```text
+Ollama mode check: qwen3.5:0.8b at http://localhost:11434
+  [OK] O1: Ollama 0.40.11 answers at http://localhost:11434 (Ollama mode was tested on 0.40.11)
+  [OK] O2: model qwen3.5:0.8b is installed
+  [OK] O3: qwen3.5:0.8b supports tool calling (capabilities: completion, vision, tools, thinking)
+  [OK] O4: loaded with a 64000-token context window (need 64000+)
+  [OK] O5: the Anthropic-compatible endpoint /v1/messages answered (this is what Claude Code calls)
+VERDICT: OK
+```
+
+(Captured 2026-10-26 on Linux against Ollama 0.40.11 serving `qwen3.5:0.8b` at a 64000-token context; the settings it
+prints after the verdict are left out here.)
 
 ## Sharing safely
 

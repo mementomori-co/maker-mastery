@@ -346,6 +346,7 @@ there is planned for v1.1.
 | [09 Troubleshooting](docs/09-troubleshooting.md) | The 15 most likely problems and their fixes |
 | [10 FAQ](docs/10-faq.md) | Short answers to common questions |
 | [11 Autonomous mode](docs/11-autonomous-mode.md) | Fewer approvals, still safe: permission modes, rules, parallel agents, the two-brain workflow, your owner profile |
+| [12 Ollama mode](docs/12-ollama-mode.md) | Run Maker Mastery on a local model on your GPU or an Ollama Cloud model, with the readiness check, the switch back, and what does not work yet |
 | [Publishing](docs/PUBLISHING.md) (for maintainers) | Publishing the repository, the org avatar and the v1.0.0 release on GitHub |
 
 <img src="assets/brand/headers/ticker.svg" width="100%" alt="">
@@ -373,7 +374,8 @@ start tools from any MCP server. You press Print in Bambu Studio yourself.
 
 The project is free (MIT). Claude Code needs an Anthropic account: a paid Claude subscription or a Claude Console
 account, according to the [Claude Code VS Code docs](https://code.claude.com/docs/en/vs-code). Git, VS Code, Python and
-Bambu Studio are free downloads.
+Bambu Studio are free downloads. Optional: [Ollama mode](docs/12-ollama-mode.md) runs Claude Code on a local model with
+no Anthropic account (not supported by Anthropic, and tested so far on the command line only; see the guide's warnings).
 </details>
 
 <details>
@@ -387,8 +389,10 @@ been run on macOS or Linux.
 <details>
 <summary><strong>Is my data sent anywhere?</strong></summary>
 
-The tools run on your PC and make no network calls. Your prompts and the files Claude reads go to Anthropic as part of
-using Claude Code. Your load record and config stay on your PC; `config/paths.yaml` is ignored by git.
+The tools run on your PC and make no network calls (`tools/ollama_check.py` talks only to the Ollama server on your own
+PC). Your prompts and the files Claude reads go to Anthropic as part of using Claude Code. In
+[Ollama mode](docs/12-ollama-mode.md) they stay on your PC with a local model and go to Ollama with an Ollama Cloud
+model; Claude Code itself still sends telemetry to Anthropic unless you turn it off (see the guide). Your load record and config stay on your PC; `config/paths.yaml` is ignored by git.
 </details>
 
 More answers: [docs/10-faq.md](docs/10-faq.md).

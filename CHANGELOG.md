@@ -4,6 +4,20 @@ All notable changes to this project are recorded here. The format follows [Keep 
 
 ## [Unreleased]
 
+### Added
+
+- **Ollama mode** (`docs/12-ollama-mode.md`): run Claude Code, and so Maker Mastery's rulebook, agents, skills, hooks and
+  tools, on a local model on your GPU or an Ollama Cloud model. The guide covers setup, the environment variables
+  (including the `opus` / `sonnet` alias variables the agents need and the 200k context fix), the VS Code and terminal
+  routes, how to confirm and how to switch back. It also says what does not work yet (web search for the research
+  pipeline) and that Anthropic does not support this route. Every fact links its Ollama or Claude Code source.
+- `tools/ollama_check.py`: checks the Ollama server on this PC (server, model, tool calling, context window,
+  `/v1/messages`) and prints the settings to paste. Talks to `localhost` only: proxies are ignored and redirects are not
+  followed. Exit 0 on OK or WARN, 2 on FAIL. Unit tests in
+  `tools/tests/test_ollama_check.py` use a fake local server; `tools/selftest.py` lists them.
+- Knowledge note `knowledge/42-agent-engineering/claude-code-on-ollama.md`.
+- README and FAQ: Ollama mode in the Guides table and the cost and data answers.
+
 ## [1.0.1] - 2026-10-22
 
 Documentation only. No code, tool, test or brand image changed, and the v1.0.0 release asset `maker-mastery-v1.0.0.zip` is unchanged.
