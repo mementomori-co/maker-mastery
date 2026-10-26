@@ -8,4 +8,5 @@ How Claude Code's hooks, permissions, settings, skills, sub-agents, plugins and 
 - [skills-reference.md](skills-reference.md) - `context: fork`, `agent:`, `disable-model-invocation`, `argument-hint` and the 500-line `SKILL.md` rule.
 - [sub-agents-reference.md](sub-agents-reference.md) - frontmatter fields, `permissionMode` values, the colon-in-name ban, the 15,000-token description warning and location priority.
 - [plugins-reference.md](plugins-reference.md) - plugin layout, the optional manifest, marketplaces and the `${CLAUDE_PLUGIN_ROOT}` / `${CLAUDE_PLUGIN_DATA}` / `${CLAUDE_PROJECT_DIR}` variables.
+- [claude-code-on-ollama.md](claude-code-on-ollama.md) - running Claude Code on Ollama: the base URL and token variables, the `opus` / `sonnet` alias variables the agents need, the 200k context assumption and `CLAUDE_CODE_MAX_CONTEXT_TOKENS`, the VS Code setting, and what Anthropic does not support.
 - [headless-mode.md](headless-mode.md) - `claude -p`, `--output-format`, `--allowedTools` in auto mode, `--permission-mode`, and bounding unattended runs with `--max-turns` and `--max-budget-usd`.

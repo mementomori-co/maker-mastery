@@ -38,6 +38,7 @@ COVERS = {
     "test_hooks.py": "hooks\\guard_paths.py, hooks\\session_start.py, hooks\\log_run.py - Claude Code hooks",
     "test_mcp_audit_server.py": "mcp\\mm_audit_server.py - read-only audit MCP server",
     "test_privacy_scan.py": "privacy_scan.py - personal-data scan",
+    "test_ollama_check.py": "ollama_check.py - Ollama mode readiness check (fake local server)",
 }
 
 

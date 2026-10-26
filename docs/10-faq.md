@@ -14,7 +14,9 @@ No. You type requests in plain English in the Claude Code panel and paste a few 
 **What does it cost?**
 The project is free under the MIT License. Claude Code needs an Anthropic account with a paid Claude plan or a Claude
 Console account ([Claude Code VS Code docs](https://code.claude.com/docs/en/vs-code)). Git, VS Code, Python and Bambu
-Studio are free downloads.
+Studio are free downloads. Optional: [12 - Ollama mode](12-ollama-mode.md) runs Claude Code on a local model on your GPU
+with no Anthropic account (tested so far on the command line only); Anthropic does not support that route, so read
+the guide's warnings first.
 
 **Does it work on macOS or Linux?**
 It was written and tested on Windows 11 only. The setup script, the hooks and every guide assume Windows.
@@ -48,8 +50,10 @@ Most often the load check (C7): your `current-load.md` still has the placeholder
 is on purpose. See [09 - Troubleshooting](09-troubleshooting.md#7-the-audits-load-check-c7-fails).
 
 **Is my data sent anywhere?**
-The tools run locally and make no network calls. Your prompts and the files Claude reads are sent to Anthropic as part of
-using Claude Code. `config\paths.yaml`, `.venv\` and `work\` are ignored by git.
+The tools run locally and make no network calls (`tools\ollama_check.py` talks only to the Ollama server on your own PC).
+Your prompts and the files Claude reads are sent to Anthropic as part of using Claude Code. In
+[Ollama mode](12-ollama-mode.md) they stay on your PC with a local model, and go to Ollama with an Ollama Cloud model;
+Claude Code itself still sends telemetry to Anthropic unless you turn it off (see the guide). `config\paths.yaml`, `.venv\` and `work\` are ignored by git.
 
 ## Knowledge
 
