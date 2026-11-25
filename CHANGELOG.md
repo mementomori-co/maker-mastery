@@ -12,9 +12,14 @@ Documentation only. No code, tool or test changed.
   (default install: 218 checks passed, 11 skipped, 0 failed; with the optional open3d package: 229 passed), and what is
   not yet verified in live use. It is a maintainer's own run, not independent verification. Linked from the README
   guide table.
-- The same page says what to do before running the self-test: use a disposable clone and confirm that
-  `knowledge/_selftest_bad_note.md` does not exist, because one test overwrites and then deletes a file at that path.
-  The test itself is unchanged.
+- A safety warning before every setup and self-test command. One test overwrites and then deletes a file at
+  `knowledge/_selftest_bad_note.md`, and `tools/setup.ps1` runs the self-test automatically. Two requirements now
+  stand beside each entry point, and both must hold: (A) run setup and the self-test only in a fresh, disposable clone
+  with none of your own work in it, and (B) `Test-Path .\knowledge\_selftest_bad_note.md` prints `False`. Where:
+  the README quick start, `docs/04-first-run.md`, `docs/07-tools-reference.md`, `docs/09-troubleshooting.md`,
+  `docs/11-autonomous-mode.md`, `docs/PUBLISHING.md`, `CONTRIBUTING.md`, `.mcp.json.example.md`,
+  `.claude/settings.notes.md` and `examples/calibration-cube/README.md`; the full explanation is in
+  `docs/verification-status.md`. The test itself is unchanged.
 
 ### Changed
 

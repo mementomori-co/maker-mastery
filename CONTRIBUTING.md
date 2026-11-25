@@ -46,7 +46,7 @@ The privacy scan looks for personal data before it leaves your machine: your nam
 - Python 3.12 or newer. Prefer the standard library; any new dependency goes into `requirements.txt` and a row in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 - No hard-coded drive letters, user folders or install paths. Machine-specific values live only in `config/paths.yaml` (copied from `config/paths.example.yaml`) and are read through `tools/mm_config.py`.
 - Code adapted from another project needs its licence: add the credit and the licence text to [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
-- Run the tests in `tools/tests/` before you open the pull request.
+- Run the tests in `tools/tests/` before you open the pull request. Run them only in a fresh, disposable clone of your branch that holds no uncommitted or irreplaceable work, and only after `Test-Path .\knowledge\_selftest_bad_note.md`, run from the repository root, prints `False`: one test overwrites and then deletes a file at that path. If it prints `True`, stop and do not overwrite, delete or clean up the file ([details](docs/verification-status.md#before-you-run-setup-or-the-self-test)).
 
 ## Pull request checklist
 

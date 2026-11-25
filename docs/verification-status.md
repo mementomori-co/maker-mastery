@@ -61,36 +61,45 @@ They do **not** show any of the following:
 - **Nothing runs the tests for you.** The repository has no continuous integration. The self-test runs only when
   someone runs it.
 - **One test writes inside the project folder, and can destroy a file of yours.** Read
-  [Before you run the self-test](#before-you-run-the-self-test) first.
+  [Before you run setup or the self-test](#before-you-run-setup-or-the-self-test) first.
 - **Temporary folders are left behind.** The tests create folders whose names start with `mm_` in your system's
   temporary folder and do not remove most of them.
 
-## Before you run the self-test
+## Before you run setup or the self-test
 
-**Run the self-test only in a disposable clone:** a fresh copy of the repository that holds none of your own work and
-that you can throw away afterwards. Do not run it in a folder where you keep your own notes.
+`tools\setup.ps1` runs the self-test automatically as its last step. Everything in this section applies to setup as
+well as to `tools\selftest.py`.
 
-The reason is one test, `test_hook_mode_blocks_bad_knowledge_note` in `tools\tests\test_config_and_cli.py`. It writes a
-file at `knowledge\_selftest_bad_note.md` inside the project folder and then deletes it. It does not check first
-whether a file is already there. If you have a file at that path, the test overwrites its contents and then deletes
-the file. This is a defect in the test and it has not been corrected yet.
+**Both** of the following must be true before every run. Neither is enough without the other.
 
-Before every run, confirm that the file does not exist. From the project folder, in PowerShell:
+**A. Use a disposable clone.** Run setup and the self-test only in a fresh, disposable clone of the repository (a new
+`git clone` or a newly extracted ZIP) that contains none of your own work and nothing you could not replace. A folder
+you have started to work in is not disposable, even when the check in B passes.
+
+**B. Confirm the collision-prone file is absent.** From the repository root, in PowerShell:
 
 ```powershell
-Test-Path knowledge\_selftest_bad_note.md
+Test-Path .\knowledge\_selftest_bad_note.md
 ```
 
-Run the self-test only when this prints `False`. If it prints `True`, stop. Find out what the file is before you do
-anything with it: it may be your own file, or it may be left over from a run that was interrupted. In a disposable
-clone you can discard the whole clone and make a new one.
+Go on only if this prints `False` **and** the folder is a disposable clone. If it prints `True`, stop. Do not
+overwrite, delete or automatically clean up the file, and do not run setup or the self-test. Find out what the file is
+first: it may be your own, or it may be left over from a run that was interrupted.
 
-`tools\setup.ps1` runs the self-test as its last step, so the same check applies before you run setup in a folder that
-already holds your work.
+**Why.** One test, `test_hook_mode_blocks_bad_knowledge_note` in `tools\tests\test_config_and_cli.py`, writes a file at
+`knowledge\_selftest_bad_note.md` inside the project folder and then deletes it. It does not check first whether a file
+is already there, so a file you have at that path is overwritten and then deleted. This is a defect in the test and it
+has not been corrected yet. The check in B covers this one known file. It does not make the self-test safe to run in a
+folder that holds your work, which is why A is required as well.
+
+**If the folder you work in needs setup again** (for example to add the optional open3d package, or because `.venv` is
+missing), do not run setup there. Set up a fresh clone instead, and move your own files into it after setup has
+finished.
 
 ## Check it yourself
 
-In a disposable clone, after setup ([04 - First run](04-first-run.md)) and after the check above:
+Only when A and B above both hold (a fresh, disposable clone, and `Test-Path .\knowledge\_selftest_bad_note.md`
+printing `False`), and after setup ([04 - First run](04-first-run.md)):
 
 ```
 .venv\Scripts\python.exe -B tools\selftest.py

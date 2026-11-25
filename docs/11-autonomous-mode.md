@@ -162,7 +162,9 @@ It does **not** block:
   start", crashes (exit code other than 0 or 2) or times out blocks a `PreToolUse` call, and that the field "Requires
   Claude Code v2.1.295 or later" ([hooks, "Block the action when a hook fails"](https://code.claude.com/docs/en/hooks)).
   So on v2.1.295 or later, a missing venv means every file write and shell command is **blocked** until you run
-  `tools\setup.ps1` yourself in the VS Code terminal. If an older version ignores the field, the guard stays fail-open (a hook that cannot
+  `tools\setup.ps1` yourself in the VS Code terminal (only in a fresh, disposable clone and only after
+  `Test-Path .\knowledge\_selftest_bad_note.md` prints `False`: see
+  [04 - First run, step 4](04-first-run.md#step-4-run-the-setup-script)). If an older version ignores the field, the guard stays fail-open (a hook that cannot
   start is a "non-blocking error" and the call goes ahead), and what an older version does with the unknown field is
   (not verified). The panel uses the copy of Claude Code inside the VS Code extension, so update the extension. Details:
   [.claude/settings.notes.md](../.claude/settings.notes.md).
@@ -404,7 +406,10 @@ the documented ones. A scheduled builder run uses the permission mode you pick f
 ## 6. A safe setup, step by step
 
 1. Run `tools\setup.ps1` yourself in the VS Code terminal first, so the hooks have their Python
-   ([04 - First run](04-first-run.md)). Until then the guard blocks Claude's file writes and shell commands.
+   ([04 - First run](04-first-run.md)). Until then the guard blocks Claude's file writes and shell commands. Setup
+   runs the self-test automatically: run it only in a fresh, disposable clone with none of your own work in it, and
+   only after `Test-Path .\knowledge\_selftest_bad_note.md` prints `False`
+   ([04 - First run, step 4](04-first-run.md#step-4-run-the-setup-script)).
 2. Add your important folders to `protected_roots` in `config\paths.yaml` ([08 - Make it yours](08-customize.md)).
 3. Create `.claude\settings.local.json` with the deletion deny rules from [section 2](#add-deletion-rules-safely), plus
    any allow rules you want.

@@ -59,6 +59,22 @@ No tool here starts, sends, uploads or queues a print.
 
 ## Setup
 
+> [!WARNING]
+> **Before you run `setup.ps1` or `selftest.py`, both of these must be true.** One self-test overwrites and then
+> deletes any file at `knowledge\_selftest_bad_note.md`, and `setup.ps1` runs the self-test automatically.
+>
+> - **A. Use a disposable clone.** Run setup and the self-test only in a fresh, disposable clone of the repository (a
+>   new `git clone` or a newly extracted ZIP) that contains none of your own work and nothing you could not replace.
+> - **B. Confirm the file is absent.** From the repository root:
+>
+>   ```powershell
+>   Test-Path .\knowledge\_selftest_bad_note.md
+>   ```
+>
+> Go on only if it prints `False` **and** the folder is a disposable clone. If it prints `True`, stop: do not
+> overwrite, delete or clean up the file. A `False` result alone does not make these commands safe in a folder that
+> holds your work. Details: [Verification status](verification-status.md#before-you-run-setup-or-the-self-test).
+
 ### setup.ps1
 
 - **What it does:** one-time setup. Finds Python 3.12 or newer (`py -3.12`, then `py -3`, then `python`), creates
@@ -70,6 +86,9 @@ No tool here starts, sends, uploads or queues a print.
   `requirements-optional.txt` pins open3d itself (`open3d==0.20.0`), but `constraints.txt` does not list open3d or the
   packages open3d pulls in, so those extra packages are not pinned: pip picks their versions on the day you install.
 - **Outputs:** `.venv\`, `config\paths.yaml`, the self-test table. Exit code: the self-test's.
+- **Before you run it:** setup runs `selftest.py` automatically, so both requirements in the warning at the top of this
+  section must hold: (A) a fresh, disposable clone with none of your own work in it, and (B)
+  `Test-Path .\knowledge\_selftest_bad_note.md` prints `False`. Do not run it in a folder that holds your work.
 - **Example:** `powershell -ExecutionPolicy Bypass -File .\tools\setup.ps1` (why this form: [04 - First run](04-first-run.md#step-4-run-the-setup-script)).
 
 ### selftest.py
@@ -80,6 +99,9 @@ No tool here starts, sends, uploads or queues a print.
   package; see [Verification status](verification-status.md). No test needs Bambu Studio, Blender or the internet.
 - **Inputs:** none; `--verbose` prints the full test output.
 - **Outputs:** the table; exit 0 when nothing failed, 1 when a test failed.
+- **Before you run it:** both requirements in the warning at the top of this section must hold: (A) a fresh, disposable
+  clone with none of your own work in it, and (B) `Test-Path .\knowledge\_selftest_bad_note.md` prints `False`. Do not
+  run it in a folder that holds your work.
 - **Example:** `.venv\Scripts\python.exe -B tools\selftest.py`
 
 ```text
