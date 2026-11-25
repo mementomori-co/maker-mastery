@@ -335,7 +335,10 @@ Tick every line before part d.
 - [ ] **Social preview.** In **Settings**, under "Social preview", the image shows the crest and the title. Pasting the
       repository address into a chat app may still show an older cached card for a while (not verified).
 - [ ] **About and topics** are saved and show on the main page: 20 topics.
-- [ ] **Self-test** passes: `.venv\Scripts\python.exe -B tools\selftest.py` ends with `RESULT: PASS`.
+- [ ] **Self-test** passes: `.venv\Scripts\python.exe -B tools\selftest.py` ends with `RESULT: PASS`. Run it only in a
+      fresh, disposable clone of the commit you are publishing, never in your working copy, and only after
+      `Test-Path .\knowledge\_selftest_bad_note.md` prints `False` there: one test overwrites and then deletes a file
+      at that path ([details](verification-status.md#before-you-run-setup-or-the-self-test)).
 - [ ] **Release file** `dist\maker-mastery-v1.0.0.zip` exists, was built after your owner commit, and you have its
       SHA-256.
 

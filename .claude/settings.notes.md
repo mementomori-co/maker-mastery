@@ -70,7 +70,12 @@ What it changes, per the same page:
 - So when `.venv\Scripts\python.exe` is missing (setup not run yet, or the venv deleted), every Write, Edit,
   MultiEdit, NotebookEdit, Bash and PowerShell call is **blocked** instead of passing unguarded. The error names the
   hook and says `failed; blocking because onFailure is "block"`. Fix: run `tools\setup.ps1` yourself in the VS Code
-  terminal (Claude cannot run it for you while the guard is blocking), then start a new session.
+  terminal (Claude cannot run it for you while the guard is blocking), then start a new session. Setup runs the
+  self-test automatically, and one test overwrites and then deletes any file at `knowledge\_selftest_bad_note.md`: run
+  setup only in a fresh, disposable clone with none of your own work in it, and only after
+  `Test-Path .\knowledge\_selftest_bad_note.md` prints `False`. If the venv was deleted in a folder that holds your
+  work, do not run setup there
+  ([what to do instead](../docs/verification-status.md#before-you-run-setup-or-the-self-test)).
 - A crash inside `guard_paths.py` (an uncaught error exits with code 1) or a guard that takes longer than its 20-second
   `timeout` now blocks the call too.
 
@@ -91,7 +96,9 @@ Settings Error for `.claude\settings.json`, see [09 - Troubleshooting, section 4
 
 Requirements and limits:
 - The hooks need `.venv\Scripts\python.exe`, which `tools\setup.ps1` creates. Before setup runs, the guard blocks every
-  file write and shell command (see above) and the other hooks cannot start. Run setup first, from the VS Code terminal.
+  file write and shell command (see above) and the other hooks cannot start. Run setup first, from the VS Code terminal,
+  under the two requirements above (a fresh, disposable clone, and `Test-Path .\knowledge\_selftest_bad_note.md`
+  printing `False`).
 - The `args` field (exec form) is a recent hooks feature. The minimum Claude Code version that supports it is not
   verified here; if your version ignores `args`, update Claude Code.
 - Hooks run with your user rights. Read every hook script before you trust this folder.

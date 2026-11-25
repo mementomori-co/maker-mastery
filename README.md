@@ -312,12 +312,27 @@ there is planned for v1.1.
    [docs/03-get-the-project.md](docs/03-get-the-project.md)
 3. **Open it in VS Code and install the recommended extensions** (VS Code offers them from `.vscode\extensions.json`).
    [docs/04-first-run.md, step 2](docs/04-first-run.md#step-2-install-the-recommended-vs-code-extensions)
-4. **Run setup once, before you open Claude Code:** in the VS Code terminal run this command
-   ([docs/04-first-run.md](docs/04-first-run.md)):
+4. **Run setup once, before you open Claude Code.** Setup also runs the project's self-test, and one of its tests
+   overwrites and then deletes any file at `knowledge\_selftest_bad_note.md`. Before you run setup, **both** of these
+   must be true:
+
+   - **A. This folder is a fresh, disposable clone of the project** (a new `git clone` or a newly extracted ZIP) with
+     none of your own work and nothing you could not replace in it.
+   - **B. This command, run from the project root in the VS Code terminal, prints `False`:**
+
+     ```powershell
+     Test-Path .\knowledge\_selftest_bad_note.md
+     ```
+
+   If it prints `True`, stop: do not run setup, and do not overwrite, delete or clean up that file. Only when A and B
+   both hold, run this command in the VS Code terminal ([docs/04-first-run.md](docs/04-first-run.md)):
 
    ```powershell
    powershell -ExecutionPolicy Bypass -File .\tools\setup.ps1
    ```
+
+   Do not run setup or the self-test again later in a folder that holds your work:
+   [why, and what to do instead](docs/verification-status.md#before-you-run-setup-or-the-self-test).
 
 5. **Tell it who you are:** copy `templates\OWNER_PROFILE.md` to `OWNER_PROFILE.md` in the project folder and fill it
    in (your name, tone, reply format and owner-only list). Claude reads it first in every session.
@@ -346,6 +361,7 @@ there is planned for v1.1.
 | [09 Troubleshooting](docs/09-troubleshooting.md) | The 15 most likely problems and their fixes |
 | [10 FAQ](docs/10-faq.md) | Short answers to common questions |
 | [11 Autonomous mode](docs/11-autonomous-mode.md) | Fewer approvals, still safe: permission modes, rules, parallel agents, the two-brain workflow, your owner profile |
+| [Verification status](docs/verification-status.md) | What has been run and with what result, and what is not yet verified |
 | [Publishing](docs/PUBLISHING.md) (for maintainers) | Publishing the repository, the org avatar and the v1.0.0 release on GitHub |
 
 <img src="assets/brand/headers/ticker.svg" width="100%" alt="">

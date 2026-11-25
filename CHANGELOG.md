@@ -4,6 +4,29 @@ All notable changes to this project are recorded here. The format follows [Keep 
 
 ## [Unreleased]
 
+Documentation only. No code, tool or test changed.
+
+### Added
+
+- `docs/verification-status.md`: what a maintainer run against `v1.0.1` on 2026-11-22 did, where, and with what result
+  (default install: 218 checks passed, 11 skipped, 0 failed; with the optional open3d package: 229 passed), and what is
+  not yet verified in live use. It is a maintainer's own run, not independent verification. Linked from the README
+  guide table.
+- A safety warning before every setup and self-test command. One test overwrites and then deletes a file at
+  `knowledge/_selftest_bad_note.md`, and `tools/setup.ps1` runs the self-test automatically. Two requirements now
+  stand beside each entry point, and both must hold: (A) run setup and the self-test only in a fresh, disposable clone
+  with none of your own work in it, and (B) `Test-Path .\knowledge\_selftest_bad_note.md` prints `False`. Where:
+  the README quick start, `docs/04-first-run.md`, `docs/07-tools-reference.md`, `docs/09-troubleshooting.md`,
+  `docs/11-autonomous-mode.md`, `docs/PUBLISHING.md`, `CONTRIBUTING.md`, `.mcp.json.example.md`,
+  `.claude/settings.notes.md` and `examples/calibration-cube/README.md`; the full explanation is in
+  `docs/verification-status.md`. The test itself is unchanged.
+
+### Changed
+
+- `docs/07-tools-reference.md` and `RELEASE_NOTES_v1.0.0.md`: where the 229 automated checks are counted, the text now
+  also gives the result of that later `v1.0.1` maintainer run: a default install ran 218 of them and skipped the 11
+  that need the optional open3d package. These figures are not from v1.0.0 release testing.
+
 ## [1.0.1] - 2026-10-22
 
 Documentation only. No code, tool, test or brand image changed, and the v1.0.0 release asset `maker-mastery-v1.0.0.zip` is unchanged.

@@ -5,6 +5,14 @@ terminal (**Terminal > New Terminal**) from the project folder unless the fix sa
 
 If your problem is not here, ask Claude in the panel: paste the exact error and say which step you were on.
 
+> [!WARNING]
+> **Several fixes on this page tell you to run setup, or to run it again.** Setup runs the self-test automatically, and
+> one test overwrites and then deletes any file at `knowledge\_selftest_bad_note.md`. Every time, both of these must be
+> true first: (A) the folder is a fresh, disposable clone with none of your own work and nothing irreplaceable in it,
+> and (B) `Test-Path .\knowledge\_selftest_bad_note.md`, run from the project root, prints `False`. If it prints
+> `True`, stop and do not overwrite, delete or clean up that file. Do not run setup or the self-test in a folder that
+> holds your work: [what to do instead](verification-status.md#before-you-run-setup-or-the-self-test).
+
 ## Contents
 
 1. [Running scripts is disabled on this system](#1-running-scripts-is-disabled-on-this-system)
@@ -32,6 +40,12 @@ the file not being digitally signed.
 ZIP are marked as coming from the internet
 ([about_Execution_Policies](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies)).
 
+**Before the fix:** setup runs the self-test automatically, and one test overwrites and then deletes any file at
+`knowledge\_selftest_bad_note.md`. Run the line below only when both are true: (A) this folder is a fresh, disposable
+clone with none of your own work in it, and (B) `Test-Path .\knowledge\_selftest_bad_note.md`, run from the project
+root, prints `False`. If it prints `True`, stop and do not overwrite, delete or clean up that file
+([04 - First run, step 4](04-first-run.md#step-4-run-the-setup-script)).
+
 **Fix:** run the script through a one-off process with the policy bypassed for that process only:
 
 ```powershell
@@ -55,7 +69,8 @@ remove that mark once with `Unblock-File .\tools\setup.ps1`
 1. Run `py --list`. If 3.12 is not in the list, install it ([02 - Install, section 3](02-install.md#3-python-312)).
 2. Close the VS Code terminal (trash-can icon) and open a new one with **Terminal > New Terminal**. A terminal opened
    before the install does not see the new PATH. If that is not enough, close and reopen VS Code.
-3. Run the setup line again.
+3. Run the setup line again, after the two checks in the warning at the top of this page (a fresh, disposable clone,
+   and `Test-Path .\knowledge\_selftest_bad_note.md` printing `False`).
 
 ## 3. `python` opens the Microsoft Store or is not recognized
 
@@ -86,7 +101,10 @@ On an older Claude Code the guard cannot start and nothing is guarded. The quote
 **Fix:**
 
 1. Close the Claude Code panel.
-2. Run the setup ([04 - First run](04-first-run.md), step 4) and wait for `Setup finished`.
+2. Run the setup ([04 - First run](04-first-run.md), step 4) and wait for `Setup finished`. Step 4 starts with two
+   required checks: a fresh, disposable clone, and `Test-Path .\knowledge\_selftest_bad_note.md` printing `False`. If
+   the venv went missing in a folder that holds your work, do not run setup there
+   ([what to do instead](verification-status.md#before-you-run-setup-or-the-self-test)).
 3. Check: `Test-Path .venv\Scripts\python.exe` should print `True`.
 4. Run **Developer: Reload Window** from the Command Palette (`Ctrl+Shift+P`) and open the panel again.
 
@@ -188,7 +206,8 @@ what to fix.
 **Fix (either):**
 
 - Move the project to a short path such as `C:\Projects\maker-mastery` (guide 03), delete the `.venv` folder in File
-  Explorer, and run setup again.
+  Explorer, and run setup again. Both checks in the warning at the top of this page apply first: a fresh, disposable
+  clone, and `Test-Path .\knowledge\_selftest_bad_note.md` printing `False`.
 - Or enable long paths: run the Python installer again and use **Disable path length limit** (label not verified), or
   follow the Python docs page above. That change needs administrator rights.
 
@@ -202,7 +221,9 @@ general experience, not verified against a Microsoft page).
 
 **Fix:** move the project to a local folder outside OneDrive, such as `C:\Projects\maker-mastery`: close VS Code, move
 the folder in File Explorer, delete the `.venv` folder inside it (a venv does not survive a move), reopen the folder in
-VS Code and run setup again.
+VS Code and run setup again. Both checks in the warning at the top of this page apply first: a fresh, disposable clone,
+and `Test-Path .\knowledge\_selftest_bad_note.md` printing `False`. If the folder already holds your work, do not run
+setup there ([what to do instead](verification-status.md#before-you-run-setup-or-the-self-test)).
 
 ## 11. pip install failed
 
@@ -213,6 +234,8 @@ VS Code and run setup again.
 1. Read the last red lines above it. `Could not find a version that satisfies the requirement` usually means your Python
    is not 3.12 (the pinned packages were tested on 3.12): run `py --list` and install 3.12.
 2. Connection errors: check your internet connection or proxy and run setup again; it reuses `.venv` and continues.
+   Both checks in the warning at the top of this page apply first: a fresh, disposable clone, and
+   `Test-Path .\knowledge\_selftest_bad_note.md` printing `False`.
 3. Path errors: see problem 9.
 
 ## 12. The Claude Code panel or Spark icon is missing

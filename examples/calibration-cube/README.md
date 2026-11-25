@@ -8,7 +8,10 @@ Bambu Studio and the 3MF audit. It takes you up to the point of printing, and th
 
 ## Before you start
 
-- You have run `tools\setup.ps1` once (it creates `.venv` and `config\paths.yaml`).
+- You have run `tools\setup.ps1` once (it creates `.venv` and `config\paths.yaml`). If you have not, do it as
+  [04 - First run, step 4](../../docs/04-first-run.md#step-4-run-the-setup-script) describes, with its two checks: a
+  fresh, disposable clone with none of your own work in it, and `Test-Path .\knowledge\_selftest_bad_note.md` printing
+  `False`.
 - Bambu Studio is installed. If it is not in the default folder, set `bambu_studio_exe` in `config\paths.yaml`.
 - Filament: this example assumes one PLA spool. Before you trust the audit's load check (C7), write what is really
   loaded in `knowledge\00-gear-inventory\current-load.md`. While that file still says EMPTY, C7 fails on purpose.

@@ -9,6 +9,10 @@ Claude Code for your first prompt. Next: [05 - Daily workflow](05-daily-workflow
 > guard then blocks every file write and shell command Claude tries (it is set to fail closed; Claude Code v2.1.295 or
 > later), so Claude cannot run setup for you: run it yourself in step 4. Details:
 > [11 - Autonomous mode](11-autonomous-mode.md#what-the-guard-hook-blocks-and-what-it-does-not).
+>
+> **Step 4 starts with two required checks.** Setup runs the self-test, and one test overwrites and then deletes any
+> file at `knowledge\_selftest_bad_note.md`. Run setup only in a fresh, disposable clone with none of your own work in
+> it, and only after `Test-Path .\knowledge\_selftest_bad_note.md` prints `False`.
 
 This guide assumes the project is in `C:\Projects\maker-mastery` (guide 03). If yours is elsewhere, use your folder.
 
@@ -79,20 +83,38 @@ type `powershell` and press Enter.
 
 ## Step 4. Run the setup script
 
-Paste this line into the terminal and press Enter:
+> [!WARNING]
+> **Check two things before you run setup.** Setup runs the project's self-test automatically as its last step, and
+> one of its tests overwrites and then deletes any file at `knowledge\_selftest_bad_note.md`. **Both** of these must be
+> true, every time you run setup or the self-test:
+>
+> - **A. This folder is a fresh, disposable clone of the project** (a new `git clone` or a newly extracted ZIP) with
+>   none of your own work and nothing you could not replace in it.
+> - **B. This command, run from the project root, prints `False`:**
+>
+>   ```powershell
+>   Test-Path .\knowledge\_selftest_bad_note.md
+>   ```
+>
+> If it prints `True`, stop: do not run setup, and do not overwrite, delete or clean up that file. A `False` result
+> alone is not enough in a folder that already holds your work: do not run setup or the self-test there. Details:
+> [Verification status](verification-status.md#before-you-run-setup-or-the-self-test).
+
+Only when A and B both hold, paste this line into the terminal and press Enter:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\tools\setup.ps1
 ```
 
-**Why this line, and why it is safe.** Windows PowerShell does not run script files under its default policy on Windows
+**Why this line, and why the policy bypass is safe.** Windows PowerShell does not run script files under its default policy on Windows
 clients, and files from a downloaded ZIP are marked as coming from the internet. This line starts one new PowerShell
 process with the policy set to **Bypass** for that process only, runs `setup.ps1` in it, and exits. Nothing is saved:
 Microsoft's docs say a policy set for a session "is stored only in memory and is lost when the session is closed"
 ([about_Execution_Policies](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies)).
 Your PC's policy stays exactly as it was, and only this one script runs, which you can read first.
 
-An equivalent two-line form, which lasts until you close this terminal:
+An equivalent two-line form, which lasts until you close this terminal (requirements A and B above apply to it in the
+same way):
 
 ```powershell
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
@@ -133,11 +155,15 @@ line with most checks skipped, which is normal:
 ```
 
 To add open3d, run the setup again with
-`powershell -ExecutionPolicy Bypass -File .\tools\setup.ps1 -Optional` and answer `y`. (Both samples above were
+`powershell -ExecutionPolicy Bypass -File .\tools\setup.ps1 -Optional` and answer `y`. Requirements A and B at the top
+of this step apply to this run too: do it now, while this folder is still a fresh, disposable clone, and only after
+`Test-Path .\knowledge\_selftest_bad_note.md` prints `False` again. Do not do it later in a folder that holds your
+work. (Both samples above were
 captured from a full fresh install without `-Optional`.) `requirements-optional.txt` pins open3d itself, but
 `constraints.txt` does not cover open3d or the packages it pulls in, so their versions are whatever pip picks that day.
 
-If something else happens:
+If something else happens (each time a row tells you to run the line again, requirements A and B at the top of this
+step apply again: a fresh, disposable clone, and `Test-Path .\knowledge\_selftest_bad_note.md` printing `False`):
 
 | You see | Do this |
 |---|---|
