@@ -14,8 +14,12 @@ on a claim that something "is tested". Back to the start: [01 - What this is](01
 | What | `tools\selftest.py`, which runs the 15 test files in `tools\tests\` (229 checks) |
 | Who | the maintainer, working with an AI coding assistant, in a separate copy of the repository |
 
-This is a maintainer's own run. It is **not** an outside audit, and no outside user has yet reported running the whole
-kit.
+This is a maintainer's own run. It is **not** independent verification and **not** an outside audit: no one outside
+the maintainer's own setup has reported repeating it, and no outside user has yet reported running the whole kit.
+
+Every figure on this page comes from this one run on `v1.0.1`. None of them is from the testing done for the original
+v1.0.0 release; [RELEASE_NOTES_v1.0.0.md](../RELEASE_NOTES_v1.0.0.md) records what was seen on the build PC at that
+time.
 
 ## Results
 
@@ -28,8 +32,9 @@ The 11 skipped checks are all in `tools\tests\test_render_critic.py`. They need 
 default install skips them and still ends with `RESULT: PASS`. [04 - First run](04-first-run.md) and
 [07 - Tools reference](07-tools-reference.md) show what that looks like.
 
-Installing open3d changed none of the pinned package versions. It brought in 46 further packages that
-`constraints.txt` does not pin, so their versions are whatever pip picks on the day you install.
+The optional install changed none of the 37 pinned package versions. It added 46 packages in total: open3d itself,
+which `requirements-optional.txt` pins at 0.20.0, and 45 further packages that pip installed with it. `constraints.txt`
+lists none of the 46, so the versions of those 45 are whatever pip picks on the day you install.
 
 ## What these results show, and what they do not
 
@@ -55,14 +60,37 @@ They do **not** show any of the following:
   `SKIPPED` when a package is missing; the result is still `PASS`. Read the skipped counts, not only the last line.
 - **Nothing runs the tests for you.** The repository has no continuous integration. The self-test runs only when
   someone runs it.
-- **One test writes inside the project folder.** It creates `knowledge\_selftest_bad_note.md` and deletes it again.
-  If a run is interrupted the file can be left behind; delete it.
+- **One test writes inside the project folder, and can destroy a file of yours.** Read
+  [Before you run the self-test](#before-you-run-the-self-test) first.
 - **Temporary folders are left behind.** The tests create folders whose names start with `mm_` in your system's
   temporary folder and do not remove most of them.
 
+## Before you run the self-test
+
+**Run the self-test only in a disposable clone:** a fresh copy of the repository that holds none of your own work and
+that you can throw away afterwards. Do not run it in a folder where you keep your own notes.
+
+The reason is one test, `test_hook_mode_blocks_bad_knowledge_note` in `tools\tests\test_config_and_cli.py`. It writes a
+file at `knowledge\_selftest_bad_note.md` inside the project folder and then deletes it. It does not check first
+whether a file is already there. If you have a file at that path, the test overwrites its contents and then deletes
+the file. This is a defect in the test and it has not been corrected yet.
+
+Before every run, confirm that the file does not exist. From the project folder, in PowerShell:
+
+```powershell
+Test-Path knowledge\_selftest_bad_note.md
+```
+
+Run the self-test only when this prints `False`. If it prints `True`, stop. Find out what the file is before you do
+anything with it: it may be your own file, or it may be left over from a run that was interrupted. In a disposable
+clone you can discard the whole clone and make a new one.
+
+`tools\setup.ps1` runs the self-test as its last step, so the same check applies before you run setup in a folder that
+already holds your work.
+
 ## Check it yourself
 
-From the project folder, after setup ([04 - First run](04-first-run.md)):
+In a disposable clone, after setup ([04 - First run](04-first-run.md)) and after the check above:
 
 ```
 .venv\Scripts\python.exe -B tools\selftest.py

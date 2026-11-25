@@ -8,14 +8,19 @@ Documentation only. No code, tool or test changed.
 
 ### Added
 
-- `docs/verification-status.md`: what was run against `v1.0.1`, where, and with what result (default install: 218
-  checks passed, 11 skipped, 0 failed; with the optional open3d package: 229 passed), and what is not yet verified in
-  live use. Linked from the README guide table.
+- `docs/verification-status.md`: what a maintainer run against `v1.0.1` on 2026-11-22 did, where, and with what result
+  (default install: 218 checks passed, 11 skipped, 0 failed; with the optional open3d package: 229 passed), and what is
+  not yet verified in live use. It is a maintainer's own run, not independent verification. Linked from the README
+  guide table.
+- The same page says what to do before running the self-test: use a disposable clone and confirm that
+  `knowledge/_selftest_bad_note.md` does not exist, because one test overwrites and then deletes a file at that path.
+  The test itself is unchanged.
 
 ### Changed
 
 - `docs/07-tools-reference.md` and `RELEASE_NOTES_v1.0.0.md`: where the 229 automated checks are counted, the text now
-  also says that a default install runs 218 of them and skips the 11 that need the optional open3d package.
+  also gives the result of that later `v1.0.1` maintainer run: a default install ran 218 of them and skipped the 11
+  that need the optional open3d package. These figures are not from v1.0.0 release testing.
 
 ## [1.0.1] - 2026-10-22
 

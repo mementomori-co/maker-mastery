@@ -29,8 +29,9 @@ and you build and print.
   command line and audit the 3MF, the G-code, the prime tower clearance, overhangs and how much of a part support hides.
 - **Tests: 229 automated checks in 15 test files** in `tools/tests/`, run tool by tool by `tools/selftest.py`. No test
   needs Bambu Studio, Blender or the internet. On the build PC 2 of them were skipped because the PyYAML package was
-  not installed in that Python; setup installs it from `requirements.txt`. (Added after the release: a default install,
-  without the optional open3d package, runs 218 of the 229 checks and skips 11. See
+  not installed in that Python; setup installs it from `requirements.txt`. (Added after the release, and not part
+  of v1.0.0 release testing: in a later maintainer run on `v1.0.1`, on 2026-11-22, a default install without the
+  optional open3d package ran 218 of the 229 checks and skipped 11. See
   [verification status](docs/verification-status.md).)
 - **20 lessons** in `lessons/`: general post-mortems, each ending with the rule it created.
 - **Privacy scanner** (`tools/privacy_scan.py`): checks file contents, file names, image metadata, ZIP and 3MF members
