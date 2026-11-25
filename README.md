@@ -346,6 +346,7 @@ there is planned for v1.1.
 | [09 Troubleshooting](docs/09-troubleshooting.md) | The 15 most likely problems and their fixes |
 | [10 FAQ](docs/10-faq.md) | Short answers to common questions |
 | [11 Autonomous mode](docs/11-autonomous-mode.md) | Fewer approvals, still safe: permission modes, rules, parallel agents, the two-brain workflow, your owner profile |
+| [Verification status](docs/verification-status.md) | What has been run and with what result, and what is not yet verified |
 | [Publishing](docs/PUBLISHING.md) (for maintainers) | Publishing the repository, the org avatar and the v1.0.0 release on GitHub |
 
 <img src="assets/brand/headers/ticker.svg" width="100%" alt="">

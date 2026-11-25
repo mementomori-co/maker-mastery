@@ -4,6 +4,19 @@ All notable changes to this project are recorded here. The format follows [Keep 
 
 ## [Unreleased]
 
+Documentation only. No code, tool or test changed.
+
+### Added
+
+- `docs/verification-status.md`: what was run against `v1.0.1`, where, and with what result (default install: 218
+  checks passed, 11 skipped, 0 failed; with the optional open3d package: 229 passed), and what is not yet verified in
+  live use. Linked from the README guide table.
+
+### Changed
+
+- `docs/07-tools-reference.md` and `RELEASE_NOTES_v1.0.0.md`: where the 229 automated checks are counted, the text now
+  also says that a default install runs 218 of them and skips the 11 that need the optional open3d package.
+
 ## [1.0.1] - 2026-10-22
 
 Documentation only. No code, tool, test or brand image changed, and the v1.0.0 release asset `maker-mastery-v1.0.0.zip` is unchanged.

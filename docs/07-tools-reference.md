@@ -75,7 +75,9 @@ No tool here starts, sends, uploads or queues a print.
 ### selftest.py
 
 - **What it does:** runs each `tools\tests\test_*.py` file (15 files, 229 checks) in its own process and prints one line
-  per tool: PASS, FAIL or SKIPPED (an optional package is missing). No test needs Bambu Studio, Blender or the internet.
+  per tool: PASS, FAIL or SKIPPED (an optional package is missing). A default install runs 218 of the 229 checks and
+  skips the 11 that need the optional open3d package; see [Verification status](verification-status.md). No test needs
+  Bambu Studio, Blender or the internet.
 - **Inputs:** none; `--verbose` prints the full test output.
 - **Outputs:** the table; exit 0 when nothing failed, 1 when a test failed.
 - **Example:** `.venv\Scripts\python.exe -B tools\selftest.py`
